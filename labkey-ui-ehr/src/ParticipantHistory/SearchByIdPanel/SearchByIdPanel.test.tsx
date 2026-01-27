@@ -3,15 +3,16 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { parseIds, SearchByIdPanel, validateInput } from './SearchByIdPanel';
-import * as idResolutionService from '../services/idResolutionService';
-import { FILTER_TYPE_ALIVE_AT_CENTER, FILTER_TYPE_ALL, FILTER_TYPE_ID_SEARCH, FILTER_TYPE_URL_PARAMS } from '../models';
+import {
+    FILTER_TYPE_ALIVE_AT_CENTER,
+    FILTER_TYPE_ALL,
+    FILTER_TYPE_ID_SEARCH,
+    FILTER_TYPE_URL_PARAMS,
+    IdResolutionResult,
+    ResolveIdsParams,
+} from '../models';
 
-// Mock the idResolutionService
-jest.mock('../services/idResolutionService');
-
-const mockResolveAnimalIds = idResolutionService.resolveAnimalIds as jest.MockedFunction<
-    typeof idResolutionService.resolveAnimalIds
->;
+const mockResolveAnimalIds = jest.fn<Promise<IdResolutionResult>, [ResolveIdsParams]>();
 
 describe('parseIds utility function', () => {
     test('parses IDs with newline separators', () => {
@@ -129,6 +130,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -162,6 +164,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -195,6 +198,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -228,6 +232,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -261,6 +266,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -296,6 +302,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -328,6 +335,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -360,6 +368,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -394,6 +403,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -415,6 +425,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -439,6 +450,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -475,6 +487,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -495,6 +508,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -524,6 +538,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -555,6 +570,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -570,6 +586,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -584,6 +601,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ALL}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
@@ -596,6 +614,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ALIVE_AT_CENTER}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
@@ -608,6 +627,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
             expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
@@ -621,6 +641,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -637,6 +658,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -668,6 +690,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -686,6 +709,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -704,6 +728,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -724,6 +749,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -743,6 +769,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -771,6 +798,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -801,6 +829,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -815,6 +844,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ALL}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
             expect(screen.getByRole('textbox')).toBeInTheDocument();
@@ -827,6 +857,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ALIVE_AT_CENTER}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
             expect(screen.getByRole('textbox')).toBeInTheDocument();
@@ -847,6 +878,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -890,6 +922,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -917,6 +950,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ALL}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -930,6 +964,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ALIVE_AT_CENTER}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -952,6 +987,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -978,6 +1014,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1007,6 +1044,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1033,6 +1071,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1047,6 +1086,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1063,6 +1103,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1078,6 +1119,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1092,6 +1134,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456', 'ID789']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1108,6 +1151,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1121,6 +1165,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1139,6 +1184,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_URL_PARAMS}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1165,6 +1211,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1179,6 +1226,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1194,6 +1242,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1215,6 +1264,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
@@ -1248,6 +1298,7 @@ describe('SearchByIdPanel', () => {
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 

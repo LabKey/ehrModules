@@ -11,14 +11,16 @@ import {
     ReportConfig,
     ReportFilters,
 } from './models';
-import { fetchReports as defaultFetchReports, FetchReportsFn } from './services/reportsService';
+import { FetchReportsFn, getDefaultParticipantHistoryAPIWrapper } from './APIWrapper';
 import { getFiltersFromUrl, updateUrlHash } from './utils/urlHashUtils';
 
 interface ParticipantReportsProps {
     fetchReports?: FetchReportsFn;
 }
 
-const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({ fetchReports = defaultFetchReports }) => {
+const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({
+    fetchReports = getDefaultParticipantHistoryAPIWrapper().fetchReports,
+}) => {
     const urlFilters = useMemo(() => getFiltersFromUrl(), []);
     const [subjects, setSubjects] = useState<string[]>(urlFilters.subjects || []);
 

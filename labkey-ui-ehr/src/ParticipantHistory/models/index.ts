@@ -164,6 +164,7 @@ export interface UrlFilters {
  * Result from resolving animal IDs and aliases
  */
 export interface IdResolutionResult {
+    error?: string;
     notFound: string[];
     resolved: {
         aliasType?: null | string;

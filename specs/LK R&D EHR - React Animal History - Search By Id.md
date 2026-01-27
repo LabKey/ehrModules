@@ -279,9 +279,8 @@ import { ReportConfig, QueryReportConfig, JsReportConfig, OtherReportConfig, Fil
 - `TabbedReportPanel/JSReportWrapper.tsx` - Imports `JsReportConfig` variant from models
 - `TabbedReportPanel/OtherReportWrapper.tsx` - Imports `OtherReportConfig` variant from models
 - `utils/urlHashUtils.ts` - Imports from models
-- `services/idResolutionService.ts` - Imports from models
-- `services/reportsService.ts` - Imports `ReportConfig` from models, exports `FetchReportsFn` type
-- `ParticipantReports.tsx` - Imports `ReportConfig` union from models, imports `fetchReports` from services
+- `APIWrapper.ts` - Imports from models, exports `FetchReportsFn` type, provides `ParticipantHistoryAPIWrapper` interface
+- `ParticipantReports.tsx` - Imports `ReportConfig` union from models, imports `fetchReports` from APIWrapper
 - `SearchByIdPanel/SearchByIdPanel.tsx` - Imports from models
 - `SearchByIdPanel/IdResolutionFeedback.tsx` - Imports from models
 - All corresponding test files (.test.tsx) - Imports from models
@@ -657,7 +656,7 @@ interface IdResolutionFeedbackProps {
 - Manage `subjects` and `filterType` state locally instead of only from URL
 - Update URL hash when filter changes
 - Pass filter information to `TabbedReportPanel` via `filters` prop
-- Fetch reports once on mount using `reportsService` and cache in state
+- Fetch reports once on mount using `APIWrapper.fetchReports()` and cache in state
 - Look up `activeReportSupportsNonIdFilters` from cached reports (no separate query)
 - Provide `activeReportSupportsNonIdFilters` to `SearchByIdPanel` from cached report metadata
 - `SearchByIdPanel` internally manages ID resolution and displays `IdResolutionFeedback` (not managed by parent)
@@ -801,7 +800,7 @@ export const ParticipantReports = memo(ParticipantReportsComponent);
   - Set to `true` for 'all' and 'aliveAtCenter' modes always
   - Set to `true` for 'idSearch' and 'urlParams' modes only when subjects exist
   - Synced to URL hash (showReport:1 when true, omitted when false)
-- **Reports fetching**: Uses `reportsService.fetchReports()` to load all visible reports once on mount
+- **Reports fetching**: Uses `APIWrapper.fetchReports()` to load all visible reports once on mount
   - Cached in `reports` state, passed to `TabbedReportPanel` as prop
   - `reportsLoading` state ensures undefined is passed until reports are loaded
   - `activeReportSupportsNonIdFilters` is computed from cached reports (no separate query)
@@ -816,21 +815,36 @@ export const ParticipantReports = memo(ParticipantReportsComponent);
 
 ## API Integration
 
-### Id Resolution Service
+### APIWrapper
 
-**New File:** `labkey-ui-ehr/src/ParticipantHistory/services/idResolutionService.ts`
+**File:** `labkey-ui-ehr/src/ParticipantHistory/APIWrapper.ts`
+
+The `APIWrapper` provides a unified interface for all server API calls used by the ParticipantHistory feature. It uses dependency injection for testability and encapsulates both ID resolution and report fetching functionality.
 
 ```typescript
-interface ResolveIdsParams {
-    inputIds: string[];
+export interface ParticipantHistoryAPIWrapper {
+    fetchReports: () => Promise<FetchReportsResult>;
+    resolveAnimalIds: (params: ResolveIdsParams) => Promise<IdResolutionResult>;
 }
 
-export async function resolveAnimalIds(params: ResolveIdsParams): Promise<IdResolutionResult> {
-    // Step 1: Query study.demographics for direct ID matches
-    // Step 2: Query study.alias for alias matches on unresolved IDs
-    // Step 3: Return consolidated results
+export class ServerAPIWrapper implements ParticipantHistoryAPIWrapper {
+    resolveAnimalIds = async (params: ResolveIdsParams): Promise<IdResolutionResult> => {
+        // Step 1: Query study.directIdMatches for direct ID matches
+        // Step 2: Query study.aliasIdMatches for alias matches on unresolved IDs
+        // Step 3: Return consolidated results
+    };
+
+    fetchReports = async (): Promise<FetchReportsResult> => {
+        // Query ehr.reports for all visible reports
+    };
 }
+
+export const getDefaultParticipantHistoryAPIWrapper = (): ParticipantHistoryAPIWrapper => {
+    // Returns singleton instance of ServerAPIWrapper
+};
 ```
+
+### Id Resolution
 
 **Database Queries:**
 
@@ -886,11 +900,9 @@ Filter.create('lowerAliasForMatching', lowercaseUnresolvedInputIds, Filter.Types
 - The application layer de-duplicates resolved IDs when passing to reports (multiple inputs may resolve to the same animal ID)
 - Using pre-defined queries ensures consistency across the EHR module and simplifies maintenance
 
-### Reports Service
+### Reports Fetching
 
-**New File:** `labkey-ui-ehr/src/ParticipantHistory/services/reportsService.ts`
-
-Centralized service for fetching report configurations from the `ehr.reports` table. This consolidates report fetching that was previously done in `TabbedReportPanel` and provides dependency injection support for testing.
+The `fetchReports` method in `APIWrapper.ts` handles fetching report configurations from the `ehr.reports` table. This consolidates report fetching that was previously done in `TabbedReportPanel` and provides dependency injection support for testing via the `ParticipantHistoryAPIWrapper` interface.
 
 ```typescript
 export interface FetchReportsResult {
@@ -1322,12 +1334,13 @@ Add tracking for:
 
 ## Frontend - Core Components
 
-3. Implement ID resolution service
-   - Create `idResolutionService.ts` in `labkey-ui-ehr/src/ParticipantHistory/services/`
-   - Implement `resolveAnimalIds()` function with LabKey SQL queries
-   - Query 1: Direct ID lookup with case-insensitive matching
-   - Query 2: Alias lookup for unresolved IDs
-   - Return `IdResolutionResult` with resolved and notFound arrays
+3. Implement APIWrapper
+   - Create `APIWrapper.ts` in `labkey-ui-ehr/src/ParticipantHistory/`
+   - Define `ParticipantHistoryAPIWrapper` interface for dependency injection
+   - Implement `ServerAPIWrapper` class with `resolveAnimalIds()` and `fetchReports()` methods
+   - `resolveAnimalIds()`: Query 1 for direct ID lookup, Query 2 for alias lookup on unresolved IDs
+   - `fetchReports()`: Query ehr.reports for all visible reports with sorting
+   - Export `getDefaultParticipantHistoryAPIWrapper()` singleton accessor
    - Handle API errors gracefully
 
 4. Implement IdResolutionFeedback component
@@ -1413,9 +1426,8 @@ Add tracking for:
 
 ### Unit Tests (Jest/React Testing Library)
 
-12. Unit tests - Core services and utilities
-    - idResolutionService.ts: Direct/alias resolution, case-insensitive matching, de-duplication, special characters, error handling, API mocking
-    - reportsService.ts: Report fetching, visible filter, sorting, jsonConfig parsing, error handling, FetchReportsFn type export
+12. Unit tests - APIWrapper and utilities
+    - APIWrapper.ts: Direct/alias resolution, case-insensitive matching, de-duplication, special characters, error handling, report fetching, visible filter, sorting, jsonConfig parsing, FetchReportsFn type export, API mocking
     - urlHashUtils.ts: URL hash generation/parsing for all filter modes, special character encoding, conflict resolution
 
 13. Unit tests - SearchByIdPanel and IdResolutionFeedback components
@@ -1866,7 +1878,7 @@ Add tracking for:
 
 ### Unit Tests (Jest)
 
-**File: `idResolutionService.test.ts`**
+**File: `APIWrapper.test.ts`**
 * Test `resolveAnimalIds()` with direct ID matches
 * Test `resolveAnimalIds()` with alias matches
 * Test `resolveAnimalIds()` with mixed valid/invalid IDs
@@ -1881,9 +1893,6 @@ Add tracking for:
 * Test LabKey API returns 500 error - verify error handling
 * Test LabKey API returns empty result set - verify handled gracefully
 * Test LabKey API returns malformed response - verify doesn't crash
-* Mock @labkey/api Query.selectRows calls
-
-**File: `reportsService.test.ts`**
 * Test `fetchReports()` returns reports from ehr.reports table
 * Test `fetchReports()` filters by visible=true
 * Test `fetchReports()` sorts by category, sort_order, reporttitle, reportstatus

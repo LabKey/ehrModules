@@ -4,7 +4,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { Query } from '@labkey/api';
 
 import { ParticipantReports } from './ParticipantReports';
-import { fetchReports as fetchReportsFn, FetchReportsFn } from './services/reportsService';
+import { FetchReportsFn, FetchReportsResult } from './APIWrapper';
 import { defaultServerContext, renderWithServerContext } from '../test/utils';
 
 // Mock @labkey/api Query.selectRows to prevent communication failure in tests
@@ -16,16 +16,7 @@ jest.mock('@labkey/api', () => ({
     },
 }));
 
-// Mock the reportsService to provide synchronous-like behavior for existing tests
-jest.mock('./services/reportsService', () => {
-    const original = jest.requireActual('./services/reportsService');
-    return {
-        ...original,
-        fetchReports: jest.fn(),
-    };
-});
-
-const mockFetchReports = fetchReportsFn as jest.MockedFunction<typeof fetchReportsFn>;
+const mockFetchReports = jest.fn<Promise<FetchReportsResult>, []>();
 
 // Mock Ext4 global
 const mockExt4Container = {
@@ -139,14 +130,14 @@ describe('ParticipantReports', () => {
 
     describe('rendering', () => {
         test('renders TabbedReportPanel component', async () => {
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Component should render and show the report category tabs
             await waitForReportsToLoad();
         });
 
         test('renders with default subjects filter when no URL hash present', async () => {
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Component renders without errors when no hash is present
             await waitForReportsToLoad();
@@ -157,7 +148,7 @@ describe('ParticipantReports', () => {
         test('parses activeReport from URL hash', async () => {
             window.location.hash = '#activeReport:test-report-id';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Component should render without errors when activeReport is in hash
             await waitForReportsToLoad();
@@ -166,7 +157,7 @@ describe('ParticipantReports', () => {
         test('parses inputType from URL hash', async () => {
             window.location.hash = '#inputType:singleSubject';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -174,7 +165,7 @@ describe('ParticipantReports', () => {
         test('parses showReport as true from URL hash', async () => {
             window.location.hash = '#showReport:1';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -182,7 +173,7 @@ describe('ParticipantReports', () => {
         test('parses showReport as false from URL hash', async () => {
             window.location.hash = '#showReport:0';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -190,7 +181,7 @@ describe('ParticipantReports', () => {
         test('parses subjects from URL hash', async () => {
             window.location.hash = '#subjects:subject1%3Bsubject2%3Bsubject3';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -198,7 +189,7 @@ describe('ParticipantReports', () => {
         test('parses multiple parameters from URL hash', async () => {
             window.location.hash = '#activeReport:my-report&inputType:multiSubject&showReport:1&subjects:sub1%3Bsub2';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -206,7 +197,7 @@ describe('ParticipantReports', () => {
         test('parses custom/unknown parameters from URL hash', async () => {
             window.location.hash = '#customParam:customValue&anotherParam:anotherValue';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -214,7 +205,7 @@ describe('ParticipantReports', () => {
         test('handles URL-encoded values in hash parameters', async () => {
             window.location.hash = '#activeReport:report%20with%20spaces';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -222,7 +213,7 @@ describe('ParticipantReports', () => {
         test('handles empty subjects value in URL hash', async () => {
             window.location.hash = '#subjects:';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -230,7 +221,7 @@ describe('ParticipantReports', () => {
         test('ignores parameters without values', async () => {
             window.location.hash = '#paramWithoutValue';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
         });
@@ -238,7 +229,7 @@ describe('ParticipantReports', () => {
 
     describe('props passed to TabbedReportPanel', () => {
         test('passes correct reportNamespace prop', async () => {
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // The component should render the TabbedReportPanel with EHR.reports namespace
             // This is verified indirectly by successful render
@@ -246,7 +237,7 @@ describe('ParticipantReports', () => {
         });
 
         test('passes correct reportsQuery and reportsSchema props', async () => {
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // The component should render with ehr schema and reports query
             await waitForReportsToLoad();
@@ -258,7 +249,7 @@ describe('ParticipantReports', () => {
             // Set participantId in URL query string (e.g., ?participantId=44444)
             window.history.replaceState({}, '', window.location.pathname + '?participantId=44444');
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Component should render without errors when participantId is in query params
             await waitForReportsToLoad();
@@ -272,7 +263,7 @@ describe('ParticipantReports', () => {
             // Set participantId in URL query string
             window.history.replaceState({}, '', window.location.pathname + '?participantId=12345');
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Verify the URL contains the participantId parameter
             const urlParams = new URLSearchParams(document.location.search);
@@ -287,7 +278,7 @@ describe('ParticipantReports', () => {
             window.history.replaceState({}, '', window.location.pathname + '?participantId=44444');
             window.location.hash = '#subjects:subject1%3Bsubject2';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Verify URL setup is correct
             const urlParams = new URLSearchParams(document.location.search);
@@ -303,7 +294,7 @@ describe('ParticipantReports', () => {
             window.history.replaceState({}, '', window.location.pathname + '?participantId=55555');
             window.location.hash = '#subjects:otherSubject1%3BotherSubject2';
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Verify URL setup is correct
             const urlParams = new URLSearchParams(document.location.search);
@@ -317,7 +308,7 @@ describe('ParticipantReports', () => {
             // Set participantId along with other query params
             window.history.replaceState({}, '', window.location.pathname + '?participantId=66666&otherParam=value');
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Verify URL contains both parameters
             const urlParams = new URLSearchParams(document.location.search);
@@ -332,7 +323,7 @@ describe('ParticipantReports', () => {
             // No participantId in URL
             window.history.replaceState({}, '', window.location.pathname);
 
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // Verify no participantId in URL
             const urlParams = new URLSearchParams(document.location.search);
@@ -348,7 +339,7 @@ describe('ParticipantReports', () => {
             test('initializes with ID Search mode when filterType:idSearch in hash', async () => {
                 window.location.hash = '#filterType:idSearch&subjects:ID123%3BID456';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Component should render with subjects from hash
                 await waitForReportsToLoad();
@@ -357,7 +348,7 @@ describe('ParticipantReports', () => {
             test('initializes with All Records mode when filterType:all in hash', async () => {
                 window.location.hash = '#filterType:all';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
             });
@@ -365,7 +356,7 @@ describe('ParticipantReports', () => {
             test('initializes with Alive at Center mode when filterType:aliveAtCenter in hash', async () => {
                 window.location.hash = '#filterType:aliveAtCenter';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
             });
@@ -373,7 +364,7 @@ describe('ParticipantReports', () => {
             test('defaults to ID Search mode when no filterType in hash', async () => {
                 window.location.hash = '';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
             });
@@ -383,7 +374,7 @@ describe('ParticipantReports', () => {
             test('activates URL Params mode when readOnly:true in URL with subjects', async () => {
                 window.location.hash = '#subjects:ID123%3BID456&readOnly:true';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Component should render in URL Params mode
                 await waitForReportsToLoad();
@@ -392,7 +383,7 @@ describe('ParticipantReports', () => {
             test('hides SearchByIdPanel when in readOnly mode with subjects', () => {
                 window.location.hash = '#subjects:ID123%3BID456&readOnly:true';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // SearchByIdPanel should NOT be rendered
                 expect(screen.queryByLabelText(/enter animal ids/i)).not.toBeInTheDocument();
@@ -404,7 +395,7 @@ describe('ParticipantReports', () => {
             test('shows SearchByIdPanel in normal mode (not readOnly)', () => {
                 window.location.hash = '#filterType:idSearch';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // SearchByIdPanel should be rendered with its elements
                 expect(screen.getByLabelText(/enter animal ids/i)).toBeInTheDocument();
@@ -416,7 +407,7 @@ describe('ParticipantReports', () => {
             test('ignores readOnly:true when no subjects in URL and shows SearchByIdPanel', () => {
                 window.location.hash = '#readOnly:true';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Without subjects, readOnly is ignored and SearchByIdPanel should be visible
                 expect(screen.getByLabelText(/enter animal ids/i)).toBeInTheDocument();
@@ -426,7 +417,7 @@ describe('ParticipantReports', () => {
             test('readOnly parameter takes priority over filterType parameter', () => {
                 window.location.hash = '#filterType:all&subjects:ID123&readOnly:true';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Should use URL Params mode (readOnly), not All Records mode
                 // SearchByIdPanel should be hidden
@@ -437,7 +428,7 @@ describe('ParticipantReports', () => {
             test('shows reports immediately in readOnly mode (showReport defaults to true)', async () => {
                 window.location.hash = '#subjects:ID123&readOnly:true';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // In readOnly mode, reports should be loading immediately
                 // The TabbedReportPanel should be attempting to load reports
@@ -449,7 +440,7 @@ describe('ParticipantReports', () => {
             test('manages subjects state from URL hash', async () => {
                 window.location.hash = '#subjects:ID123%3BID456%3BID789';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Verify component renders with subjects
                 await waitForReportsToLoad();
@@ -458,7 +449,7 @@ describe('ParticipantReports', () => {
             test('manages filterType state from URL hash', async () => {
                 window.location.hash = '#filterType:aliveAtCenter';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
             });
@@ -468,7 +459,7 @@ describe('ParticipantReports', () => {
             test('updates URL hash when filter mode changes', async () => {
                 window.location.hash = '';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // After component mounts, simulate filter change
                 // Note: This would require exposing handleFilterChange or testing through UI interaction
@@ -478,7 +469,7 @@ describe('ParticipantReports', () => {
             test('includes subjects in URL hash for ID Search mode', () => {
                 window.location.hash = '#filterType:idSearch&subjects:ID123%3BID456';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 expect(window.location.hash).toContain('subjects:');
             });
@@ -486,7 +477,7 @@ describe('ParticipantReports', () => {
             test('removes subjects from URL hash for All Records mode', () => {
                 window.location.hash = '#filterType:all';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 expect(window.location.hash).not.toContain('subjects:');
             });
@@ -494,7 +485,7 @@ describe('ParticipantReports', () => {
             test('removes readOnly parameter when switching from URL Params to ID Search', async () => {
                 window.location.hash = '#subjects:ID123&readOnly:true';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Component should be in URL Params mode initially
                 // After switching to ID Search (would require UI interaction), readOnly should be removed
@@ -504,7 +495,7 @@ describe('ParticipantReports', () => {
             test('preserves activeReport parameter from URL hash', () => {
                 window.location.hash = '#filterType:idSearch&activeReport:test-report&subjects:ID123';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Component should preserve activeReport in state
                 expect(window.location.hash).toContain('activeReport:test-report');
@@ -514,7 +505,7 @@ describe('ParticipantReports', () => {
                 // Use test-report which matches the mock data
                 window.location.hash = '#filterType:all&activeReport:test-report&showReport:1';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // activeReport should remain in the hash
                 expect(window.location.hash).toContain('activeReport:test-report');
@@ -525,7 +516,7 @@ describe('ParticipantReports', () => {
             test('queries report metadata for supportsNonIdFilters field', async () => {
                 window.location.hash = '#activeReport:test-report';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Component should query ehr.reports for the active report's metadata
                 await waitForReportsToLoad();
@@ -534,7 +525,7 @@ describe('ParticipantReports', () => {
             test('updates activeReportSupportsNonIdFilters when switching report tabs', async () => {
                 window.location.hash = '#activeReport:report1';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // After switching to different report tab, should re-query metadata
                 await waitForReportsToLoad();
@@ -543,7 +534,7 @@ describe('ParticipantReports', () => {
             test('defaults to false when no active report selected', async () => {
                 window.location.hash = '';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Should handle no active report gracefully
                 await waitForReportsToLoad();
@@ -554,7 +545,7 @@ describe('ParticipantReports', () => {
             test('handles rapid filter mode changes before state updates', async () => {
                 window.location.hash = '';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Simulate rapid filter changes
                 // This would require UI interaction or exposing handleFilterChange
@@ -566,7 +557,7 @@ describe('ParticipantReports', () => {
             test('handles malformed URL hash gracefully', async () => {
                 window.location.hash = '#malformed&invalid::data';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Should fall back to default state without crashing
                 await waitForReportsToLoad();
@@ -575,7 +566,7 @@ describe('ParticipantReports', () => {
             test('handles URL hash with missing values', async () => {
                 window.location.hash = '#filterType:&subjects:';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Should handle empty values gracefully
                 await waitForReportsToLoad();
@@ -586,7 +577,7 @@ describe('ParticipantReports', () => {
             test('passes filters prop to TabbedReportPanel', async () => {
                 window.location.hash = '#filterType:idSearch&subjects:ID123';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // TabbedReportPanel should receive filters prop with filterType and subjects
                 await waitForReportsToLoad();
@@ -595,7 +586,7 @@ describe('ParticipantReports', () => {
             test('passes undefined subjects for All Records mode', async () => {
                 window.location.hash = '#filterType:all';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // filters.subjects should be undefined for All Records
                 await waitForReportsToLoad();
@@ -604,7 +595,7 @@ describe('ParticipantReports', () => {
             test('passes subjects for URL Params mode', async () => {
                 window.location.hash = '#subjects:ID123&readOnly:true';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // filters.subjects should be populated for URL Params mode
                 await waitForReportsToLoad();
@@ -621,7 +612,7 @@ describe('ParticipantReports', () => {
 
                 window.location.hash = '#activeReport:demographics';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Component should render without crashing despite the query failure
                 // When failure happens, no reports are loaded so TabbedReportPanel shows empty state
@@ -638,7 +629,7 @@ describe('ParticipantReports', () => {
 
                 window.location.hash = '#activeReport:nonexistent';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Component should render with default behavior (all filters supported)
                 // With no reports, TabbedReportPanel shows empty state
@@ -672,7 +663,7 @@ describe('ParticipantReports', () => {
                 // Start with Alive at Center filter active
                 window.location.hash = '#filterType:aliveAtCenter&activeReport:test-report&showReport:1';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Wait for the error message to appear
                 const errorMessage = await screen.findByRole('alert');
@@ -685,7 +676,7 @@ describe('ParticipantReports', () => {
                 // Default mock already returns supportsnonidfilters: true
                 window.location.hash = '#filterType:aliveAtCenter&activeReport:test-report&showReport:1';
 
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 // Wait for reports to load
                 await waitFor(() => {
@@ -730,7 +721,7 @@ describe('ParticipantReports', () => {
         test('uses default fetchReports when prop not provided', async () => {
             // This test verifies backward compatibility
             // The existing module-level mock is used when no prop is passed
-            renderWithServerContext(<ParticipantReports />, defaultServerContext());
+            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             // The module-level mock returns 'General' category
             await waitForReportsToLoad();

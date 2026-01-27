@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { incrementClientSideMetricCount } from '@labkey/components';
 
 import { IdResolutionFeedback } from './IdResolutionFeedback';
-import { resolveAnimalIds } from '../services/idResolutionService';
+import { getDefaultParticipantHistoryAPIWrapper } from '../APIWrapper';
 import {
     FILTER_TYPE_ALIVE_AT_CENTER,
     FILTER_TYPE_ALL,
@@ -11,6 +11,7 @@ import {
     FILTER_TYPE_URL_PARAMS,
     FilterType,
     IdResolutionResult,
+    ResolveIdsParams,
 } from '../models';
 
 /**
@@ -79,6 +80,7 @@ export interface SearchByIdPanelProps {
     initialFilterType: FilterType;
     initialSubjects: string[];
     onFilterChange: (filterType: FilterType, subjects: string[] | undefined) => void;
+    resolveAnimalIds?: (params: ResolveIdsParams) => Promise<IdResolutionResult>;
 }
 
 export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
@@ -86,6 +88,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
     initialSubjects,
     initialFilterType,
     activeReportSupportsNonIdFilters,
+    resolveAnimalIds = getDefaultParticipantHistoryAPIWrapper().resolveAnimalIds,
 }) => {
     const [inputValue, setInputValue] = useState<string>(initialSubjects.join(','));
     const [filterType, setFilterType] = useState<FilterType>(initialFilterType);
@@ -131,30 +134,29 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
 
         // Call resolveAnimalIds service
         setIsResolving(true);
-        try {
-            const result = await resolveAnimalIds({ inputIds: parsedIds });
+        const result = await resolveAnimalIds({ inputIds: parsedIds });
+        setIsResolving(false);
 
-            // Update resolutionResult state
-            setResolutionResult(result);
-
-            // Extract resolved subject IDs
-            const resolvedSubjects = result.resolved.map(r => r.resolvedId);
-
-            // Track ID search metric
-            incrementClientSideMetricCount('ehrParticipantHistoryFilter', FILTER_TYPE_ID_SEARCH);
-
-            // Call onFilterChange with resolved subject IDs
-            onFilterChange(FILTER_TYPE_ID_SEARCH, resolvedSubjects);
-        } catch (error) {
-            // Handle error
-            console.error('Failed to resolve animal IDs:', error);
+        // Handle error
+        if (result.error) {
             setValidationError('Failed to resolve animal IDs. Please try again.');
             // Call onFilterChange with empty array to show no records in reports when error occurs
             onFilterChange(FILTER_TYPE_ID_SEARCH, []);
-        } finally {
-            setIsResolving(false);
+            return;
         }
-    }, [inputValue, onFilterChange]);
+
+        // Update resolutionResult state
+        setResolutionResult(result);
+
+        // Extract resolved subject IDs
+        const resolvedSubjects = result.resolved.map(r => r.resolvedId);
+
+        // Track ID search metric
+        incrementClientSideMetricCount('ehrParticipantHistoryFilter', FILTER_TYPE_ID_SEARCH);
+
+        // Call onFilterChange with resolved subject IDs
+        onFilterChange(FILTER_TYPE_ID_SEARCH, resolvedSubjects);
+    }, [inputValue, onFilterChange, resolveAnimalIds]);
 
     // Handle filter mode button clicks
     const handleFilterModeChange = useCallback(
@@ -232,7 +234,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
                         disabled={isResolving}
                         onClick={handleUpdateReport}
                     >
-                        {isResolving ? 'Searching...' : 'Search By Ids'}
+                        {'Search By Ids'}
                     </button>
                     <button
                         className={classNames('filter-button', 'all-animals', {
