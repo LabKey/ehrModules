@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, memo, useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { incrementClientSideMetricCount } from '@labkey/components';
 
@@ -83,7 +83,7 @@ export interface SearchByIdPanelProps {
     resolveAnimalIds?: (params: ResolveIdsParams) => Promise<IdResolutionResult>;
 }
 
-export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
+const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
     onFilterChange,
     initialSubjects,
     initialFilterType,
@@ -267,3 +267,7 @@ export const SearchByIdPanel: FC<SearchByIdPanelProps> = ({
         </div>
     );
 };
+
+SearchByIdPanelComponent.displayName = 'SearchByIdPanel';
+
+export const SearchByIdPanel = memo(SearchByIdPanelComponent);

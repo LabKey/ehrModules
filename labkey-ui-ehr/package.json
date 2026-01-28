@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.4-fb-ehr-hist-id-search.10",
+  "version": "0.0.4-fb-ehr-hist-id-search.11",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
