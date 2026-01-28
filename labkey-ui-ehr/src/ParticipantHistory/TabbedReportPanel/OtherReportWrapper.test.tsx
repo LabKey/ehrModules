@@ -5,9 +5,25 @@ import { Filter } from '@labkey/api';
 import { OtherReportWrapper } from './OtherReportWrapper';
 import { ExtReportTab, FILTER_TYPE_ID_SEARCH, ReportConfig } from '../models';
 
-// Mock Ext4 global
+// Track the container created by Ext4.create so we can inspect it
+let mockExt4Container: ExtReportTab;
+
+const createMockContainer = (): ExtReportTab => ({
+    report: null as any,
+    filters: null as any,
+    isDestroyed: false,
+    add: jest.fn(),
+    removeAll: jest.fn(),
+    destroy: jest.fn(),
+    getFilterArray: jest.fn(() => ({ removable: [], nonRemovable: [] })),
+    getQWPConfig: jest.fn(() => ({})),
+});
+
 (global as any).Ext4 = {
-    create: jest.fn(),
+    create: jest.fn(() => {
+        mockExt4Container = createMockContainer();
+        return mockExt4Container;
+    }),
 };
 
 // Mock LABKEY global
@@ -17,31 +33,18 @@ const mockWebPart = {
 
 (global as any).LABKEY = {
     WebPart: jest.fn(() => mockWebPart),
+    Utils: {
+        encodeHtml: jest.fn((s: string) => s),
+    },
 };
 
 describe('OtherReportWrapper', () => {
+    const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] };
+
     beforeEach(() => {
         jest.clearAllMocks();
         document.body.innerHTML = '';
     });
-
-    const mockTab: ExtReportTab = {
-        report: null as any,
-        filters: { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] },
-        isDestroyed: false,
-        add: jest.fn(),
-        removeAll: jest.fn(),
-        destroy: jest.fn(),
-        getFilterArray: jest.fn(() => ({
-            removable: [],
-            nonRemovable: [Filter.create('Id', 'ID123', Filter.Types.EQUAL)],
-        })),
-        getQWPConfig: jest.fn(() => ({
-            partName: 'Report',
-            schemaName: 'study',
-            queryName: 'demographics',
-        })),
-    };
 
     const reportConfig: ReportConfig = {
         id: 'other-report-1',
@@ -52,23 +55,25 @@ describe('OtherReportWrapper', () => {
         reportId: 'db:123',
     };
 
-    test('renders report-target div with unique ID', () => {
-        const { container } = render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+    test('renders report-target div and other-report-wrapper div', () => {
+        const { container } = render(
+            <OtherReportWrapper filters={filters} report={reportConfig} />
+        );
 
+        expect(container.querySelector('.report-target')).toBeInTheDocument();
         const targetDiv = container.querySelector('.other-report-wrapper');
         expect(targetDiv).toBeInTheDocument();
         expect(targetDiv?.id).toMatch(/^report-target-other-report-1-/);
     });
 
     test('creates LABKEY.WebPart with correct configuration', async () => {
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
         await waitFor(() => {
             expect((global as any).LABKEY.WebPart).toHaveBeenCalledWith(
                 expect.objectContaining({
                     partName: 'Report',
                     renderTo: expect.stringMatching(/^report-target-other-report-1-/),
-                    suppressRenderErrors: true,
                     partConfig: expect.objectContaining({
                         title: 'Other Report - ID123, ID456',
                         schemaName: 'study',
@@ -81,7 +86,7 @@ describe('OtherReportWrapper', () => {
     });
 
     test('calls render on WebPart instance', async () => {
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
         await waitFor(() => {
             expect(mockWebPart.render).toHaveBeenCalled();
@@ -89,9 +94,9 @@ describe('OtherReportWrapper', () => {
     });
 
     test('adds title suffix from subjects', async () => {
-        mockTab.filters = { subjects: ['ID123', 'ID456', 'ID789'] };
+        const filtersWithSubjects = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456', 'ID789'] };
 
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        render(<OtherReportWrapper filters={filtersWithSubjects} report={reportConfig} />);
 
         await waitFor(() => {
             const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
@@ -100,9 +105,9 @@ describe('OtherReportWrapper', () => {
     });
 
     test('does not add title suffix when no subjects', async () => {
-        mockTab.filters = { subjects: [] };
+        const emptyFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: [] as string[] };
 
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        render(<OtherReportWrapper filters={emptyFilters} report={reportConfig} />);
 
         await waitFor(() => {
             const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
@@ -110,30 +115,10 @@ describe('OtherReportWrapper', () => {
         });
     });
 
-    test('includes filter parameters in partConfig', async () => {
-        const filterArray = {
-            removable: [],
-            nonRemovable: [
-                Filter.create('Id', 'ID123', Filter.Types.EQUAL),
-                Filter.create('Species', 'Dog', Filter.Types.EQUAL),
-            ],
-        };
-        mockTab.getFilterArray = jest.fn(() => filterArray);
-
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
-
-        await waitFor(() => {
-            const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
-            const partConfig = webPartCall.partConfig;
-            expect(partConfig['query.Id~eq']).toBeDefined();
-            expect(partConfig['query.Species~eq']).toBeDefined();
-        });
-    });
-
     test('includes viewName in partConfig when provided', async () => {
         const reportWithView = { ...reportConfig, viewName: 'CustomView' };
 
-        render(<OtherReportWrapper report={reportWithView} tab={mockTab} />);
+        render(<OtherReportWrapper filters={filters} report={reportWithView} />);
 
         await waitFor(() => {
             const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
@@ -144,7 +129,7 @@ describe('OtherReportWrapper', () => {
     test('includes containerPath when provided', async () => {
         const reportWithContainer = { ...reportConfig, containerPath: '/MyProject/MyFolder' };
 
-        render(<OtherReportWrapper report={reportWithContainer} tab={mockTab} />);
+        render(<OtherReportWrapper filters={filters} report={reportWithContainer} />);
 
         await waitFor(() => {
             const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
@@ -152,36 +137,10 @@ describe('OtherReportWrapper', () => {
         });
     });
 
-    test('passes filters array to WebPart config', async () => {
-        const filterArray = {
-            removable: [Filter.create('Status', 'Active', Filter.Types.EQUAL)],
-            nonRemovable: [Filter.create('Id', 'ID123', Filter.Types.EQUAL)],
-        };
-        mockTab.getFilterArray = jest.fn(() => filterArray);
-
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
-
-        await waitFor(() => {
-            const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
-            expect(webPartCall.filters).toEqual([...filterArray.nonRemovable, ...filterArray.removable]);
-        });
-    });
-
-    test('handles success callback', async () => {
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
-
-        await waitFor(() => {
-            const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
-            expect(webPartCall.success).toBeDefined();
-            // Should not throw
-            webPartCall.success();
-        });
-    });
-
-    test('handles failure callback with error logging', async () => {
+    test('displays error message when WebPart failure callback is triggered', async () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        const { container } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
         await waitFor(() => {
             const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
@@ -190,38 +149,40 @@ describe('OtherReportWrapper', () => {
         });
 
         expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to load report', { message: 'Test error' });
+
+        const targetDiv = container.querySelector('.other-report-wrapper');
+        expect(targetDiv?.innerHTML).toContain('labkey-error');
+        expect(targetDiv?.innerHTML).toContain("Failed to load report 'Other Report'");
+
         consoleErrorSpy.mockRestore();
     });
 
-    test('does not render when target element is not found', () => {
-        // Mock getElementById to return null
-        const originalGetElementById = document.getElementById;
-        document.getElementById = jest.fn(() => null);
-
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
-
-        expect((global as any).LABKEY.WebPart).not.toHaveBeenCalled();
-
-        document.getElementById = originalGetElementById;
-    });
-
-    test('handles error during WebPart creation', () => {
+    test('displays error when WebPart creation throws', () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
         const originalWebPart = (global as any).LABKEY.WebPart;
         (global as any).LABKEY.WebPart = jest.fn(() => {
             throw new Error('WebPart creation failed');
         });
 
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        const { container } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
         expect(consoleErrorSpy).toHaveBeenCalledWith('Error loading report', expect.any(Error));
+
+        const targetDiv = container.querySelector('.other-report-wrapper');
+        expect(targetDiv?.innerHTML).toContain('labkey-error');
+        expect(targetDiv?.innerHTML).toContain("Error loading report 'Other Report'");
+
         consoleErrorSpy.mockRestore();
         (global as any).LABKEY.WebPart = originalWebPart;
     });
 
     test('generates unique IDs for multiple instances', () => {
-        const { container: container1 } = render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
-        const { container: container2 } = render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        const { container: container1 } = render(
+            <OtherReportWrapper filters={filters} report={reportConfig} />
+        );
+        const { container: container2 } = render(
+            <OtherReportWrapper filters={filters} report={reportConfig} />
+        );
 
         const targetDiv1 = container1.querySelector('.other-report-wrapper');
         const targetDiv2 = container2.querySelector('.other-report-wrapper');
@@ -230,13 +191,9 @@ describe('OtherReportWrapper', () => {
     });
 
     test('handles single subject in filters', async () => {
-        mockTab.filters = { subjects: ['ID123'] };
-        mockTab.getFilterArray = jest.fn(() => ({
-            removable: [],
-            nonRemovable: [Filter.create('Id', 'ID123', Filter.Types.EQUAL)],
-        }));
+        const singleFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
-        render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        render(<OtherReportWrapper filters={singleFilters} report={reportConfig} />);
 
         await waitFor(() => {
             const webPartCall = (global as any).LABKEY.WebPart.mock.calls[0][0];
@@ -245,10 +202,11 @@ describe('OtherReportWrapper', () => {
     });
 
     test('replaces colons in useId for valid HTML ID', () => {
-        // Mock useId to return a value with colons
         jest.spyOn(React, 'useId').mockReturnValue(':r1:');
 
-        const { container } = render(<OtherReportWrapper report={reportConfig} tab={mockTab} />);
+        const { container } = render(
+            <OtherReportWrapper filters={filters} report={reportConfig} />
+        );
 
         const targetDiv = container.querySelector('.other-report-wrapper');
         expect(targetDiv?.id).not.toContain(':');

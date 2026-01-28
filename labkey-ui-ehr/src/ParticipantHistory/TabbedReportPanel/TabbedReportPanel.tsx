@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { JSReportWrapper } from './JSReportWrapper';
 import { QueryReportWrapper } from './QueryReportWrapper';
 import { OtherReportWrapper } from './OtherReportWrapper';
-import { ReportTab } from './ReportTab';
 import { ReportConfig, ReportFilters } from '../models';
 
 interface TabbedReportPanelProps {
@@ -152,25 +151,19 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
             <div className="tab-content">
                 {showReport && currentActiveReport ? (
                     <div>
-                        <ReportTab filters={filters} report={currentActiveReport}>
-                            {tab => (
-                                <>
-                                    {currentActiveReport.reportType === 'query' && (
-                                        <QueryReportWrapper report={currentActiveReport} tab={tab} />
-                                    )}
-                                    {currentActiveReport.reportType === 'js' && (
-                                        <JSReportWrapper
-                                            report={currentActiveReport}
-                                            reportNamespace={reportNamespace}
-                                            tab={tab}
-                                        />
-                                    )}
-                                    {currentActiveReport.reportType === 'report' && (
-                                        <OtherReportWrapper report={currentActiveReport} tab={tab} />
-                                    )}
-                                </>
-                            )}
-                        </ReportTab>
+                        {currentActiveReport.reportType === 'query' && (
+                            <QueryReportWrapper filters={filters} report={currentActiveReport} />
+                        )}
+                        {currentActiveReport.reportType === 'js' && (
+                            <JSReportWrapper
+                                filters={filters}
+                                report={currentActiveReport}
+                                reportNamespace={reportNamespace}
+                            />
+                        )}
+                        {currentActiveReport.reportType === 'report' && (
+                            <OtherReportWrapper filters={filters} report={currentActiveReport} />
+                        )}
                     </div>
                 ) : (
                     <div className="empty-state-placeholder">Select Filter to View Reports</div>

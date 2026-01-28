@@ -1,3 +1,5 @@
+/// <reference path="./globals.d.ts" />
+
 /**
  * ParticipantHistory module public API
  *

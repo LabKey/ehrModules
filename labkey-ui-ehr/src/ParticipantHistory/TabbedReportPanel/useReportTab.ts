@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Filter } from '@labkey/api';
 
 import {
@@ -12,17 +12,17 @@ import {
     ReportFilters,
 } from '../models';
 
-// Declare global variables for ExtJS
-declare const Ext4: any;
-
-/** Props for ReportTab component */
-interface ReportTabProps {
-    children: (tab: ExtReportTab) => React.ReactNode;
-    filters: ReportFilters;
-    report: ReportConfig;
-}
-
-export const ReportTab: FC<ReportTabProps> = ({ report, filters, children }) => {
+/**
+ * Hook that creates and manages an ExtJS report tab container.
+ * Extracted from the former ReportTab render-prop component.
+ *
+ * Creates an Ext4 container on mount, attaches report/filter data and
+ * helper methods (getFilterArray, getQWPConfig), and destroys on cleanup.
+ */
+export function useReportTab(
+    report: ReportConfig,
+    filters: ReportFilters
+): { tab: ExtReportTab | null; targetRef: React.RefObject<HTMLDivElement> } {
     const targetRef = useRef<HTMLDivElement>(null);
     const [tab, setTab] = useState<ExtReportTab | null>(null);
 
@@ -53,20 +53,10 @@ export const ReportTab: FC<ReportTabProps> = ({ report, filters, children }) => 
             const subjectIdFieldName = report.subjectIdFieldName || 'Id';
             const hasSubjects = filters.subjects?.length > 0;
 
-            // ID Search mode: Filter by specific subject IDs
-            if (filters.filterType === FILTER_TYPE_ID_SEARCH && hasSubjects) {
-                const subjects = filters.subjects;
-                if (subjects.length === 1) {
-                    filterArray.nonRemovable.push(Filter.create(subjectIdFieldName, subjects[0], Filter.Types.EQUAL));
-                } else {
-                    filterArray.nonRemovable.push(
-                        Filter.create(subjectIdFieldName, subjects.join(';'), Filter.Types.EQUALS_ONE_OF)
-                    );
-                }
-            }
-
-            // URL Params mode: Filter by URL-provided subject IDs (same as ID Search)
-            if (filters.filterType === FILTER_TYPE_URL_PARAMS && hasSubjects) {
+            // ID Search and URL Params modes: Filter by specific subject IDs
+            const isSubjectFilterMode =
+                filters.filterType === FILTER_TYPE_ID_SEARCH || filters.filterType === FILTER_TYPE_URL_PARAMS;
+            if (isSubjectFilterMode && hasSubjects) {
                 const subjects = filters.subjects;
                 if (subjects.length === 1) {
                     filterArray.nonRemovable.push(Filter.create(subjectIdFieldName, subjects[0], Filter.Types.EQUAL));
@@ -93,6 +83,8 @@ export const ReportTab: FC<ReportTabProps> = ({ report, filters, children }) => 
         newTab.getQWPConfig = (): QueryWebPartConfig => {
             const filterArray = newTab.getFilterArray();
 
+            // Explicitly pick properties from report that should flow to QueryWebPart
+            // This is safer than rest-spread exclusion: new internal properties won't leak
             const queryConfig: QueryWebPartConfig = {
                 partName: 'Report',
                 suppressRenderErrors: true,
@@ -111,16 +103,12 @@ export const ReportTab: FC<ReportTabProps> = ({ report, filters, children }) => 
                 linkTarget: '_blank',
                 filters: filterArray.nonRemovable,
                 removeableFilters: filterArray.removable,
-                // Add other properties from report config, excluding internal ones
-                ...Object.keys(report).reduce(
-                    (acc, key) => {
-                        if (key !== 'id' && key !== 'title' && key !== 'reportType') {
-                            acc[key] = report[key];
-                        }
-                        return acc;
-                    },
-                    {} as Record<string, any>
-                ),
+                // Properties from report config that QueryWebPart needs
+                containerPath: report.containerPath ?? undefined,
+                viewName: report.viewName ?? undefined,
+                queryName: report.queryName,
+                schemaName: 'schemaName' in report ? report.schemaName : undefined,
+                reportId: 'reportId' in report ? report.reportId : undefined,
                 tab: newTab,
             };
 
@@ -137,10 +125,5 @@ export const ReportTab: FC<ReportTabProps> = ({ report, filters, children }) => 
         };
     }, [report, filters]);
 
-    return (
-        <>
-            <div className="report-target" ref={targetRef} />
-            {tab && children(tab)}
-        </>
-    );
-};
+    return { tab, targetRef };
+}

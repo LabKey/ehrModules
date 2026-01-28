@@ -2,10 +2,9 @@ import React, { FC, memo, useEffect } from 'react';
 
 import { Query, Filter } from '@labkey/api';
 
-import { ExtReportTab, FilterArray, JsReportConfig, QueryWebPartConfig } from '../models';
+import { ExtReportTab, FilterArray, JsReportConfig, QueryWebPartConfig, ReportFilters } from '../models';
 
-// Declare global variable for ExtJS
-declare const Ext4: any;
+import { useReportTab } from './useReportTab';
 
 /** Row from demographicsCurLocation query */
 interface DemographicsLocationRow {
@@ -30,7 +29,7 @@ export interface JSReportPanel {
     getFilterArray: () => FilterArray;
     getQWPConfig: () => QueryWebPartConfig;
     getTitleSuffix: () => string;
-    resolveSubjectsFromHousing: (
+    resolveSubjectsFromHousing?: (
         tab: ExtReportTab,
         callback: (subjects: string[], tab: ExtReportTab) => void,
         scope?: unknown
@@ -38,7 +37,40 @@ export interface JSReportPanel {
 }
 
 /**
- * Resolve a JavaScript function from a handler name and optional namespace
+ * Generate title suffix from subject IDs
+ * @param subjects - Array of subject IDs
+ * @returns Title suffix string (e.g., " - ID1, ID2")
+ */
+export const getTitleSuffix = (subjects?: string[]): string => {
+    if (subjects && subjects.length > 0) {
+        return ' - ' + subjects.join(', ');
+    }
+    return '';
+};
+
+/**
+ * Safely traverse an object path and return the value at that path.
+ * Returns undefined if any part of the path doesn't exist.
+ */
+const getNestedProperty = (obj: unknown, path: string[]): unknown => {
+    let current: unknown = obj;
+    for (const part of path) {
+        if (current !== null && typeof current === 'object' && part in current) {
+            current = (current as Record<string, unknown>)[part];
+        } else {
+            return undefined;
+        }
+    }
+    return current;
+};
+
+/**
+ * Resolve a JavaScript function from a handler name and optional namespace.
+ * Supports:
+ * - Direct function references
+ * - Namespace lookup (e.g., "testFunction" in "EHR.reports" namespace)
+ * - Global path resolution (e.g., "EHR.reports.testFunction")
+ *
  * @param handlerName - Function reference or string name to resolve
  * @param reportNamespace - Optional namespace to search (e.g., "EHR.reports")
  * @returns Resolved function or null
@@ -50,42 +82,26 @@ const resolveJsFunction = (handlerName: JSReportHandler | string, reportNamespac
 
     // Try to resolve from namespace if provided
     if (reportNamespace && typeof handlerName === 'string') {
-        const parts = reportNamespace.split('.');
-        let ns: any = window;
-        for (const part of parts) {
-            ns = ns && ns[part];
-        }
+        const nsParts = reportNamespace.split('.');
+        const ns = getNestedProperty(window, nsParts);
 
-        if (ns?.[handlerName] && typeof ns[handlerName] === 'function') {
-            return ns[handlerName];
+        if (ns !== null && typeof ns === 'object') {
+            const fn = (ns as Record<string, unknown>)[handlerName];
+            if (typeof fn === 'function') {
+                return fn as JSReportHandler;
+            }
         }
     }
 
     // If not found in namespace, try global resolution
     if (typeof handlerName === 'string') {
-        const parts = handlerName.split('.');
-        let ctx = window as any;
-        for (const part of parts) {
-            ctx = ctx && ctx[part];
-        }
-        if (typeof ctx === 'function') {
-            return ctx;
+        const fn = getNestedProperty(window, handlerName.split('.'));
+        if (typeof fn === 'function') {
+            return fn as JSReportHandler;
         }
     }
 
     return null;
-};
-
-/**
- * Generate title suffix from subject IDs
- * @param subjects - Array of subject IDs
- * @returns Title suffix string (e.g., " - ID1, ID2")
- */
-const getTitleSuffix = (subjects?: string[]): string => {
-    if (subjects && subjects.length > 0) {
-        return ' - ' + subjects.join(', ');
-    }
-    return '';
 };
 
 /**
@@ -130,7 +146,7 @@ const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPane
                 const subjects = results.rows?.reduce((result, row: DemographicsLocationRow) => {
                     if (row.Id) result.push(row.Id);
                     return result;
-                }, [] as string[]);
+                }, [] as string[]) ?? [];
 
                 callback.apply(scope || panel, [subjects, tabArg]);
             },
@@ -140,17 +156,20 @@ const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPane
 
 /** Props for JSReportWrapper component */
 interface JSReportWrapperProps {
+    filters: ReportFilters;
     report: JsReportConfig;
     reportNamespace: string;
-    tab: ExtReportTab;
 }
 
 const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
-    tab,
     report,
+    filters,
     reportNamespace,
 }) => {
+    const { tab, targetRef } = useReportTab(report, filters);
+
     useEffect(() => {
+        if (!tab) return;
 
         try {
             const handlerName = report.queryName;
@@ -165,27 +184,34 @@ const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
                         const { subjects } = tab?.filters || {};
                         return getTitleSuffix(subjects);
                     },
-                    resolveSubjectsFromHousing: createResolveSubjectsFromHousing(tab, null),
+                    // Placeholder; replaced below once panel reference is available
+                    resolveSubjectsFromHousing: undefined,
                 };
 
-                // Update panel reference for resolveSubjectsFromHousing callback scope
+                // Set resolveSubjectsFromHousing with the panel reference for callback scope
                 panel.resolveSubjectsFromHousing = createResolveSubjectsFromHousing(tab, panel);
 
                 // Pass panel as the first argument, matching ExtJS TabbedReportPanel behavior
                 jsFunction.call(null, panel, tab);
             } else {
-                const reportName = report.title ? ` for report '${report.title}'` : '';
+                // Encode values before interpolating into raw HTML to prevent XSS
+                const safeHandler = LABKEY.Utils.encodeHtml(String(handlerName));
+                const safeTitle = report.title ? LABKEY.Utils.encodeHtml(report.title) : '';
+                const reportName = safeTitle ? ` for report '${safeTitle}'` : '';
                 tab.add({
-                    html: `<div class="labkey-error">Could not find JavaScript function '${handlerName}'${reportName}</div>`,
+                    html: `<div class="labkey-error">Could not find JavaScript function '${safeHandler}'${reportName}</div>`,
                 });
-                console.error(`Could not find JavaScript function '${handlerName}'${reportName}`);
+                console.error(`Could not find JavaScript function '${handlerName}'${report.title ? ` for report '${report.title}'` : ''}`);
             }
         } catch (e) {
             const reportName = report.title ? ` '${report.title}'` : '';
             console.error(`Error loading JS report${reportName}`, e);
             if (tab && !tab.isDestroyed) {
+                // Encode values before interpolating into raw HTML to prevent XSS
+                const safeReportName = report.title ? ` '${LABKEY.Utils.encodeHtml(report.title)}'` : '';
+                const safeError = LABKEY.Utils.encodeHtml(String(e));
                 tab.add({
-                    html: `<div class="labkey-error">Error loading JS report${reportName}: ${e}</div>`,
+                    html: `<div class="labkey-error">Error loading JS report${safeReportName}: ${safeError}</div>`,
                 });
             }
         }
@@ -197,9 +223,7 @@ const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
         };
     }, [tab, report, reportNamespace]);
 
-    // This component manages ExtJS lifecycle imperatively via useEffect
-    // and does not render any DOM elements
-    return null;
+    return <div className="report-target" ref={targetRef} />;
 };
 
 JSReportWrapperComponent.displayName = 'JSReportWrapper';
