@@ -4,7 +4,6 @@ import { QueryReportConfig, QueryWebPartConfig, ReportFilters } from '../models'
 
 import { useReportTab } from './useReportTab';
 
-/** Props for QueryReportWrapper component */
 interface QueryReportWrapperProps {
     filters: ReportFilters;
     report: QueryReportConfig;

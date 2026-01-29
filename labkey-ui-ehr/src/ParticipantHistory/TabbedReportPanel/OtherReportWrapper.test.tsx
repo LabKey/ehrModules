@@ -3,7 +3,7 @@ import { render, waitFor } from '@testing-library/react';
 import { Filter } from '@labkey/api';
 
 import { OtherReportWrapper } from './OtherReportWrapper';
-import { ExtReportTab, FILTER_TYPE_ID_SEARCH, ReportConfig } from '../models';
+import { ExtReportTab, FILTER_TYPE_ID_SEARCH, OtherReportConfig } from '../models';
 
 // Track the container created by Ext4.create so we can inspect it
 let mockExt4Container: ExtReportTab;
@@ -46,19 +46,22 @@ describe('OtherReportWrapper', () => {
         document.body.innerHTML = '';
     });
 
-    const reportConfig: ReportConfig = {
+    const reportConfig: OtherReportConfig = {
         id: 'other-report-1',
         title: 'Other Report',
         reportType: 'report',
         schemaName: 'study',
         queryName: 'demographics',
         reportId: 'db:123',
+        category: null,
+        containerPath: null,
+        subjectIdFieldName: null,
+        supportsnonidfilters: null,
+        viewName: null,
     };
 
     test('renders report-target div and other-report-wrapper div', () => {
-        const { container } = render(
-            <OtherReportWrapper filters={filters} report={reportConfig} />
-        );
+        const { container } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
         expect(container.querySelector('.report-target')).toBeInTheDocument();
         const targetDiv = container.querySelector('.other-report-wrapper');
@@ -177,12 +180,8 @@ describe('OtherReportWrapper', () => {
     });
 
     test('generates unique IDs for multiple instances', () => {
-        const { container: container1 } = render(
-            <OtherReportWrapper filters={filters} report={reportConfig} />
-        );
-        const { container: container2 } = render(
-            <OtherReportWrapper filters={filters} report={reportConfig} />
-        );
+        const { container: container1 } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
+        const { container: container2 } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
         const targetDiv1 = container1.querySelector('.other-report-wrapper');
         const targetDiv2 = container2.querySelector('.other-report-wrapper');
@@ -204,9 +203,7 @@ describe('OtherReportWrapper', () => {
     test('replaces colons in useId for valid HTML ID', () => {
         jest.spyOn(React, 'useId').mockReturnValue(':r1:');
 
-        const { container } = render(
-            <OtherReportWrapper filters={filters} report={reportConfig} />
-        );
+        const { container } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
         const targetDiv = container.querySelector('.other-report-wrapper');
         expect(targetDiv?.id).not.toContain(':');

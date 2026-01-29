@@ -14,7 +14,6 @@ import {
 
 /**
  * Hook that creates and manages an ExtJS report tab container.
- * Extracted from the former ReportTab render-prop component.
  *
  * Creates an Ext4 container on mount, attaches report/filter data and
  * helper methods (getFilterArray, getQWPConfig), and destroys on cleanup.

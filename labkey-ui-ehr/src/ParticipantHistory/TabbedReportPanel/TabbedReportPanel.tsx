@@ -10,19 +10,13 @@ interface TabbedReportPanelProps {
     activeReport: string | undefined;
     filters: ReportFilters;
     onTabChange: (reportId: string) => void;
-    reportNamespace: string;
+
     reports: ReportConfig[] | undefined;
     showReport: boolean;
 }
 
-const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
-    activeReport,
-    filters,
-    onTabChange,
-    reportNamespace,
-    reports,
-    showReport,
-}) => {
+const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = props => {
+    const { activeReport, filters, onTabChange, reports, showReport } = props;
     // Track user-initiated selections (undefined means use computed default)
     const [userSelectedCategory, setUserSelectedCategory] = useState<string>();
     const [userSelectedTabId, setUserSelectedTabId] = useState<string>();
@@ -58,6 +52,7 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
     const activeTabId = userSelectedTabId ?? defaultActive.tabId;
 
     // Notify parent about initial active report (side effect only, no setState)
+    // This has to run onTabChange after reports have loaded
     useEffect(() => {
         if (reports && reports.length > 0 && !hasNotifiedParent.current && defaultActive.tabId) {
             hasNotifiedParent.current = true;
@@ -155,11 +150,7 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = ({
                             <QueryReportWrapper filters={filters} report={currentActiveReport} />
                         )}
                         {currentActiveReport.reportType === 'js' && (
-                            <JSReportWrapper
-                                filters={filters}
-                                report={currentActiveReport}
-                                reportNamespace={reportNamespace}
-                            />
+                            <JSReportWrapper filters={filters} report={currentActiveReport} />
                         )}
                         {currentActiveReport.reportType === 'report' && (
                             <OtherReportWrapper filters={filters} report={currentActiveReport} />

@@ -1,15 +1,5 @@
 import { Filter } from '@labkey/api';
 
-/**
- * Report Type Constants
- * Literal types for the discriminated union
- */
-export type ReportType = 'js' | 'query' | 'report';
-
-/**
- * Base Report Configuration
- * Common properties shared by all report types
- */
 interface ReportConfigBase {
     category: null | string;
     containerPath: null | string;
@@ -20,29 +10,20 @@ interface ReportConfigBase {
     viewName: null | string;
 }
 
-/**
- * Query Report Configuration
- * For reports that display LabKey query results
- */
+/** For reports that display LabKey query results */
 export interface QueryReportConfig extends ReportConfigBase {
     queryName: string;
     reportType: 'query';
     schemaName: string;
 }
 
-/**
- * JS Report Configuration
- * For reports rendered by JavaScript functions
- */
+/** For reports rendered by JavaScript functions */
 export interface JsReportConfig extends ReportConfigBase {
     queryName: string; // Function name to invoke
     reportType: 'js';
 }
 
-/**
- * Other Report Configuration
- * For saved LabKey reports (R, chart, etc.)
- */
+/** For saved LabKey reports (R, chart, etc.) */
 export interface OtherReportConfig extends ReportConfigBase {
     queryName: string;
     reportId: string;
@@ -50,25 +31,16 @@ export interface OtherReportConfig extends ReportConfigBase {
     schemaName: string;
 }
 
-/**
- * Report Configuration
- * Discriminated union of all report types
- */
+/** Discriminated union of all report types */
 export type ReportConfig = JsReportConfig | OtherReportConfig | QueryReportConfig;
 
-/**
- * Filter Array
- * Separates filters into removable and non-removable categories
- */
+/** Separates filters into removable and non-removable categories */
 export interface FilterArray {
     nonRemovable: Filter.IFilter[];
     removable: Filter.IFilter[];
 }
 
-/**
- * Query Web Part Configuration
- * Configuration for LabKey Query WebPart with ExtJS integration
- */
+/** Configuration for LabKey Query WebPart with ExtJS integration */
 export interface QueryWebPartConfig {
     [key: string]: any; // Allow additional properties from report config
     allowChooseQuery?: boolean;
@@ -99,10 +71,7 @@ export interface QueryWebPartConfig {
     viewName?: string;
 }
 
-/**
- * Extended Ext.container.Container with custom properties and methods for report tabs
- * Note: Extends ExtJS Container component (no official TypeScript definitions available)
- */
+/** Note: Extends ExtJS Container component (no official TypeScript definitions available) */
 export interface ExtReportTab {
     // ExtJS Container methods we use
     add: (config: any) => void;
@@ -122,34 +91,18 @@ export interface ExtReportTab {
     report: ReportConfig;
 }
 
-/**
- * Filter Type
- * Defines the available filter modes for participant history
- */
 export type FilterType = 'aliveAtCenter' | 'all' | 'idSearch' | 'urlParams';
 
-/**
- * Report Filters
- * Filters passed to TabbedReportPanel for filtering report data
- */
 export interface ReportFilters {
     filterType: FilterType;
     subjects?: string[];
 }
 
-/**
- * Filter Type Constants
- * Constant values for filter modes to avoid magic strings
- */
 export const FILTER_TYPE_ALIVE_AT_CENTER: FilterType = 'aliveAtCenter';
 export const FILTER_TYPE_ALL: FilterType = 'all';
 export const FILTER_TYPE_ID_SEARCH: FilterType = 'idSearch';
 export const FILTER_TYPE_URL_PARAMS: FilterType = 'urlParams';
 
-/**
- * URL Filters
- * Structure for filter parameters stored in URL hash
- */
 export interface UrlFilters {
     [key: string]: boolean | FilterType | string | string[] | undefined; // Allow custom parameters
     activeReport?: string;
@@ -159,10 +112,6 @@ export interface UrlFilters {
     subjects?: string[];
 }
 
-/**
- * ID Resolution Result
- * Result from resolving animal IDs and aliases
- */
 export interface IdResolutionResult {
     error?: string;
     notFound: string[];
@@ -174,10 +123,6 @@ export interface IdResolutionResult {
     }[];
 }
 
-/**
- * Resolve IDs Parameters
- * Parameters for resolving animal IDs
- */
 export interface ResolveIdsParams {
     inputIds: string[];
 }

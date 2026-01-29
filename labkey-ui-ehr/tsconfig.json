@@ -1,6 +1,7 @@
 {
   "extends": "./node_modules/@labkey/build/webpack/tsconfig.json",
   "compilerOptions": {
-    "isolatedModules": true
+    "isolatedModules": true,
+    "skipLibCheck": true
   }
 }

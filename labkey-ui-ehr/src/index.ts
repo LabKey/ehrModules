@@ -1,6 +1,3 @@
-import { renderWithServerContext, defaultServerContext } from './test/utils';
+import { defaultServerContext, renderWithServerContext } from './test/utils';
 
-export {
-    renderWithServerContext,
-    defaultServerContext
-};
+export { defaultServerContext, renderWithServerContext };

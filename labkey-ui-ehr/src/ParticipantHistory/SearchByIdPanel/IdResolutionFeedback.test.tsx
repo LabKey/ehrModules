@@ -15,7 +15,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             expect(screen.getByText('ID123')).toBeVisible();
             expect(screen.getByText('ID456')).toBeVisible();
@@ -29,7 +29,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             // Should show: "TATTOO_001 → ID123 (tattoo)"
             expect(screen.getByText(/TATTOO_001/)).toBeVisible();
@@ -47,7 +47,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             expect(screen.getByText(/TATTOO_001/)).toBeVisible();
             expect(screen.getByText('(tattoo)')).toBeVisible();
@@ -65,7 +65,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             // Direct matches should not have arrow
             expect(screen.getByText('ID123')).toBeVisible();
@@ -84,7 +84,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: ['INVALID_ID_1', 'INVALID_ID_2'],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             expect(screen.getByText(/not found/i)).toBeVisible();
             expect(screen.getByText('INVALID_ID_1')).toBeVisible();
@@ -97,7 +97,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: ['INVALID_ID'],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             expect(screen.getByText(/not found/i)).toBeVisible();
             expect(screen.getByText('INVALID_ID')).toBeVisible();
@@ -114,7 +114,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             // Both inputs should be displayed even though they resolve to the same ID
             expect(screen.getByText(/TATTOO_001/)).toBeVisible();
@@ -132,9 +132,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            const { container } = render(
-                <IdResolutionFeedback resolutionResult={resolutionResult} />
-            );
+            const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             // Component renders container with title
             expect(container.firstChild).not.toBeNull();
@@ -152,7 +150,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             const heading = screen.getByRole('heading', { name: /resolved/i });
             expect(heading).toBeInTheDocument();
@@ -164,7 +162,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: ['INVALID_ID'],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             const heading = screen.getByRole('heading', { name: /not found/i });
             expect(heading).toBeInTheDocument();
@@ -181,7 +179,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
-            const { container } = render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             const resolvedItems = container.querySelectorAll('.resolved-item');
             expect(resolvedItems).toHaveLength(2);
@@ -193,7 +191,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: ['INVALID_ID_1', 'INVALID_ID_2'],
             };
 
-            const { container } = render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             const notFoundItems = container.querySelectorAll('.not-found-item');
             expect(notFoundItems).toHaveLength(2);
@@ -207,7 +205,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: ['INVALID ID'],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             expect(screen.getByText('ID 123')).toBeVisible();
             expect(screen.getByText('INVALID ID')).toBeVisible();
@@ -222,7 +220,7 @@ describe('IdResolutionFeedback', () => {
                 notFound: ['INVALID@ID'],
             };
 
-            render(<IdResolutionFeedback isVisible={true} resolutionResult={resolutionResult} />);
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
             expect(screen.getByText('ID-123')).toBeVisible();
             expect(screen.getByText(/TAG_456/)).toBeVisible();

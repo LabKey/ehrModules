@@ -1,4 +1,4 @@
-import React, { FC, memo, useEffect, useId } from 'react';
+import React, { FC, memo, useEffect, useId, useRef } from 'react';
 import { Filter } from '@labkey/api';
 
 import { OtherReportConfig, QueryWebPartConfig, ReportFilters } from '../models';
@@ -6,7 +6,6 @@ import { OtherReportConfig, QueryWebPartConfig, ReportFilters } from '../models'
 import { useReportTab } from './useReportTab';
 import { getTitleSuffix } from './JSReportWrapper';
 
-/** Props for OtherReportWrapper component */
 interface OtherReportWrapperProps {
     filters: ReportFilters;
     report: OtherReportConfig;
@@ -14,6 +13,7 @@ interface OtherReportWrapperProps {
 
 const OtherReportWrapperComponent: FC<OtherReportWrapperProps> = ({ report, filters }) => {
     const { tab, targetRef } = useReportTab(report, filters);
+    const otherReportRef = useRef<HTMLDivElement>(null);
 
     // Generate a unique ID for the render target - LABKEY.WebPart expects a string ID, not a DOM element
     const uniqueId = useId();
@@ -23,7 +23,7 @@ const OtherReportWrapperComponent: FC<OtherReportWrapperProps> = ({ report, filt
         if (!tab) return;
 
         // Ensure the DOM element exists before rendering
-        const targetElement = document.getElementById(targetId);
+        const targetElement = otherReportRef.current;
         if (!targetElement) {
             return;
         }
@@ -90,7 +90,7 @@ const OtherReportWrapperComponent: FC<OtherReportWrapperProps> = ({ report, filt
     return (
         <>
             <div className="report-target" ref={targetRef} />
-            <div className="other-report-wrapper" id={targetId} />
+            <div className="other-report-wrapper" id={targetId} ref={otherReportRef} />
         </>
     );
 };

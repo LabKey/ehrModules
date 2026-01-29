@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react';
 import { Filter } from '@labkey/api';
 
 import { QueryReportWrapper } from './QueryReportWrapper';
-import { ExtReportTab, FILTER_TYPE_ID_SEARCH, ReportConfig } from '../models';
+import { ExtReportTab, FILTER_TYPE_ID_SEARCH, QueryReportConfig } from '../models';
 import { defaultServerContext, renderWithServerContext } from '../../test/utils';
 
 // Track the container created by Ext4.create so we can inspect it
@@ -48,12 +48,17 @@ describe('QueryReportWrapper', () => {
         jest.clearAllMocks();
     });
 
-    const queryReport: ReportConfig = {
+    const queryReport: QueryReportConfig = {
         id: 'query-report-1',
         title: 'Query Report',
         reportType: 'query',
         schemaName: 'study',
         queryName: 'demographics',
+        category: null,
+        containerPath: null,
+        subjectIdFieldName: null,
+        supportsnonidfilters: null,
+        viewName: null,
     };
 
     test('renders a report-target div', () => {
@@ -66,10 +71,7 @@ describe('QueryReportWrapper', () => {
     });
 
     test('creates Ext4 container and adds ldk-querycmp to tab', async () => {
-        renderWithServerContext(
-            <QueryReportWrapper filters={filters} report={queryReport} />,
-            defaultServerContext()
-        );
+        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
         await waitFor(() => {
             expect((global as any).Ext4.create).toHaveBeenCalledWith(
@@ -91,10 +93,7 @@ describe('QueryReportWrapper', () => {
     });
 
     test('sets failure callback on queryConfig', async () => {
-        renderWithServerContext(
-            <QueryReportWrapper filters={filters} report={queryReport} />,
-            defaultServerContext()
-        );
+        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
         await waitFor(() => {
             const addCall = (mockExt4Container.add as jest.Mock).mock.calls[0][0];
@@ -106,10 +105,7 @@ describe('QueryReportWrapper', () => {
     test('failure callback logs error and displays error in tab', async () => {
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-        renderWithServerContext(
-            <QueryReportWrapper filters={filters} report={queryReport} />,
-            defaultServerContext()
-        );
+        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
         await waitFor(() => {
             const addCall = (mockExt4Container.add as jest.Mock).mock.calls[0][0];
@@ -142,10 +138,7 @@ describe('QueryReportWrapper', () => {
         });
         (global as any).Ext4.create = jest.fn(() => errorContainer);
 
-        renderWithServerContext(
-            <QueryReportWrapper filters={filters} report={queryReport} />,
-            defaultServerContext()
-        );
+        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
         expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create ExtJS component', expect.any(Error));
 
@@ -175,10 +168,7 @@ describe('QueryReportWrapper', () => {
     });
 
     test('renders without server context dependency', async () => {
-        renderWithServerContext(
-            <QueryReportWrapper filters={filters} report={queryReport} />,
-            defaultServerContext()
-        );
+        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
         await waitFor(() => {
             expect(mockExt4Container.add).toHaveBeenCalled();

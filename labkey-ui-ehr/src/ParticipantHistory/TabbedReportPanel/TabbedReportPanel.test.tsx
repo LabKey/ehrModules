@@ -178,6 +178,10 @@ describe('TabbedReportPanel', () => {
         schemaName: 'core',
         queryName: 'users',
         category: 'Category A',
+        containerPath: null,
+        subjectIdFieldName: null,
+        supportsnonidfilters: null,
+        viewName: null,
     };
 
     const jsReport: ReportConfig = {
@@ -186,6 +190,10 @@ describe('TabbedReportPanel', () => {
         reportType: 'js',
         queryName: 'testJsFunction',
         category: 'Category A',
+        containerPath: null,
+        subjectIdFieldName: null,
+        supportsnonidfilters: null,
+        viewName: null,
     };
 
     const otherReport: ReportConfig = {
@@ -196,6 +204,10 @@ describe('TabbedReportPanel', () => {
         queryName: 'users',
         reportId: 'report-123',
         category: 'Category B',
+        containerPath: null,
+        subjectIdFieldName: null,
+        supportsnonidfilters: null,
+        viewName: null,
     };
 
     test('renders query report tab and displays QueryReportWrapper', async () => {
@@ -206,7 +218,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: ['test-subject'] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={reports}
                 showReport={true}
             />,
@@ -235,7 +246,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: ['test-subject'] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={reports}
                 showReport={true}
             />,
@@ -259,7 +269,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: ['test-subject'] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={reports}
                 showReport={true}
             />,
@@ -283,7 +292,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: ['test-subject'] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={reports}
                 showReport={false}
             />,
@@ -314,7 +322,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: ['test-subject'] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={reports}
                 showReport={false}
             />,
@@ -346,7 +353,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: [] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={undefined}
                 showReport={false}
             />,
@@ -362,7 +368,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: [] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={[]}
                 showReport={false}
             />,
@@ -381,7 +386,6 @@ describe('TabbedReportPanel', () => {
                 activeReport={undefined}
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: ['test-subject'] }}
                 onTabChange={onTabChange}
-                reportNamespace="test"
                 reports={reports}
                 showReport={false}
             />,
@@ -411,7 +415,6 @@ describe('TabbedReportPanel', () => {
                 activeReport="js-report-1"
                 filters={{ filterType: FILTER_TYPE_ID_SEARCH, subjects: ['test-subject'] }}
                 onTabChange={jest.fn()}
-                reportNamespace="test"
                 reports={reports}
                 showReport={false}
             />,
@@ -436,7 +439,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -466,7 +468,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -495,7 +496,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -525,7 +525,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -553,7 +552,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -583,7 +581,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -614,7 +611,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -645,7 +641,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -674,7 +669,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -710,7 +704,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={initialFilters}
                         onTabChange={onTabChange}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -737,7 +730,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={newFilters}
                         onTabChange={onTabChange}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />
@@ -763,7 +755,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={initialFilters}
                         onTabChange={onTabChange}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -790,7 +781,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={newFilters}
                         onTabChange={onTabChange}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />
@@ -815,7 +805,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={initialFilters}
                         onTabChange={onTabChange}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -842,7 +831,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={newFilters}
                         onTabChange={onTabChange}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />
@@ -868,7 +856,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -906,7 +893,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -938,7 +924,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -968,7 +953,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -996,7 +980,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1031,7 +1014,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1059,7 +1041,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1091,7 +1072,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1122,7 +1102,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1151,7 +1130,6 @@ describe('TabbedReportPanel', () => {
                         // Intentionally testing null filter - cast to bypass type checking
                         filters={null as any}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1182,7 +1160,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1213,7 +1190,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,
@@ -1231,9 +1207,7 @@ describe('TabbedReportPanel', () => {
                 // Verify the structure of the returned FilterArray
                 expect(filterArray).toEqual({
                     removable: [],
-                    nonRemovable: expect.arrayContaining([
-                        expect.objectContaining({ field: 'Id' }),
-                    ]),
+                    nonRemovable: expect.arrayContaining([expect.objectContaining({ field: 'Id' })]),
                 });
             });
 
@@ -1246,7 +1220,6 @@ describe('TabbedReportPanel', () => {
                         activeReport={undefined}
                         filters={filters}
                         onTabChange={jest.fn()}
-                        reportNamespace="test"
                         reports={reports}
                         showReport={true}
                     />,

@@ -43,7 +43,6 @@ const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({
     const [reportsLoading, setReportsLoading] = useState(true);
 
     // Fetch all visible reports once on mount
-    // This consolidates the query that was previously in TabbedReportPanel
     useEffect(() => {
         fetchReports().then(({ reports: loadedReports, error }) => {
             if (error) {
@@ -126,9 +125,7 @@ const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({
 
     // Compute effective filter - override to 'all' if aliveAtCenter is not supported
     const effectiveFilterType =
-        filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters
-            ? FILTER_TYPE_ALL
-            : filterType;
+        filterType === FILTER_TYPE_ALIVE_AT_CENTER && !activeReportSupportsNonIdFilters ? FILTER_TYPE_ALL : filterType;
 
     const filters: ReportFilters = useMemo(
         () => ({
@@ -160,7 +157,6 @@ const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({
                 activeReport={activeReport}
                 filters={filters}
                 onTabChange={handleTabChange}
-                reportNamespace="EHR.reports"
                 reports={reportsLoading ? undefined : reports}
                 showReport={showReport}
             />

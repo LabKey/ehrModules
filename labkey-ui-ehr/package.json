@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.4-fb-ehr-hist-id-search.11",
+  "version": "0.0.4-fb-ehr-hist-id-search.12",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -37,7 +37,8 @@
     "lint-precommit": "node lint.diff.mjs",
     "lint-precommit-fix": "node lint.diff.mjs --fix",
     "lint-branch": "node lint.diff.mjs --currentBranch",
-    "lint-branch-fix": "node lint.diff.mjs --currentBranch --fix"
+    "lint-branch-fix": "node lint.diff.mjs --currentBranch --fix",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",

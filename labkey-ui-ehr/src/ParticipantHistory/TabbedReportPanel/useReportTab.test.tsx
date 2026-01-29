@@ -72,9 +72,9 @@ const createMockContainer = (): any => {
 
 // Test harness component that renders a div and attaches the hook's ref
 const TestHarness: FC<{
-    report: ReportConfig;
     filters: ReportFilters;
     onTab: (tab: ExtReportTab | null) => void;
+    report: ReportConfig;
 }> = ({ report, filters, onTab }) => {
     const { tab, targetRef } = useReportTab(report, filters);
 
@@ -82,7 +82,7 @@ const TestHarness: FC<{
         onTab(tab);
     }, [tab, onTab]);
 
-    return <div ref={targetRef} data-testid="target" />;
+    return <div data-testid="target" ref={targetRef} />;
 };
 
 describe('useReportTab', () => {
@@ -144,7 +144,15 @@ describe('useReportTab', () => {
         test('creates Ext4 container with correct configuration when ref is attached', async () => {
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => {
                 expect(capturedTab).not.toBeNull();
@@ -162,7 +170,15 @@ describe('useReportTab', () => {
         test('passes renderTo option with the target DOM element', async () => {
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => {
                 expect(capturedTab).not.toBeNull();
@@ -180,7 +196,15 @@ describe('useReportTab', () => {
         test('assigns report and filters to the created tab', async () => {
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => {
                 expect(capturedTab).not.toBeNull();
@@ -193,7 +217,15 @@ describe('useReportTab', () => {
         test('attaches getFilterArray method to the tab', async () => {
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => {
                 expect(capturedTab).not.toBeNull();
@@ -205,7 +237,15 @@ describe('useReportTab', () => {
         test('attaches getQWPConfig method to the tab', async () => {
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => {
                 expect(capturedTab).not.toBeNull();
@@ -220,7 +260,15 @@ describe('useReportTab', () => {
             const idSearchFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={idSearchFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={idSearchFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -240,7 +288,15 @@ describe('useReportTab', () => {
             const multiSubjectFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456', 'ID789'] };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={multiSubjectFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={multiSubjectFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -259,7 +315,15 @@ describe('useReportTab', () => {
             const allFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={allFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={allFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -273,7 +337,15 @@ describe('useReportTab', () => {
             const aliveFilters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={aliveFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={aliveFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -297,7 +369,15 @@ describe('useReportTab', () => {
             const idSearchFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={customReport} filters={idSearchFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={idSearchFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={customReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -312,7 +392,15 @@ describe('useReportTab', () => {
         test('returns empty arrays when filters is null', async () => {
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={null as any} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={null as any}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -326,7 +414,15 @@ describe('useReportTab', () => {
             const urlFilters = { filterType: FILTER_TYPE_URL_PARAMS, subjects: ['ID123', 'ID456'] };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={urlFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={urlFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -344,7 +440,15 @@ describe('useReportTab', () => {
             const emptySubjectsFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: [] };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={emptySubjectsFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={emptySubjectsFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -358,7 +462,15 @@ describe('useReportTab', () => {
             const undefinedSubjectsFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: undefined };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={undefinedSubjectsFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={undefinedSubjectsFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -372,7 +484,15 @@ describe('useReportTab', () => {
     describe('getQWPConfig', () => {
         test('returns config with standard QueryWebPart properties', async () => {
             let capturedTab: ExtReportTab | null = null;
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -397,7 +517,15 @@ describe('useReportTab', () => {
 
         test('includes tab reference in config', async () => {
             let capturedTab: ExtReportTab | null = null;
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -409,7 +537,15 @@ describe('useReportTab', () => {
         test('includes filters from getFilterArray in config', async () => {
             const idSearchFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
             let capturedTab: ExtReportTab | null = null;
-            render(<TestHarness report={queryReport} filters={idSearchFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={idSearchFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -431,7 +567,15 @@ describe('useReportTab', () => {
                 queryName: 'animals',
             };
             let capturedTab: ExtReportTab | null = null;
-            render(<TestHarness report={reportWithSchema} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={reportWithSchema}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -444,7 +588,15 @@ describe('useReportTab', () => {
 
         test('excludes internal report properties from config', async () => {
             let capturedTab: ExtReportTab | null = null;
-            render(<TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -466,7 +618,13 @@ describe('useReportTab', () => {
         test('destroys Ext4 container on unmount', async () => {
             let capturedTab: ExtReportTab | null = null;
             const { unmount } = render(
-                <TestHarness report={queryReport} filters={filters} onTab={(t) => { capturedTab = t; }} />
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
             );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
@@ -481,9 +639,7 @@ describe('useReportTab', () => {
 
         test('recreates container when report changes', async () => {
             const onTab = jest.fn();
-            const { rerender } = render(
-                <TestHarness report={queryReport} filters={filters} onTab={onTab} />
-            );
+            const { rerender } = render(<TestHarness filters={filters} onTab={onTab} report={queryReport} />);
 
             await waitFor(() => expect(onTab).toHaveBeenCalledWith(expect.anything()));
 
@@ -492,7 +648,7 @@ describe('useReportTab', () => {
 
             // Change the report
             const newReport: ReportConfig = { ...queryReport, id: 'new-report', title: 'New Report' };
-            rerender(<TestHarness report={newReport} filters={filters} onTab={onTab} />);
+            rerender(<TestHarness filters={filters} onTab={onTab} report={newReport} />);
 
             // Wait for new container to be created
             await waitFor(() => expect(mockContainerInstances.length).toBe(2));
@@ -505,9 +661,7 @@ describe('useReportTab', () => {
 
         test('recreates container when filters change', async () => {
             const onTab = jest.fn();
-            const { rerender } = render(
-                <TestHarness report={queryReport} filters={filters} onTab={onTab} />
-            );
+            const { rerender } = render(<TestHarness filters={filters} onTab={onTab} report={queryReport} />);
 
             await waitFor(() => expect(onTab).toHaveBeenCalledWith(expect.anything()));
 
@@ -516,7 +670,7 @@ describe('useReportTab', () => {
 
             // Change the filters
             const newFilters: ReportFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
-            rerender(<TestHarness report={queryReport} filters={newFilters} onTab={onTab} />);
+            rerender(<TestHarness filters={newFilters} onTab={onTab} report={queryReport} />);
 
             // Wait for new container to be created
             await waitFor(() => expect(mockContainerInstances.length).toBe(2));
@@ -529,11 +683,11 @@ describe('useReportTab', () => {
 
         test('sets tab to null on cleanup', async () => {
             let lastTab: ExtReportTab | null = null;
-            const onTab = jest.fn((t) => { lastTab = t; });
+            const onTab = jest.fn(t => {
+                lastTab = t;
+            });
 
-            const { unmount } = render(
-                <TestHarness report={queryReport} filters={filters} onTab={onTab} />
-            );
+            const { unmount } = render(<TestHarness filters={filters} onTab={onTab} report={queryReport} />);
 
             await waitFor(() => expect(lastTab).not.toBeNull());
 
@@ -562,7 +716,15 @@ describe('useReportTab', () => {
             };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={minimalReport} filters={filters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={filters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={minimalReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 
@@ -576,7 +738,15 @@ describe('useReportTab', () => {
             const unknownFilters = { filterType: 'unknownType' as any, subjects: ['ID123'] };
             let capturedTab: ExtReportTab | null = null;
 
-            render(<TestHarness report={queryReport} filters={unknownFilters} onTab={(t) => { capturedTab = t; }} />);
+            render(
+                <TestHarness
+                    filters={unknownFilters}
+                    onTab={t => {
+                        capturedTab = t;
+                    }}
+                    report={queryReport}
+                />
+            );
 
             await waitFor(() => expect(capturedTab).not.toBeNull());
 

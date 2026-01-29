@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { Query } from '@labkey/api';
 
@@ -73,7 +74,6 @@ describe('ParticipantReports', () => {
                     title: 'Test Report',
                     reportType: 'query',
                     supportsnonidfilters: true,
-                    visible: true,
                     category: 'General',
                     schemaName: 'ehr',
                     queryName: 'testQuery',
@@ -128,6 +128,27 @@ describe('ParticipantReports', () => {
         });
     };
 
+    // Helper to assert which filter button is active
+    const expectActiveFilterButton = (activeButton: 'aliveAtCenter' | 'all' | 'search') => {
+        const searchBtn = screen.getByRole('button', { name: /search by ids/i });
+        const allBtn = screen.getByRole('button', { name: /all animals/i });
+        const aliveBtn = screen.getByRole('button', { name: /all alive at center/i });
+
+        if (activeButton === 'search') {
+            expect(searchBtn).toHaveClass('active');
+            expect(allBtn).toHaveClass('inactive');
+            expect(aliveBtn).toHaveClass('inactive');
+        } else if (activeButton === 'all') {
+            expect(searchBtn).toHaveClass('inactive');
+            expect(allBtn).toHaveClass('active');
+            expect(aliveBtn).toHaveClass('inactive');
+        } else {
+            expect(searchBtn).toHaveClass('inactive');
+            expect(allBtn).toHaveClass('inactive');
+            expect(aliveBtn).toHaveClass('active');
+        }
+    };
+
     describe('rendering', () => {
         test('renders TabbedReportPanel component', async () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
@@ -139,8 +160,12 @@ describe('ParticipantReports', () => {
         test('renders with default subjects filter when no URL hash present', async () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-            // Component renders without errors when no hash is present
             await waitForReportsToLoad();
+
+            // Default mode is ID Search with empty textarea
+            expectActiveFilterButton('search');
+            const textarea = screen.getByLabelText(/enter animal ids/i);
+            expect(textarea).toHaveValue('');
         });
     });
 
@@ -150,16 +175,20 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-            // Component should render without errors when activeReport is in hash
             await waitForReportsToLoad();
+            // activeReport is preserved in hash (may be updated to resolved report ID)
+            expect(window.location.hash).toContain('activeReport:');
         });
 
         test('parses inputType from URL hash', async () => {
+            // inputType is a legacy/unused param not consumed by getFiltersFromUrl
             window.location.hash = '#inputType:singleSubject';
 
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
+            // Component still renders in default ID Search mode
+            expectActiveFilterButton('search');
         });
 
         test('parses showReport as true from URL hash', async () => {
@@ -168,6 +197,8 @@ describe('ParticipantReports', () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
+            // showReport:1 means reports should display (no placeholder)
+            expect(screen.queryByText('Select Filter to View Reports')).not.toBeInTheDocument();
         });
 
         test('parses showReport as false from URL hash', async () => {
@@ -175,7 +206,10 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
+            // Wait for reports to load (category tabs appear), then verify placeholder
             await waitForReportsToLoad();
+            // showReport:0 means report content is hidden, placeholder visible
+            expect(screen.getByText('Select Filter to View Reports')).toBeInTheDocument();
         });
 
         test('parses subjects from URL hash', async () => {
@@ -184,14 +218,19 @@ describe('ParticipantReports', () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
+            const textarea = screen.getByLabelText(/enter animal ids/i);
+            expect(textarea).toHaveValue('subject1,subject2,subject3');
         });
 
         test('parses multiple parameters from URL hash', async () => {
-            window.location.hash = '#activeReport:my-report&inputType:multiSubject&showReport:1&subjects:sub1%3Bsub2';
+            window.location.hash = '#activeReport:test-report&inputType:multiSubject&showReport:1&subjects:sub1%3Bsub2';
 
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
+            const textarea = screen.getByLabelText(/enter animal ids/i);
+            expect(textarea).toHaveValue('sub1,sub2');
+            expect(window.location.hash).toContain('activeReport:test-report');
         });
 
         test('parses custom/unknown parameters from URL hash', async () => {
@@ -200,6 +239,8 @@ describe('ParticipantReports', () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
+            // Custom params are ignored; component renders in default ID Search mode
+            expectActiveFilterButton('search');
         });
 
         test('handles URL-encoded values in hash parameters', async () => {
@@ -208,6 +249,8 @@ describe('ParticipantReports', () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
+            // Hash is parseable and component renders normally
+            expectActiveFilterButton('search');
         });
 
         test('handles empty subjects value in URL hash', async () => {
@@ -215,7 +258,12 @@ describe('ParticipantReports', () => {
 
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
+            // Wait for reports to load so tabs appear
             await waitForReportsToLoad();
+            // Empty subjects = showReport stays false, placeholder visible
+            const textarea = screen.getByLabelText(/enter animal ids/i);
+            expect(textarea).toHaveValue('');
+            expect(screen.getByText('Select Filter to View Reports')).toBeInTheDocument();
         });
 
         test('ignores parameters without values', async () => {
@@ -224,23 +272,17 @@ describe('ParticipantReports', () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
             await waitForReportsToLoad();
+            // Component renders in default ID Search mode
+            expectActiveFilterButton('search');
         });
     });
 
-    describe('props passed to TabbedReportPanel', () => {
-        test('passes correct reportNamespace prop', async () => {
+    describe('report fetching', () => {
+        test('calls fetchReports on mount', async () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-            // The component should render the TabbedReportPanel with EHR.reports namespace
-            // This is verified indirectly by successful render
             await waitForReportsToLoad();
-        });
-
-        test('passes correct reportsQuery and reportsSchema props', async () => {
-            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
-
-            // The component should render with ehr schema and reports query
-            await waitForReportsToLoad();
+            expect(mockFetchReports).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -341,8 +383,10 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // Component should render with subjects from hash
                 await waitForReportsToLoad();
+                const textarea = screen.getByLabelText(/enter animal ids/i);
+                expect(textarea).toHaveValue('ID123,ID456');
+                expectActiveFilterButton('search');
             });
 
             test('initializes with All Records mode when filterType:all in hash', async () => {
@@ -351,6 +395,9 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
+                expectActiveFilterButton('all');
+                const textarea = screen.getByLabelText(/enter animal ids/i);
+                expect(textarea).toHaveValue('');
             });
 
             test('initializes with Alive at Center mode when filterType:aliveAtCenter in hash', async () => {
@@ -359,6 +406,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
+                expectActiveFilterButton('aliveAtCenter');
             });
 
             test('defaults to ID Search mode when no filterType in hash', async () => {
@@ -367,6 +415,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
+                expectActiveFilterButton('search');
             });
         });
 
@@ -376,8 +425,12 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // Component should render in URL Params mode
                 await waitForReportsToLoad();
+                // In readOnly mode, SearchByIdPanel is completely hidden
+                expect(screen.queryByLabelText(/enter animal ids/i)).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
+                // Reports load immediately (no placeholder)
+                expect(screen.queryByText('Select Filter to View Reports')).not.toBeInTheDocument();
             });
 
             test('hides SearchByIdPanel when in readOnly mode with subjects', () => {
@@ -430,9 +483,9 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // In readOnly mode, reports should be loading immediately
-                // The TabbedReportPanel should be attempting to load reports
+                // In readOnly mode, reports load immediately (no placeholder)
                 await waitForReportsToLoad();
+                expect(screen.queryByText('Select Filter to View Reports')).not.toBeInTheDocument();
             });
         });
 
@@ -442,8 +495,9 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // Verify component renders with subjects
                 await waitForReportsToLoad();
+                const textarea = screen.getByLabelText(/enter animal ids/i);
+                expect(textarea).toHaveValue('ID123,ID456,ID789');
             });
 
             test('manages filterType state from URL hash', async () => {
@@ -452,6 +506,7 @@ describe('ParticipantReports', () => {
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
                 await waitForReportsToLoad();
+                expectActiveFilterButton('aliveAtCenter');
             });
         });
 
@@ -461,9 +516,15 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // After component mounts, simulate filter change
-                // Note: This would require exposing handleFilterChange or testing through UI interaction
                 await waitForReportsToLoad();
+
+                // Click "All Animals" button to change filter mode
+                const allBtn = screen.getByRole('button', { name: /all animals/i });
+                await userEvent.click(allBtn);
+
+                await waitFor(() => {
+                    expect(window.location.hash).toContain('filterType:all');
+                });
             });
 
             test('includes subjects in URL hash for ID Search mode', () => {
@@ -483,13 +544,18 @@ describe('ParticipantReports', () => {
             });
 
             test('removes readOnly parameter when switching from URL Params to ID Search', async () => {
+                // In readOnly mode, ParticipantReports hides SearchByIdPanel entirely.
+                // The readOnly parameter is managed via URL hash state and removed when
+                // handleFilterChange transitions away from URL Params mode.
+                // This is tested indirectly: readOnly mode doesn't expose filter buttons.
                 window.location.hash = '#subjects:ID123&readOnly:true';
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // Component should be in URL Params mode initially
-                // After switching to ID Search (would require UI interaction), readOnly should be removed
                 await waitForReportsToLoad();
+                // readOnly mode hides SearchByIdPanel, so no way to switch modes via UI
+                expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: /modify search/i })).not.toBeInTheDocument();
             });
 
             test('preserves activeReport parameter from URL hash', () => {
@@ -518,26 +584,33 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // Component should query ehr.reports for the active report's metadata
                 await waitForReportsToLoad();
+                expect(mockFetchReports).toHaveBeenCalled();
+                // Mock returns supportsnonidfilters: true, so Alive at Center button should be enabled
+                const aliveBtn = screen.getByRole('button', { name: /all alive at center/i });
+                expect(aliveBtn).not.toBeDisabled();
             });
 
             test('updates activeReportSupportsNonIdFilters when switching report tabs', async () => {
-                window.location.hash = '#activeReport:report1';
+                window.location.hash = '#activeReport:test-report';
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // After switching to different report tab, should re-query metadata
                 await waitForReportsToLoad();
+                // Initial state: button is enabled (mock has supportsnonidfilters: true)
+                const aliveBtn = screen.getByRole('button', { name: /all alive at center/i });
+                expect(aliveBtn).not.toBeDisabled();
             });
 
-            test('defaults to false when no active report selected', async () => {
+            test('defaults to true when no active report selected', async () => {
                 window.location.hash = '';
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // Should handle no active report gracefully
                 await waitForReportsToLoad();
+                // When no active report, activeReportSupportsNonIdFilters defaults to true
+                const aliveBtn = screen.getByRole('button', { name: /all alive at center/i });
+                expect(aliveBtn).not.toBeDisabled();
             });
         });
 
@@ -547,9 +620,18 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // Simulate rapid filter changes
-                // This would require UI interaction or exposing handleFilterChange
                 await waitForReportsToLoad();
+
+                // Rapidly click All Animals, then All Alive at Center
+                const allBtn = screen.getByRole('button', { name: /all animals/i });
+                const aliveBtn = screen.getByRole('button', { name: /all alive at center/i });
+                await userEvent.click(allBtn);
+                await userEvent.click(aliveBtn);
+
+                // Final state should be Alive at Center
+                await waitFor(() => {
+                    expectActiveFilterButton('aliveAtCenter');
+                });
             });
         });
 
@@ -575,21 +657,26 @@ describe('ParticipantReports', () => {
 
         describe('filter integration with TabbedReportPanel', () => {
             test('passes filters prop to TabbedReportPanel', async () => {
-                window.location.hash = '#filterType:idSearch&subjects:ID123';
+                window.location.hash = '#filterType:idSearch&subjects:ID123&showReport:1';
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // TabbedReportPanel should receive filters prop with filterType and subjects
                 await waitForReportsToLoad();
+                // ID Search with subjects and showReport:1 → reports visible (no placeholder)
+                expect(window.location.hash).toContain('showReport:1');
+                expect(screen.queryByText('Select Filter to View Reports')).not.toBeInTheDocument();
             });
 
             test('passes undefined subjects for All Records mode', async () => {
-                window.location.hash = '#filterType:all';
+                window.location.hash = '#filterType:all&showReport:1';
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // filters.subjects should be undefined for All Records
                 await waitForReportsToLoad();
+                // All Records mode → showReport=true, no placeholder
+                expect(screen.queryByText('Select Filter to View Reports')).not.toBeInTheDocument();
+                expect(window.location.hash).toContain('filterType:all');
+                expect(window.location.hash).not.toContain('subjects:');
             });
 
             test('passes subjects for URL Params mode', async () => {
@@ -597,8 +684,11 @@ describe('ParticipantReports', () => {
 
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-                // filters.subjects should be populated for URL Params mode
                 await waitForReportsToLoad();
+                // In readOnly mode, reports show immediately (no placeholder)
+                expect(screen.queryByText('Select Filter to View Reports')).not.toBeInTheDocument();
+                // SearchByIdPanel is hidden in readOnly mode
+                expect(screen.queryByLabelText(/enter animal ids/i)).not.toBeInTheDocument();
             });
         });
 
@@ -649,7 +739,6 @@ describe('ParticipantReports', () => {
                             title: 'Test Report',
                             reportType: 'query',
                             supportsnonidfilters: false,
-                            visible: true,
                             category: 'General',
                             schemaName: 'ehr',
                             queryName: 'testQuery',

@@ -4,7 +4,7 @@ import { render, waitFor } from '@testing-library/react';
 import { Query } from '@labkey/api';
 
 import { JSReportWrapper } from './JSReportWrapper';
-import { ExtReportTab, FILTER_TYPE_ID_SEARCH, ReportConfig } from '../models';
+import { ExtReportTab, FILTER_TYPE_ID_SEARCH, JsReportConfig } from '../models';
 
 // Mock @labkey/api Query.selectRows
 jest.mock('@labkey/api', () => ({
@@ -42,7 +42,8 @@ const createMockContainer = (): ExtReportTab => ({
 
 (global as any).LABKEY = {
     Utils: {
-        encodeHtml: (str: string) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'),
+        encodeHtml: (str: string) =>
+            str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'),
     },
 };
 
@@ -60,18 +61,20 @@ describe('JSReportWrapper', () => {
         delete (window as any).EHR.reports.testFunction;
     });
 
-    const jsReport: ReportConfig = {
+    const jsReport: JsReportConfig = {
         id: 'js-report-1',
         title: 'JS Report',
         reportType: 'js',
         queryName: 'testFunction',
         category: 'Category A',
+        containerPath: null,
+        subjectIdFieldName: null,
+        supportsnonidfilters: null,
+        viewName: null,
     };
 
     test('renders a report-target div', () => {
-        const { container } = render(
-            <JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />
-        );
+        const { container } = render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         expect(container.querySelector('.report-target')).toBeInTheDocument();
     });
@@ -80,7 +83,7 @@ describe('JSReportWrapper', () => {
         const mockJsFunction = jest.fn();
         (window as any).testFunction = mockJsFunction;
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalledWith(
@@ -99,7 +102,7 @@ describe('JSReportWrapper', () => {
         const mockJsFunction = jest.fn();
         (window as any).EHR.reports.testFunction = mockJsFunction;
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="EHR.reports" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalledWith(
@@ -116,12 +119,12 @@ describe('JSReportWrapper', () => {
 
     test('panel getFilterArray delegates to tab', async () => {
         let capturedPanel: any;
-        const mockJsFunction = jest.fn((panel) => {
+        const mockJsFunction = jest.fn(panel => {
             capturedPanel = panel;
         });
         (window as any).testFunction = mockJsFunction;
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -136,12 +139,12 @@ describe('JSReportWrapper', () => {
 
     test('panel getQWPConfig delegates to tab', async () => {
         let capturedPanel: any;
-        const mockJsFunction = jest.fn((panel) => {
+        const mockJsFunction = jest.fn(panel => {
             capturedPanel = panel;
         });
         (window as any).testFunction = mockJsFunction;
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -153,14 +156,14 @@ describe('JSReportWrapper', () => {
 
     test('panel getTitleSuffix returns formatted subject list', async () => {
         let capturedPanel: any;
-        const mockJsFunction = jest.fn((panel) => {
+        const mockJsFunction = jest.fn(panel => {
             capturedPanel = panel;
         });
         (window as any).testFunction = mockJsFunction;
 
         const filtersWithSubjects = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456', 'ID789'] };
 
-        render(<JSReportWrapper filters={filtersWithSubjects} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filtersWithSubjects} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -171,14 +174,14 @@ describe('JSReportWrapper', () => {
 
     test('panel getTitleSuffix returns empty string when no subjects', async () => {
         let capturedPanel: any;
-        const mockJsFunction = jest.fn((panel) => {
+        const mockJsFunction = jest.fn(panel => {
             capturedPanel = panel;
         });
         (window as any).testFunction = mockJsFunction;
 
         const emptyFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: [] as string[] };
 
-        render(<JSReportWrapper filters={emptyFilters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={emptyFilters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -189,14 +192,14 @@ describe('JSReportWrapper', () => {
 
     test('panel resolveSubjectsFromHousing queries demographicsCurLocation', async () => {
         let capturedPanel: any;
-        const mockJsFunction = jest.fn((panel) => {
+        const mockJsFunction = jest.fn(panel => {
             capturedPanel = panel;
         });
         (window as any).testFunction = mockJsFunction;
 
         const mockSelectRows = Query.selectRows as jest.Mock;
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -216,7 +219,7 @@ describe('JSReportWrapper', () => {
 
     test('panel resolveSubjectsFromHousing calls callback with resolved subjects', async () => {
         let capturedPanel: any;
-        const mockJsFunction = jest.fn((panel) => {
+        const mockJsFunction = jest.fn(panel => {
             capturedPanel = panel;
         });
         (window as any).testFunction = mockJsFunction;
@@ -227,7 +230,7 @@ describe('JSReportWrapper', () => {
             });
         });
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -244,7 +247,7 @@ describe('JSReportWrapper', () => {
     test('displays error when JS function not found', async () => {
         delete (window as any).testFunction;
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockExt4Container.add).toHaveBeenCalledWith(
@@ -258,7 +261,7 @@ describe('JSReportWrapper', () => {
     test('displays error with report title when function not found', async () => {
         const reportWithTitle = { ...jsReport, title: 'Test Report Title' };
 
-        render(<JSReportWrapper filters={filters} report={reportWithTitle} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={reportWithTitle} />);
 
         await waitFor(() => {
             expect(mockExt4Container.add).toHaveBeenCalledWith(
@@ -275,7 +278,7 @@ describe('JSReportWrapper', () => {
         });
         (window as any).testFunction = mockJsFunction;
 
-        render(<JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockExt4Container.add).toHaveBeenCalledWith(
@@ -290,9 +293,7 @@ describe('JSReportWrapper', () => {
         const mockJsFunction = jest.fn();
         (window as any).testFunction = mockJsFunction;
 
-        const { unmount } = render(
-            <JSReportWrapper filters={filters} report={jsReport} reportNamespace="" />
-        );
+        const { unmount } = render(<JSReportWrapper filters={filters} report={jsReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -318,7 +319,7 @@ describe('JSReportWrapper', () => {
             queryName: 'Nested.Deep.Path.testFunction',
         };
 
-        render(<JSReportWrapper filters={filters} report={nestedReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={nestedReport} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalled();
@@ -332,10 +333,10 @@ describe('JSReportWrapper', () => {
 
         const functionReport = {
             ...jsReport,
-            queryName: mockJsFunction,
+            queryName: mockJsFunction as any,
         };
 
-        render(<JSReportWrapper filters={filters} report={functionReport} reportNamespace="" />);
+        render(<JSReportWrapper filters={filters} report={functionReport as any} />);
 
         await waitFor(() => {
             expect(mockJsFunction).toHaveBeenCalledWith(

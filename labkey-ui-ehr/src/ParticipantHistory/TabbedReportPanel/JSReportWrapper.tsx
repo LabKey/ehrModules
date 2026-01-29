@@ -1,24 +1,21 @@
 import React, { FC, memo, useEffect } from 'react';
 
-import { Query, Filter } from '@labkey/api';
+import { Filter, Query } from '@labkey/api';
 
 import { ExtReportTab, FilterArray, JsReportConfig, QueryWebPartConfig, ReportFilters } from '../models';
 
 import { useReportTab } from './useReportTab';
 
-/** Row from demographicsCurLocation query */
 interface DemographicsLocationRow {
     [key: string]: unknown;
     Id?: string;
 }
 
-/** Result from LABKEY.Query.selectRows */
 interface SelectRowsResult {
     [key: string]: unknown;
     rows?: DemographicsLocationRow[];
 }
 
-/** Type for JS report handler function */
 type JSReportHandler = (panel: JSReportPanel, tab: ExtReportTab) => void;
 
 /**
@@ -143,10 +140,11 @@ const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPane
                     Ext4.Msg.hide();
                 }
 
-                const subjects = results.rows?.reduce((result, row: DemographicsLocationRow) => {
-                    if (row.Id) result.push(row.Id);
-                    return result;
-                }, [] as string[]) ?? [];
+                const subjects =
+                    results.rows?.reduce((result, row: DemographicsLocationRow) => {
+                        if (row.Id) result.push(row.Id);
+                        return result;
+                    }, [] as string[]) ?? [];
 
                 callback.apply(scope || panel, [subjects, tabArg]);
             },
@@ -154,18 +152,14 @@ const createResolveSubjectsFromHousing = (tab: ExtReportTab, panel: JSReportPane
     };
 };
 
-/** Props for JSReportWrapper component */
+const EHR_REPORT_NAMESPACE = 'EHR.reports';
+
 interface JSReportWrapperProps {
     filters: ReportFilters;
     report: JsReportConfig;
-    reportNamespace: string;
 }
 
-const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
-    report,
-    filters,
-    reportNamespace,
-}) => {
+const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({ report, filters }) => {
     const { tab, targetRef } = useReportTab(report, filters);
 
     useEffect(() => {
@@ -173,7 +167,7 @@ const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
 
         try {
             const handlerName = report.queryName;
-            const jsFunction = resolveJsFunction(handlerName, reportNamespace);
+            const jsFunction = resolveJsFunction(handlerName, EHR_REPORT_NAMESPACE);
 
             if (jsFunction) {
                 // Create panel object with getFilterArray, getQWPConfig, getTitleSuffix, and resolveSubjectsFromHousing functions using tab's methods
@@ -201,7 +195,9 @@ const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
                 tab.add({
                     html: `<div class="labkey-error">Could not find JavaScript function '${safeHandler}'${reportName}</div>`,
                 });
-                console.error(`Could not find JavaScript function '${handlerName}'${report.title ? ` for report '${report.title}'` : ''}`);
+                console.error(
+                    `Could not find JavaScript function '${handlerName}'${report.title ? ` for report '${report.title}'` : ''}`
+                );
             }
         } catch (e) {
             const reportName = report.title ? ` '${report.title}'` : '';
@@ -221,7 +217,7 @@ const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({
                 tab.removeAll();
             }
         };
-    }, [tab, report, reportNamespace]);
+    }, [tab, report]);
 
     return <div className="report-target" ref={targetRef} />;
 };

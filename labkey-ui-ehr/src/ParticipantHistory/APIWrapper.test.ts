@@ -3,9 +3,11 @@ import { Filter, Query } from '@labkey/api';
 import { ServerAPIWrapper } from './APIWrapper';
 
 // Mock Filter.create function
-const mockFilterCreate = jest.fn(
-    (field: string, value: boolean | string | string[], type: string) => ({ field, value, type })
-);
+const mockFilterCreate = jest.fn((field: string, value: boolean | string | string[], type: string) => ({
+    field,
+    value,
+    type,
+}));
 
 // Mock @labkey/api Query.selectRows
 jest.mock('@labkey/api', () => ({
@@ -26,26 +28,12 @@ jest.mock('@labkey/api', () => ({
 
 const mockSelectRows = Query.selectRows as jest.MockedFunction<typeof Query.selectRows>;
 
-// Types for mock callbacks
-interface MockError {
-    exception?: string;
-    exceptionClass?: string;
-    message?: string;
-}
-
-interface MockData {
-    rows?: Record<string, unknown>[];
-}
-
-// Type for mock config parameter
-interface MockConfig {
-    failure: (error: MockError) => void;
-    filterArray?: unknown[];
-    queryName?: string;
-    schemaName?: string;
-    sort?: string;
-    success: (data: MockData) => void;
-}
+// Mock-friendly version of SelectRowsOptions where callbacks take a single argument,
+// matching how the production code invokes them in this codebase.
+type MockSelectRowsConfig = Omit<Query.SelectRowsOptions, 'failure' | 'success'> & {
+    failure?: (error: any) => void;
+    success?: (data: any) => void;
+};
 
 describe('ServerAPIWrapper', () => {
     let apiWrapper: ServerAPIWrapper;
@@ -60,14 +48,14 @@ describe('ServerAPIWrapper', () => {
             test('resolves single direct ID match', async () => {
                 const inputIds = ['ID123'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         expect(config.filterArray).toBeDefined();
                         config.success({
                             rows: [{ resolvedId: 'ID123' }],
                         });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -87,13 +75,13 @@ describe('ServerAPIWrapper', () => {
             test('resolves multiple direct ID matches', async () => {
                 const inputIds = ['ID123', 'ID456', 'ID789'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         config.success({
                             rows: [{ resolvedId: 'ID123' }, { resolvedId: 'ID456' }, { resolvedId: 'ID789' }],
                         });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -113,7 +101,7 @@ describe('ServerAPIWrapper', () => {
                 const inputIds = ['TATTOO_001'];
 
                 let callCount = 0;
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     callCount++;
                     if (callCount === 1 && config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         config.success({ rows: [] });
@@ -126,7 +114,7 @@ describe('ServerAPIWrapper', () => {
                             rows: [{ resolvedId: 'ID123', inputId: 'TATTOO_001', aliasType: 'tattoo' }],
                         });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -149,7 +137,7 @@ describe('ServerAPIWrapper', () => {
                 const inputIds = ['ID123', 'TATTOO_001', 'ID456'];
 
                 let callCount = 0;
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     callCount++;
                     if (callCount === 1 && config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         config.success({
@@ -164,7 +152,7 @@ describe('ServerAPIWrapper', () => {
                             rows: [{ resolvedId: 'ID789', inputId: 'TATTOO_001', aliasType: 'tattoo' }],
                         });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -181,7 +169,7 @@ describe('ServerAPIWrapper', () => {
             test('returns not-found IDs when some IDs cannot be resolved', async () => {
                 const inputIds = ['ID123', 'INVALID_ID', 'ID456'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         config.success({
                             rows: [{ resolvedId: 'ID123' }, { resolvedId: 'ID456' }],
@@ -189,7 +177,7 @@ describe('ServerAPIWrapper', () => {
                     } else if (config.schemaName === 'study' && config.queryName === 'aliasIdMatches') {
                         config.success({ rows: [] });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -207,13 +195,13 @@ describe('ServerAPIWrapper', () => {
             test('resolves IDs regardless of input casing', async () => {
                 const inputIds = ['id123', 'ID456', 'Id789'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         config.success({
                             rows: [{ resolvedId: 'ID123' }, { resolvedId: 'ID456' }, { resolvedId: 'ID789' }],
                         });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -232,13 +220,13 @@ describe('ServerAPIWrapper', () => {
             test('de-duplicates input IDs before resolution', async () => {
                 const inputIds = ['ID123', 'ID123', 'ID456'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         config.success({
                             rows: [{ resolvedId: 'ID123' }, { resolvedId: 'ID456' }],
                         });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -267,13 +255,13 @@ describe('ServerAPIWrapper', () => {
             test('filters out empty string IDs', async () => {
                 const inputIds = ['ID123', '', 'ID456'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
                         config.success({
                             rows: [{ resolvedId: 'ID123' }, { resolvedId: 'ID456' }],
                         });
                     }
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -291,12 +279,12 @@ describe('ServerAPIWrapper', () => {
             test('handles API network errors', async () => {
                 const inputIds = ['ID123'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
-                    config.failure({
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
+                    config.failure!({
                         exception: 'Network error',
                         exceptionClass: 'NetworkException',
                     });
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -310,9 +298,9 @@ describe('ServerAPIWrapper', () => {
             test('handles malformed API response', async () => {
                 const inputIds = ['ID123'];
 
-                mockSelectRows.mockImplementation((config: MockConfig) => {
+                mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     config.success({ rows: undefined });
-                    return {} as MockConfig;
+                    return {} as XMLHttpRequest;
                 });
 
                 const result = await apiWrapper.resolveAnimalIds({ inputIds });
@@ -327,9 +315,9 @@ describe('ServerAPIWrapper', () => {
 
     describe('fetchReports', () => {
         test('calls Query.selectRows with correct parameters', async () => {
-            mockSelectRows.mockImplementation((config: MockConfig) => {
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                 config.success({ rows: [] });
-                return {} as MockConfig;
+                return {} as XMLHttpRequest;
             });
 
             await apiWrapper.fetchReports();
@@ -345,7 +333,7 @@ describe('ServerAPIWrapper', () => {
         });
 
         test('fetches and maps reports correctly', async () => {
-            mockSelectRows.mockImplementation((config: MockConfig) => {
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                 config.success({
                     rows: [
                         {
@@ -361,7 +349,7 @@ describe('ServerAPIWrapper', () => {
                         },
                     ],
                 });
-                return {} as MockConfig;
+                return {} as XMLHttpRequest;
             });
 
             const result = await apiWrapper.fetchReports();
@@ -382,7 +370,7 @@ describe('ServerAPIWrapper', () => {
         });
 
         test('maps multiple reports correctly', async () => {
-            mockSelectRows.mockImplementation((config: MockConfig) => {
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                 config.success({
                     rows: [
                         {
@@ -403,7 +391,7 @@ describe('ServerAPIWrapper', () => {
                         },
                     ],
                 });
-                return {} as MockConfig;
+                return {} as XMLHttpRequest;
             });
 
             const result = await apiWrapper.fetchReports();
@@ -416,7 +404,7 @@ describe('ServerAPIWrapper', () => {
         });
 
         test('parses jsonConfig when present', async () => {
-            mockSelectRows.mockImplementation((config: MockConfig) => {
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                 config.success({
                     rows: [
                         {
@@ -429,19 +417,19 @@ describe('ServerAPIWrapper', () => {
                         },
                     ],
                 });
-                return {} as MockConfig;
+                return {} as XMLHttpRequest;
             });
 
             const result = await apiWrapper.fetchReports();
 
-            expect(result.reports[0].customField).toBe('customValue');
-            expect(result.reports[0].anotherField).toBe(42);
+            expect((result.reports[0] as any).customField).toBe('customValue');
+            expect((result.reports[0] as any).anotherField).toBe(42);
         });
 
         test('handles invalid jsonConfig gracefully with console error', async () => {
             const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
 
-            mockSelectRows.mockImplementation((config: MockConfig) => {
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                 config.success({
                     rows: [
                         {
@@ -454,7 +442,7 @@ describe('ServerAPIWrapper', () => {
                         },
                     ],
                 });
-                return {} as MockConfig;
+                return {} as XMLHttpRequest;
             });
 
             const result = await apiWrapper.fetchReports();
@@ -472,9 +460,9 @@ describe('ServerAPIWrapper', () => {
         test('handles failure gracefully', async () => {
             const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
 
-            mockSelectRows.mockImplementation((config: MockConfig) => {
-                config.failure({ message: 'Network error' });
-                return {} as MockConfig;
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
+                config.failure!({ message: 'Network error' });
+                return {} as XMLHttpRequest;
             });
 
             const result = await apiWrapper.fetchReports();
@@ -489,9 +477,9 @@ describe('ServerAPIWrapper', () => {
         test('handles failure with default error message when message is missing', async () => {
             const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
 
-            mockSelectRows.mockImplementation((config: MockConfig) => {
-                config.failure({});
-                return {} as MockConfig;
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
+                config.failure!({});
+                return {} as XMLHttpRequest;
             });
 
             const result = await apiWrapper.fetchReports();
@@ -503,9 +491,9 @@ describe('ServerAPIWrapper', () => {
         });
 
         test('handles empty result set', async () => {
-            mockSelectRows.mockImplementation((config: MockConfig) => {
+            mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                 config.success({ rows: [] });
-                return {} as MockConfig;
+                return {} as XMLHttpRequest;
             });
 
             const result = await apiWrapper.fetchReports();
