@@ -329,7 +329,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         return List.of(
                 "showAllErrors.view",
                 "query-exportRowsExcel.view",
-                "ldk-runNotification.view"  // need to scope notifications to enabled modules then can remove this
+                "ldk-runNotification.view",  // need to scope notifications to enabled modules then can remove this
+                "ehr-postgresMigration.view"
         ); // Override if there are links to pages that are known to throw errors
     }
 
