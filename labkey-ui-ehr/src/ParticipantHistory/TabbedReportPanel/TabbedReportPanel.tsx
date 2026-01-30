@@ -143,7 +143,7 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = props => {
                 </ul>
             )}
 
-            <div className="tab-content">
+            <div className="tabbed-report-panel__content">
                 {showReport && currentActiveReport ? (
                     <div>
                         {currentActiveReport.reportType === 'query' && (
@@ -157,7 +157,7 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = props => {
                         )}
                     </div>
                 ) : (
-                    <div className="empty-state-placeholder">Select Filter to View Reports</div>
+                    <div className="tabbed-report-panel__empty-state">Select Filter to View Reports</div>
                 )}
             </div>
         </div>

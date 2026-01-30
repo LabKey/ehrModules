@@ -181,7 +181,7 @@ describe('IdResolutionFeedback', () => {
 
             const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
-            const resolvedItems = container.querySelectorAll('.resolved-item');
+            const resolvedItems = container.querySelectorAll('.id-resolution-feedback__item--resolved');
             expect(resolvedItems).toHaveLength(2);
         });
 
@@ -193,7 +193,7 @@ describe('IdResolutionFeedback', () => {
 
             const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
-            const notFoundItems = container.querySelectorAll('.not-found-item');
+            const notFoundItems = container.querySelectorAll('.id-resolution-feedback__item--not-found');
             expect(notFoundItems).toHaveLength(2);
         });
     });

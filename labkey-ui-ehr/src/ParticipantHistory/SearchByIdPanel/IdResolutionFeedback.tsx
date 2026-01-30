@@ -27,23 +27,25 @@ export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolution
 
     return (
         <div className="id-resolution-feedback">
-            <h3 className="title">ID Resolution</h3>
+            <h3 className="id-resolution-feedback__title">ID Resolution</h3>
 
             {resolved.length > 0 && (
-                <div className="section">
-                    <h4 className="section-title resolved">Resolved ({resolved.length})</h4>
-                    <div className="items">
+                <div className="id-resolution-feedback__section">
+                    <h4 className="id-resolution-feedback__section-title id-resolution-feedback__section-title--resolved">
+                        Resolved ({resolved.length})
+                    </h4>
+                    <div className="id-resolution-feedback__items">
                         {directMatches.map(match => (
-                            <div className="item resolved-item" key={match.inputId}>
-                                <span className="resolved-id">{match.resolvedId}</span>
+                            <div className="id-resolution-feedback__item id-resolution-feedback__item--resolved" key={match.inputId}>
+                                <span className="id-resolution-feedback__resolved-id">{match.resolvedId}</span>
                             </div>
                         ))}
                         {aliasMatches.map(match => (
-                            <div className="item resolved-item" key={match.inputId}>
-                                <span className="input-id">{match.inputId}</span>
-                                <span className="arrow">→</span>
-                                <span className="resolved-id">{match.resolvedId}</span>
-                                {match.aliasType && <span className="alias-type">({match.aliasType})</span>}
+                            <div className="id-resolution-feedback__item id-resolution-feedback__item--resolved" key={match.inputId}>
+                                <span className="id-resolution-feedback__input-id">{match.inputId}</span>
+                                <span className="id-resolution-feedback__arrow">→</span>
+                                <span className="id-resolution-feedback__resolved-id">{match.resolvedId}</span>
+                                {match.aliasType && <span className="id-resolution-feedback__alias-type">({match.aliasType})</span>}
                             </div>
                         ))}
                     </div>
@@ -51,11 +53,13 @@ export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolution
             )}
 
             {notFound.length > 0 && (
-                <div className="section">
-                    <h4 className="section-title not-found">Not Found ({notFound.length})</h4>
-                    <div className="items">
+                <div className="id-resolution-feedback__section">
+                    <h4 className="id-resolution-feedback__section-title id-resolution-feedback__section-title--not-found">
+                        Not Found ({notFound.length})
+                    </h4>
+                    <div className="id-resolution-feedback__items">
                         {notFound.map(id => (
-                            <div className="item not-found-item" key={id}>
+                            <div className="id-resolution-feedback__item id-resolution-feedback__item--not-found" key={id}>
                                 {id}
                             </div>
                         ))}

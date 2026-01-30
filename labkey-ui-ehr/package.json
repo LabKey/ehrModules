@@ -54,7 +54,7 @@
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
   "dependencies": {
-    "@labkey/components": "6.72.1"
+    "@labkey/components": "7.13.1"
   },
   "devDependencies": {
     "@labkey/build": "8.7.0",

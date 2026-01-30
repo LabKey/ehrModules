@@ -58,23 +58,6 @@ export const validateInput = (ids: string[]): string | undefined => {
     return undefined;
 };
 
-/**
- * Search By Id Panel Component
- *
- * Provides UI for searching animals by ID with three filter modes:
- * - ID Search: Enter single or multiple animal IDs (max 100)
- * - All Records: View all animals (no filters)
- * - Alive at Center: View only animals with calculated_status = 'Alive'
- * - URL Params: Read-only view for shared/bookmarked links
- *
- * Features:
- * - Multi-separator parsing (newlines, tabs, commas, semicolons)
- * - Alias resolution (tattoos, chip numbers, etc.)
- * - Case-insensitive matching
- * - 100 ID limit validation
- * - ID Resolution feedback for aliases and not-found IDs
- */
-
 export interface SearchByIdPanelProps {
     activeReportSupportsNonIdFilters: boolean;
     initialFilterType: FilterType;
@@ -100,12 +83,10 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
     const [validationError, setValidationError] = useState<string | undefined>(undefined);
     const [hasUserTyped, setHasUserTyped] = useState<boolean>(false);
 
-    // Sync filterType with initialFilterType prop changes
     useEffect(() => {
         setFilterType(initialFilterType);
     }, [initialFilterType]);
 
-    // Validate input whenever it changes (but only after user has typed)
     useEffect(() => {
         if (hasUserTyped) {
             const parsedIds = parseIds(inputValue);
@@ -114,87 +95,63 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
         }
     }, [inputValue, hasUserTyped]);
 
-    // Handle Update Report button click
     const handleUpdateReport = useCallback(async () => {
-        // Set filter mode to ID Search
         setFilterType(FILTER_TYPE_ID_SEARCH);
-
-        // Parse IDs from input
         const parsedIds = parseIds(inputValue);
 
-        // Validate input (in case user clicked without typing)
         const error = validateInput(parsedIds);
         if (error) {
             setValidationError(error);
-            setHasUserTyped(true); // Show validation errors now
-            // Call onFilterChange with empty array to show no records in reports
-            onFilterChange(FILTER_TYPE_ID_SEARCH, []);
-            return; // Stop if validation fails
-        }
-
-        // Call resolveAnimalIds service
-        setIsResolving(true);
-        const result = await resolveAnimalIds({ inputIds: parsedIds });
-        setIsResolving(false);
-
-        // Handle error
-        if (result.error) {
-            setValidationError('Failed to resolve animal IDs. Please try again.');
-            // Call onFilterChange with empty array to show no records in reports when error occurs
+            setHasUserTyped(true);
             onFilterChange(FILTER_TYPE_ID_SEARCH, []);
             return;
         }
 
-        // Update resolutionResult state
+        setIsResolving(true);
+        const result = await resolveAnimalIds({ inputIds: parsedIds });
+        setIsResolving(false);
+
+        if (result.error) {
+            setValidationError('Failed to resolve animal IDs. Please try again.');
+            onFilterChange(FILTER_TYPE_ID_SEARCH, []);
+            return;
+        }
+
         setResolutionResult(result);
-
-        // Extract resolved subject IDs
         const resolvedSubjects = result.resolved.map(r => r.resolvedId);
-
-        // Track ID search metric
         incrementClientSideMetricCount('ehrParticipantHistoryFilter', FILTER_TYPE_ID_SEARCH);
-
-        // Call onFilterChange with resolved subject IDs
         onFilterChange(FILTER_TYPE_ID_SEARCH, resolvedSubjects);
     }, [inputValue, onFilterChange, resolveAnimalIds]);
 
-    // Handle filter mode button clicks
     const handleFilterModeChange = useCallback(
         (newFilterType: FilterType) => {
             setFilterType(newFilterType);
-
-            // Track filter metric
             incrementClientSideMetricCount('ehrParticipantHistoryFilter', newFilterType);
-
-            // Clear input when switching to non-ID modes
             setInputValue('');
             setResolutionResult({ resolved: [], notFound: [] });
             setValidationError(undefined);
             setHasUserTyped(false);
-
             onFilterChange(newFilterType, undefined);
         },
         [onFilterChange]
     );
 
-    // Handle Modify Search button (URL Params mode)
     const handleModifySearch = useCallback(() => {
         setFilterType(FILTER_TYPE_ID_SEARCH);
         setInputValue(initialSubjects.join(','));
         onFilterChange(FILTER_TYPE_ID_SEARCH, initialSubjects);
     }, [initialSubjects, onFilterChange]);
 
-    // Determine if resolution feedback should be visible
     const isResolutionFeedbackVisible =
         resolutionResult.resolved.some(r => r.resolvedBy === 'alias') || resolutionResult.notFound.length > 0;
 
     if (filterType === FILTER_TYPE_URL_PARAMS) {
         return (
-            <div className="search-by-id-panel url-params-mode">
-                <div className="url-params-summary">
+            <div className="search-by-id-panel search-by-id-panel--url-params">
+                <div className="search-by-id-panel__summary">
                     Viewing {initialSubjects.length} animal(s): {initialSubjects.join(', ')}
                 </div>
-                <button className="modify-button" onClick={handleModifySearch}>
+                <button className="search-by-id-panel__modify-button" onClick={handleModifySearch}>
                     Modify Search
                 </button>
             </div>
@@ -203,12 +160,12 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
 
     return (
         <div className="search-by-id-panel">
-            <div className="panel-container">
-                <label className="label-text" htmlFor="animal-id-input">
+            <div className="search-by-id-panel__container">
+                <label className="search-by-id-panel__label" htmlFor="animal-id-input">
                     Enter Animal IDs or Aliases (separated by newline, comma, semicolon, or tab)
                 </label>
                 <textarea
-                    className="animal-id-input"
+                    className="search-by-id-panel__input"
                     id="animal-id-input"
                     onChange={e => {
                         setInputValue(e.target.value);
@@ -220,12 +177,12 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
                 />
 
                 {validationError && (
-                    <div className="validation-error" role="alert">
+                    <div className="search-by-id-panel__validation-error" role="alert">
                         {validationError}
                     </div>
                 )}
 
-                <div className="button-container">
+                <div className="search-by-id-panel__buttons">
                     <button
                         className={classNames('search-button', {
                             active: !isResolving && filterType === FILTER_TYPE_ID_SEARCH,

@@ -8,7 +8,7 @@
     max-width: 900px;
 
     // Main container
-    .panel-container {
+    &__container {
         background-color: #f8f9fa;
         padding: 16px;
         border-radius: 8px;
@@ -142,7 +142,7 @@
     }
 
     // URL Params mode (read-only)
-    &.url-params-mode {
+    &--url-params {
         background-color: #f8f9fa;
         padding: 16px;
         border-radius: 8px;
@@ -176,13 +176,13 @@
     }
 
     // Additional inline styles
-    .label-text {
+    &__label {
         display: block;
         margin-bottom: 8px;
         font-weight: 500;
     }
 
-    .animal-id-input {
+    &__input {
         width: 100%;
         min-height: 80px;
         padding: 10px;
@@ -194,7 +194,7 @@
         box-sizing: border-box;
     }
 
-    .validation-error {
+    &__validation-error {
         margin-top: 8px;
         padding: 8px 12px;
         background-color: #ffebee;
@@ -203,7 +203,7 @@
         font-size: 14px;
     }
 
-    .button-container {
+    &__buttons {
         margin-top: 12px;
         display: flex;
         gap: 8px;
@@ -280,12 +280,12 @@
         }
     }
 
-    .url-params-summary {
+    &__summary {
         margin-bottom: 12px;
         color: #333;
     }
 
-    .modify-button {
+    &__modify-button {
         padding: 10px 20px;
         background-color: #0066cc;
         color: white;
