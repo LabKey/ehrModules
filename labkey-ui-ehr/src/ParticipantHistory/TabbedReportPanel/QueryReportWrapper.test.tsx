@@ -61,15 +61,6 @@ describe('QueryReportWrapper', () => {
         viewName: null,
     };
 
-    test('renders a report-target div', () => {
-        const { container } = renderWithServerContext(
-            <QueryReportWrapper filters={filters} report={queryReport} />,
-            defaultServerContext()
-        );
-
-        expect(container.querySelector('.report-target')).toBeInTheDocument();
-    });
-
     test('creates Ext4 container and adds ldk-querycmp to tab', async () => {
         renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 

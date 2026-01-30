@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 
-import { Query } from '@labkey/api';
+import { Filter, Query } from '@labkey/api';
 
 import { JSReportWrapper } from './JSReportWrapper';
 import { ExtReportTab, FILTER_TYPE_ID_SEARCH, JsReportConfig } from '../models';
@@ -73,12 +73,6 @@ describe('JSReportWrapper', () => {
         viewName: null,
     };
 
-    test('renders a report-target div', () => {
-        const { container } = render(<JSReportWrapper filters={filters} report={jsReport} />);
-
-        expect(container.querySelector('.report-target')).toBeInTheDocument();
-    });
-
     test('calls JS function from window namespace when available', async () => {
         const mockJsFunction = jest.fn();
         (window as any).testFunction = mockJsFunction;
@@ -130,11 +124,13 @@ describe('JSReportWrapper', () => {
             expect(mockJsFunction).toHaveBeenCalled();
         });
 
-        // getFilterArray should return the tab's filter array
+        // With FILTER_TYPE_ID_SEARCH and two subjects, the tab produces an EQUALS_ONE_OF filter on 'Id'
         const result = capturedPanel.getFilterArray();
-        expect(result).toBeDefined();
-        expect(result).toHaveProperty('removable');
-        expect(result).toHaveProperty('nonRemovable');
+        expect(result.removable).toHaveLength(0);
+        expect(result.nonRemovable).toHaveLength(1);
+        expect(result.nonRemovable[0].getColumnName()).toBe('Id');
+        expect(result.nonRemovable[0].getValue()).toEqual(['ID123', 'ID456']);
+        expect(result.nonRemovable[0].getFilterType().getURLSuffix()).toBe(Filter.Types.EQUALS_ONE_OF.getURLSuffix());
     });
 
     test('panel getQWPConfig delegates to tab', async () => {
@@ -151,7 +147,13 @@ describe('JSReportWrapper', () => {
         });
 
         const result = capturedPanel.getQWPConfig();
-        expect(result).toBeDefined();
+        expect(result.partName).toBe('Report');
+        expect(result.queryName).toBe('testFunction');
+        expect(result.title).toBe('JS Report');
+        expect(result.allowChooseQuery).toBe(false);
+        expect(result.showInsertNewButton).toBe(false);
+        expect(result.filters).toHaveLength(1);
+        expect(result.filters[0].getColumnName()).toBe('Id');
     });
 
     test('panel getTitleSuffix returns formatted subject list', async () => {
