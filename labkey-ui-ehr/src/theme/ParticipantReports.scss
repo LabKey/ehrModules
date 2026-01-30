@@ -1,10 +1,5 @@
-/**
- * ParticipantReports Styles
- * Styling for the main ParticipantReports container
- */
-
 .participant-reports {
-    .filter-not-supported-error {
+    &__filter-error {
         margin-top: 16px;
         margin-bottom: 16px;
         padding: 12px;

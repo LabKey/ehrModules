@@ -1,8 +1,5 @@
-/**
- * OtherReportWrapper Styles
- * Styling for the OtherReportWrapper component
- */
-
 .other-report-wrapper {
-    min-height: 50px;
+    &__target {
+        min-height: 50px;
+    }
 }
