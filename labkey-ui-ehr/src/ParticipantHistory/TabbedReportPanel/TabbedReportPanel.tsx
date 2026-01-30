@@ -107,9 +107,8 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = props => {
                 {categories.map(category => (
                     <li className={classNames({ active: activeCategory === category })} key={category}>
                         <button
-                            className={classNames({
-                                'category-tab-active': activeCategory === category,
-                                'category-tab': activeCategory !== category,
+                            className={classNames('tabbed-report-panel__category-tab', {
+                                'tabbed-report-panel__category-tab--active': activeCategory === category,
                             })}
                             onClick={() => handleCategoryClick(category)}
                             type="button"
@@ -126,9 +125,8 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = props => {
                     {activeCategoryReports.map(report => (
                         <li className={classNames({ active: activeTabId === report.id })} key={report.id}>
                             <button
-                                className={classNames({
-                                    'report-tab-active': activeTabId === report.id,
-                                    'report-tab': activeTabId !== report.id,
+                                className={classNames('tabbed-report-panel__report-tab', {
+                                    'tabbed-report-panel__report-tab--active': activeTabId === report.id,
                                 })}
                                 onClick={() => {
                                     setUserSelectedTabId(report.id);

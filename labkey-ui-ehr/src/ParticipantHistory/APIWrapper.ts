@@ -9,14 +9,8 @@ export interface FetchReportsResult {
 
 export type FetchReportsFn = () => Promise<FetchReportsResult>;
 
-/**
- * API wrapper interface for ParticipantHistory server calls.
- * Provides dependency injection support for testing.
- */
 export interface ParticipantHistoryAPIWrapper {
-    /** Fetches all visible reports from the ehr.reports table */
     fetchReports: () => Promise<FetchReportsResult>;
-    /** Resolves animal IDs via direct ID match and alias lookup */
     resolveAnimalIds: (params: ResolveIdsParams) => Promise<IdResolutionResult>;
 }
 

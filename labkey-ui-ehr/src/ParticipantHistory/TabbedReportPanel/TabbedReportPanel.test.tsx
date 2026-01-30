@@ -341,7 +341,7 @@ describe('TabbedReportPanel', () => {
         // The JS Report tab should now be active
         await waitFor(() => {
             const jsTab = screen.getByText('JS Report').closest('button');
-            expect(jsTab).toHaveClass('report-tab-active');
+            expect(jsTab).toHaveClass('tabbed-report-panel__report-tab--active');
         });
     });
 
@@ -424,7 +424,7 @@ describe('TabbedReportPanel', () => {
         // Wait for render and verify JS Report tab is active
         await waitFor(() => {
             const jsTab = screen.getByText('JS Report').closest('button');
-            expect(jsTab).toHaveClass('report-tab-active');
+            expect(jsTab).toHaveClass('tabbed-report-panel__report-tab--active');
         });
     });
 

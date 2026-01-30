@@ -60,11 +60,11 @@ describe('OtherReportWrapper', () => {
         viewName: null,
     };
 
-    test('renders report-target div and other-report-wrapper div', () => {
+    test('renders other-report-wrapper__target div and other-report-wrapper__content div', () => {
         const { container } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
-        expect(container.querySelector('.report-target')).toBeInTheDocument();
-        const targetDiv = container.querySelector('.other-report-wrapper');
+        expect(container.querySelector('.other-report-wrapper__target')).toBeInTheDocument();
+        const targetDiv = container.querySelector('.other-report-wrapper__content');
         expect(targetDiv).toBeInTheDocument();
         expect(targetDiv?.id).toMatch(/^report-target-other-report-1-/);
     });
@@ -153,7 +153,7 @@ describe('OtherReportWrapper', () => {
 
         expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to load report', { message: 'Test error' });
 
-        const targetDiv = container.querySelector('.other-report-wrapper');
+        const targetDiv = container.querySelector('.other-report-wrapper__content');
         expect(targetDiv?.innerHTML).toContain('labkey-error');
         expect(targetDiv?.innerHTML).toContain("Failed to load report 'Other Report'");
 
@@ -171,7 +171,7 @@ describe('OtherReportWrapper', () => {
 
         expect(consoleErrorSpy).toHaveBeenCalledWith('Error loading report', expect.any(Error));
 
-        const targetDiv = container.querySelector('.other-report-wrapper');
+        const targetDiv = container.querySelector('.other-report-wrapper__content');
         expect(targetDiv?.innerHTML).toContain('labkey-error');
         expect(targetDiv?.innerHTML).toContain("Error loading report 'Other Report'");
 
@@ -183,8 +183,8 @@ describe('OtherReportWrapper', () => {
         const { container: container1 } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
         const { container: container2 } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
-        const targetDiv1 = container1.querySelector('.other-report-wrapper');
-        const targetDiv2 = container2.querySelector('.other-report-wrapper');
+        const targetDiv1 = container1.querySelector('.other-report-wrapper__content');
+        const targetDiv2 = container2.querySelector('.other-report-wrapper__content');
 
         expect(targetDiv1?.id).not.toBe(targetDiv2?.id);
     });
@@ -205,7 +205,7 @@ describe('OtherReportWrapper', () => {
 
         const { container } = render(<OtherReportWrapper filters={filters} report={reportConfig} />);
 
-        const targetDiv = container.querySelector('.other-report-wrapper');
+        const targetDiv = container.querySelector('.other-report-wrapper__content');
         expect(targetDiv?.id).not.toContain(':');
         expect(targetDiv?.id).toContain('-');
 

@@ -135,17 +135,17 @@ describe('ParticipantReports', () => {
         const aliveBtn = screen.getByRole('button', { name: /all alive at center/i });
 
         if (activeButton === 'search') {
-            expect(searchBtn).toHaveClass('active');
-            expect(allBtn).toHaveClass('inactive');
-            expect(aliveBtn).toHaveClass('inactive');
+            expect(searchBtn).toHaveClass('search-by-id-panel__search-button--active');
+            expect(allBtn).toHaveClass('search-by-id-panel__filter-button--inactive');
+            expect(aliveBtn).toHaveClass('search-by-id-panel__filter-button--inactive');
         } else if (activeButton === 'all') {
-            expect(searchBtn).toHaveClass('inactive');
-            expect(allBtn).toHaveClass('active');
-            expect(aliveBtn).toHaveClass('inactive');
+            expect(searchBtn).toHaveClass('search-by-id-panel__search-button--inactive');
+            expect(allBtn).toHaveClass('search-by-id-panel__filter-button--active');
+            expect(aliveBtn).toHaveClass('search-by-id-panel__filter-button--inactive');
         } else {
-            expect(searchBtn).toHaveClass('inactive');
-            expect(allBtn).toHaveClass('inactive');
-            expect(aliveBtn).toHaveClass('active');
+            expect(searchBtn).toHaveClass('search-by-id-panel__search-button--inactive');
+            expect(allBtn).toHaveClass('search-by-id-panel__filter-button--inactive');
+            expect(aliveBtn).toHaveClass('search-by-id-panel__filter-button--active');
         }
     };
 

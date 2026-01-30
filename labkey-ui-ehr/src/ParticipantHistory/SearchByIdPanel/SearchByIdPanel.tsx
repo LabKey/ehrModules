@@ -184,9 +184,9 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
 
                 <div className="search-by-id-panel__buttons">
                     <button
-                        className={classNames('search-button', {
-                            active: !isResolving && filterType === FILTER_TYPE_ID_SEARCH,
-                            inactive: !isResolving && filterType !== FILTER_TYPE_ID_SEARCH,
+                        className={classNames('search-by-id-panel__search-button', {
+                            'search-by-id-panel__search-button--active': !isResolving && filterType === FILTER_TYPE_ID_SEARCH,
+                            'search-by-id-panel__search-button--inactive': !isResolving && filterType !== FILTER_TYPE_ID_SEARCH,
                         })}
                         disabled={isResolving}
                         onClick={handleUpdateReport}
@@ -194,18 +194,18 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
                         {'Search By Ids'}
                     </button>
                     <button
-                        className={classNames('filter-button', 'all-animals', {
-                            active: filterType === FILTER_TYPE_ALL,
-                            inactive: filterType !== FILTER_TYPE_ALL,
+                        className={classNames('search-by-id-panel__filter-button', {
+                            'search-by-id-panel__filter-button--active': filterType === FILTER_TYPE_ALL,
+                            'search-by-id-panel__filter-button--inactive': filterType !== FILTER_TYPE_ALL,
                         })}
                         onClick={() => handleFilterModeChange(FILTER_TYPE_ALL)}
                     >
                         All Animals
                     </button>
                     <button
-                        className={classNames('filter-button', 'alive-at-center', {
-                            active: filterType === FILTER_TYPE_ALIVE_AT_CENTER,
-                            inactive: filterType !== FILTER_TYPE_ALIVE_AT_CENTER,
+                        className={classNames('search-by-id-panel__filter-button', 'search-by-id-panel__filter-button--alive-at-center', {
+                            'search-by-id-panel__filter-button--active': filterType === FILTER_TYPE_ALIVE_AT_CENTER,
+                            'search-by-id-panel__filter-button--inactive': filterType !== FILTER_TYPE_ALIVE_AT_CENTER,
                         })}
                         disabled={!activeReportSupportsNonIdFilters}
                         onClick={() => handleFilterModeChange(FILTER_TYPE_ALIVE_AT_CENTER)}

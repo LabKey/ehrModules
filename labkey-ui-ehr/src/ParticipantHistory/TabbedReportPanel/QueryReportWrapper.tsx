@@ -50,7 +50,7 @@ const QueryReportWrapperComponent: FC<QueryReportWrapperProps> = ({ report, filt
         };
     }, [tab, report]);
 
-    return <div className="report-target" ref={targetRef} />;
+    return <div className="query-report-wrapper__target" ref={targetRef} />;
 };
 
 QueryReportWrapperComponent.displayName = 'QueryReportWrapper';

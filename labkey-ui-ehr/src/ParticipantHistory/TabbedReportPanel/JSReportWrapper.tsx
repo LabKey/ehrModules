@@ -22,7 +22,7 @@ type JSReportHandler = (panel: JSReportPanel, tab: ExtReportTab) => void;
  * Panel object interface passed to JavaScript report functions
  * Provides methods for accessing filter data, query configuration, and housing resolution
  */
-export interface JSReportPanel {
+interface JSReportPanel {
     getFilterArray: () => FilterArray;
     getQWPConfig: () => QueryWebPartConfig;
     getTitleSuffix: () => string;
@@ -219,7 +219,7 @@ const JSReportWrapperComponent: FC<JSReportWrapperProps> = ({ report, filters })
         };
     }, [tab, report]);
 
-    return <div className="report-target" ref={targetRef} />;
+    return <div className="js-report-wrapper__target" ref={targetRef} />;
 };
 
 JSReportWrapperComponent.displayName = 'JSReportWrapper';

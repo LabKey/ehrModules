@@ -149,7 +149,7 @@ const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({
                 />
             )}
             {filterNotSupportedError && (
-                <div className="filter-not-supported-error" role="alert">
+                <div className="participant-reports__filter-error" role="alert">
                     {filterNotSupportedError}
                 </div>
             )}

@@ -713,7 +713,7 @@ describe('SearchByIdPanel', () => {
             fireEvent.click(allAnimalsButton);
 
             // Verify All Animals is active
-            expect(allAnimalsButton).toHaveClass('active');
+            expect(allAnimalsButton).toHaveClass('search-by-id-panel__filter-button--active');
 
             // Now click Search By Ids with no input (will trigger validation error)
             const searchByIdsButton = screen.getByRole('button', { name: /search by ids/i });
@@ -723,10 +723,10 @@ describe('SearchByIdPanel', () => {
             expect(screen.getByRole('alert')).toHaveTextContent('Please enter at least one animal ID');
 
             // Verify Search By Ids button is now active
-            expect(searchByIdsButton).toHaveClass('active');
+            expect(searchByIdsButton).toHaveClass('search-by-id-panel__search-button--active');
 
             // Verify All Animals button is now inactive
-            expect(allAnimalsButton).toHaveClass('inactive');
+            expect(allAnimalsButton).toHaveClass('search-by-id-panel__filter-button--inactive');
         });
 
         test('ID textarea is always visible', () => {
