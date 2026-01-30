@@ -142,7 +142,10 @@ AnimalHistoryPage.tsx
 │   └── TabbedReportPanel.tsx (existing)
 │       ├── Category tabs (primary navigation)
 │       ├── Report tabs (secondary navigation)
-│       └── Report renderers (JSReportWrapper, QueryReportWrapper, OtherReportWrapper)
+│       └── Report wrappers (each internally uses useReportTab hook)
+│           ├── QueryReportWrapper (filters, report) → useReportTab → ExtJS ldk-querycmp
+│           ├── JSReportWrapper (filters, report) → useReportTab → JS function call
+│           └── OtherReportWrapper (filters, report) → useReportTab → LABKEY.WebPart
 ```
 
 **URL Params/ReadOnly Mode:** When URL contains `readOnly=true` with subjects, ParticipantReports hides SearchByIdPanel entirely and displays reports directly using filters derived from URL.
@@ -189,53 +192,47 @@ This approach ensures styles remain stable even if button order changes in the D
 
 ### Component Modularity
 
-**ReportTab Component Extraction:**
+**useReportTab Hook:**
 
-The `ReportTab` component has been extracted from `TabbedReportPanel.tsx` into its own file for better modularity and maintainability:
+ExtJS tab lifecycle management is handled by the `useReportTab` custom hook, which each report wrapper calls internally. This replaces an earlier `ReportTab` render-props component with a simpler hook-based approach.
 
-**Location:** `labkey-ui-ehr/src/ParticipantHistory/TabbedReportPanel/ReportTab.tsx`
+**Location:** `labkey-ui-ehr/src/ParticipantHistory/TabbedReportPanel/useReportTab.ts`
 
-**Props Interface:**
+**Signature:**
 ```typescript
-interface ReportTabProps {
-    children: (tab: ExtReportTab) => React.ReactNode;
-    filters: ReportFilters;
-    report: ReportConfig;
-}
+function useReportTab(
+    report: ReportConfig,
+    filters: ReportFilters
+): { tab: ExtReportTab | null; targetRef: React.RefObject<HTMLDivElement> }
 ```
 
-**Render Props Pattern:**
-ReportTab uses the render props pattern via the `children` prop. This allows parent components to receive the initialized `ExtReportTab` instance and render appropriate report wrappers:
+**Usage in Report Wrappers:**
+Each wrapper calls the hook directly and renders its own report content:
 
 ```tsx
-<ReportTab filters={filters} report={currentActiveReport}>
-    {tab => (
-        <>
-            {currentActiveReport.reportType === 'query' && (
-                <QueryReportWrapper report={currentActiveReport} tab={tab} />
-            )}
-            {currentActiveReport.reportType === 'js' && (
-                <JSReportWrapper
-                    report={currentActiveReport}
-                    reportNamespace={reportNamespace}
-                    tab={tab}
-                />
-            )}
-            {currentActiveReport.reportType === 'report' && (
-                <OtherReportWrapper report={currentActiveReport} tab={tab} />
-            )}
-        </>
-    )}
-</ReportTab>
+// Inside QueryReportWrapper, JSReportWrapper, or OtherReportWrapper
+const { tab, targetRef } = useReportTab(report, filters);
+```
+
+TabbedReportPanel renders wrappers directly without an intermediary component:
+
+```tsx
+{currentActiveReport.reportType === 'query' && (
+    <QueryReportWrapper filters={filters} report={currentActiveReport} />
+)}
+{currentActiveReport.reportType === 'js' && (
+    <JSReportWrapper filters={filters} report={currentActiveReport} />
+)}
+{currentActiveReport.reportType === 'report' && (
+    <OtherReportWrapper filters={filters} report={currentActiveReport} />
+)}
 ```
 
 **Benefits:**
-- Improved code organization with single-responsibility principle
-- Easier to test the ReportTab component in isolation
-- Better separation of concerns between tab management and report panel orchestration
-- Reduced file size and complexity of TabbedReportPanel.tsx
-- Dedicated test file for ReportTab-specific behavior
-- Render props pattern provides clean composition for report type-specific rendering
+- Simpler composition: each wrapper is self-contained with its own tab lifecycle
+- No render-props indirection; wrappers receive `filters` and `report` directly
+- Hook is independently testable (29 unit tests in `useReportTab.test.tsx`)
+- Reduced coupling between TabbedReportPanel and report wrappers
 
 **Centralized Type Definitions (Updated 2026-01-21):**
 
@@ -244,7 +241,6 @@ All commonly used interfaces have been centralized into a dedicated models direc
 **Location:** `labkey-ui-ehr/src/ParticipantHistory/models/index.ts`
 
 **Exported Types and Interfaces:**
-- `ReportType` - Literal union type for report types ('js' | 'query' | 'report')
 - `ReportConfig` - Discriminated union of all report configuration types
 - `QueryReportConfig` - Configuration for query-based reports
 - `JsReportConfig` - Configuration for JavaScript function reports
@@ -272,8 +268,8 @@ import { ReportConfig, QueryReportConfig, JsReportConfig, OtherReportConfig, Fil
 - Better separation between component logic and type definitions
 - Improved IDE autocomplete and type checking
 
-**Affected Files (13 files updated):**
-- `TabbedReportPanel/ReportTab.tsx` - Imports `ReportConfig` union from models
+**Affected Files (12 files updated):**
+- `TabbedReportPanel/useReportTab.ts` - Imports from models, implements ExtJS tab lifecycle and filter/config methods
 - `TabbedReportPanel/TabbedReportPanel.tsx` - Imports `ReportConfig` union from models
 - `TabbedReportPanel/QueryReportWrapper.tsx` - Imports `QueryReportConfig` variant from models
 - `TabbedReportPanel/JSReportWrapper.tsx` - Imports `JsReportConfig` variant from models
@@ -286,8 +282,7 @@ import { ReportConfig, QueryReportConfig, JsReportConfig, OtherReportConfig, Fil
 - All corresponding test files (.test.tsx) - Imports from models
 
 **Test Coverage:**
-- `ReportTab.test.tsx` - 16 unit tests covering ExtJS integration, lifecycle, props, and filter logic
-- Test coverage: 100% statements, 97.14% branches, 100% functions
+- `useReportTab.test.tsx` - 29 unit tests covering ExtJS tab creation, lifecycle, getFilterArray, getQWPConfig, and filter mode handling
 
 ### Type System
 
@@ -370,24 +365,21 @@ export type ReportConfig = JsReportConfig | OtherReportConfig | QueryReportConfi
 - Self-documenting which fields each report type requires
 
 **Component Type Usage:**
-- `QueryReportWrapper` - accepts `QueryReportConfig`
-- `JSReportWrapper` - accepts `JsReportConfig`
-- `OtherReportWrapper` - accepts `OtherReportConfig`
-- `ReportTab` and `TabbedReportPanel` - accept the full `ReportConfig` union
+- `QueryReportWrapper` - accepts `QueryReportConfig` and `ReportFilters`
+- `JSReportWrapper` - accepts `JsReportConfig` and `ReportFilters`
+- `OtherReportWrapper` - accepts `OtherReportConfig` and `ReportFilters`
+- `TabbedReportPanel` - accepts the full `ReportConfig` union
 
-**JSReportWrapperProps** - Props interface for JSReportWrapper component (defined in `JSReportWrapper.tsx`):
+**Report Wrapper Props** - All three wrappers follow the same pattern (each defined in its own `.tsx` file):
 ```typescript
-interface JSReportWrapperProps {
-    report: JsReportConfig;
-    reportNamespace: string;
-    tab: ExtReportTab;
+// QueryReportWrapperProps / JSReportWrapperProps / OtherReportWrapperProps
+interface <Wrapper>Props {
+    filters: ReportFilters;
+    report: QueryReportConfig | JsReportConfig | OtherReportConfig; // specific variant per wrapper
 }
 ```
 
-This interface defines the props for rendering JavaScript-based reports:
-- `report` - The JS report configuration containing the function name to invoke
-- `reportNamespace` - Namespace to search for report functions (e.g., "EHR.reports")
-- `tab` - The ExtJS container tab instance for rendering report content
+Each wrapper internally calls `useReportTab(report, filters)` to create and manage its ExtJS tab, rather than receiving a `tab` prop from a parent component.
 
 **JSReportPanel** - Panel object interface for JavaScript report functions (defined in `JSReportWrapper.tsx`):
 ```typescript
@@ -395,7 +387,7 @@ export interface JSReportPanel {
     getFilterArray: () => FilterArray;
     getQWPConfig: () => QueryWebPartConfig;
     getTitleSuffix: () => string;
-    resolveSubjectsFromHousing: (
+    resolveSubjectsFromHousing?: (
         tab: ExtReportTab,
         callback: (subjects: string[], tab: ExtReportTab) => void,
         scope?: unknown
@@ -407,22 +399,19 @@ This interface defines the contract for the panel object passed to legacy JavaSc
 - Filter data via `getFilterArray()`
 - Query configuration via `getQWPConfig()`
 - Formatted subject titles via `getTitleSuffix()`
-- Housing location resolution via `resolveSubjectsFromHousing()`
+- Housing location resolution via `resolveSubjectsFromHousing()` (optional)
 
-**Test Coverage for Report Wrappers:**
+**Note:** The report namespace for JS function resolution (e.g., `"EHR.reports"`) is defined as a constant (`EHR_REPORT_NAMESPACE`) inside `JSReportWrapper.tsx`, not passed as a prop.
 
-All three report wrapper components now have comprehensive test suites:
+**Test Coverage for Report Wrappers and Hook:**
 
-- `JSReportWrapper.test.tsx` - 17 unit tests covering function resolution, panel methods, error handling, and cleanup
-  - Coverage improved from 39.43% to 95.77% statements
+- `useReportTab.test.tsx` - 29 unit tests covering ExtJS tab creation, lifecycle, getFilterArray for all filter modes, getQWPConfig, custom subjectIdFieldName, edge cases, and FilterArray structure validation
 
-- `OtherReportWrapper.test.tsx` - 20 unit tests covering LABKEY.WebPart integration, filter handling, title suffix generation, and error scenarios
-  - Coverage: 100% statements, 89.47% branches, 100% functions
-  - Tests unique ID generation, containerPath, viewName, and filter parameter serialization
+- `JSReportWrapper.test.tsx` - 14 unit tests covering function resolution, panel delegation methods, error handling, and cleanup
 
-- `QueryReportWrapper.test.tsx` - 18 unit tests covering ExtJS ldk-querycmp integration, query configuration, lifecycle management, and server context
-  - Coverage: 100% statements, 100% branches, 100% functions
-  - Tests component cleanup, error handling, and dependency tracking
+- `OtherReportWrapper.test.tsx` - 12 unit tests covering LABKEY.WebPart integration, filter handling, title suffix generation, and error scenarios
+
+- `QueryReportWrapper.test.tsx` - 6 unit tests covering ExtJS ldk-querycmp integration, query configuration, lifecycle management, and error handling
 
 **FilterArray** - Standardized filter structure:
 ```typescript
@@ -514,17 +503,17 @@ export const ComponentName = memo(ComponentNameComponent);
 Optional chaining (`?.`) has been implemented throughout the codebase to replace verbose null checks, making the code more concise and readable:
 
 **JSReportWrapper.tsx:**
-- `tab?.filters` - Safe access to tab filters (line 152)
-- `ns?.[handlerName]` - Safe property access on namespace object (line 46)
+- `tab?.filters` - Safe access to tab filters
+- `ns?.[handlerName]` - Safe property access on namespace object
 
 **OtherReportWrapper.tsx:**
-- `tab?.filters` - Safe access to tab filters (line 32)
-- `subjects?.length` - Safe length check on subjects array (line 33)
-- `filters?.length` - Safe length check on filters array (line 47)
+- `tab?.filters` - Safe access to tab filters
+- `subjects?.length` - Safe length check on subjects array
+- `filters?.length` - Safe length check on filters array
 
 **TabbedReportPanel.tsx:**
-- `categoryReports?.length` - Safe length check on category reports (line 146)
-- `activeCategoryReports?.length` - Safe length check in JSX rendering (line 179)
+- `categoryReports?.length` - Safe length check on category reports
+- `activeCategoryReports?.length` - Safe length check in JSX rendering
 
 **Benefits:**
 - More concise code compared to `variable && variable.property` patterns
@@ -668,7 +657,9 @@ interface ParticipantReportsProps {
     fetchReports?: FetchReportsFn;
 }
 
-const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({ fetchReports = defaultFetchReports }) => {
+const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({
+    fetchReports = getDefaultParticipantHistoryAPIWrapper().fetchReports,
+}) => {
     const urlFilters = useMemo(() => getFiltersFromUrl(), []);
     const [subjects, setSubjects] = useState<string[]>(urlFilters.subjects || []);
 
@@ -776,7 +767,6 @@ const ParticipantReportsComponent: FC<ParticipantReportsProps> = ({ fetchReports
                 activeReport={activeReport}
                 filters={filters}
                 onTabChange={handleTabChange}
-                reportNamespace="EHR.reports"
                 reports={reportsLoading ? undefined : reports}
                 showReport={showReport}
             />
@@ -912,49 +902,51 @@ export interface FetchReportsResult {
 
 export type FetchReportsFn = () => Promise<FetchReportsResult>;
 
-/**
- * Fetches all visible reports from the EHR schema.
- * Returns a promise that resolves with the report configurations.
- */
-export const fetchReports: FetchReportsFn = (): Promise<FetchReportsResult> => {
-    return new Promise(resolve => {
-        Query.selectRows({
-            schemaName: 'ehr',
-            queryName: 'reports',
-            filterArray: [Filter.create('visible', true, Filter.Types.EQUAL)],
-            sort: 'category,sort_order,reporttitle,reportstatus',
-            success: (data: any) => {
-                const loadedReports: ReportConfig[] = data.rows.map((row: any) => {
-                    const report: ReportConfig = {
-                        id: row.reportname,
-                        title: row.reporttitle,
-                        reportType: row.reporttype,
-                        schemaName: row.schemaname,
-                        queryName: row.queryname,
-                        viewName: row.viewname,
-                        reportId: row.report,
-                        ...row,
-                    };
+// fetchReports is an instance method of ServerAPIWrapper (not a standalone export).
+// ParticipantReports accesses it via getDefaultParticipantHistoryAPIWrapper().fetchReports.
+export class ServerAPIWrapper implements ParticipantHistoryAPIWrapper {
+    fetchReports = (): Promise<FetchReportsResult> => {
+        return new Promise(resolve => {
+            Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'reports',
+                filterArray: [Filter.create('visible', true, Filter.Types.EQUAL)],
+                sort: 'category,sort_order,reporttitle,reportstatus',
+                success: (data: any) => {
+                    const loadedReports: ReportConfig[] = data.rows.map((row: any) => {
+                        const report: ReportConfig = {
+                            id: row.reportname,
+                            title: row.reporttitle,
+                            reportType: row.reporttype,
+                            schemaName: row.schemaname,
+                            queryName: row.queryname,
+                            viewName: row.viewname,
+                            reportId: row.report,
+                            ...row,
+                        };
 
-                    if (row.jsonConfig) {
-                        try {
-                            const json = JSON.parse(row.jsonConfig);
-                            Object.assign(report, json);
-                        } catch (e) {
-                            console.warn('Failed to parse jsonConfig for report: ' + row.reportname, e);
+                        if (row.jsonConfig) {
+                            try {
+                                const json = JSON.parse(row.jsonConfig);
+                                Object.assign(report, json);
+                            } catch (e) {
+                                console.error('Failed to parse jsonConfig for report: ' + row.reportname, e);
+                            }
                         }
-                    }
-                    return report;
-                });
-                resolve({ reports: loadedReports });
-            },
-            failure: (error: any) => {
-                console.error('Failed to load reports', error);
-                resolve({ reports: [], error: error?.message || 'Failed to load reports' });
-            },
+                        return report;
+                    });
+                    resolve({ reports: loadedReports });
+                },
+                failure: (error: any) => {
+                    console.error('Failed to load reports', error);
+                    resolve({ reports: [], error: error?.message || 'Failed to load reports' });
+                },
+            });
         });
-    });
-};
+    };
+
+    // ... resolveAnimalIds also an instance method ...
+}
 ```
 
 **Key Points:**
@@ -1032,9 +1024,9 @@ A new boolean field must be added to the `ehr.reports` table to indicate report 
 
 ## Filter Integration with TabbedReportPanel
 
-The `TabbedReportPanel` needs updates to handle four filter modes:
+The `useReportTab` hook handles four filter modes via its `getFilterArray()` method:
 
-**Updated `ReportTab` component:**
+**`useReportTab` hook — `getFilterArray` implementation:**
 ```typescript
 newTab.getFilterArray = () => {
     const filterArray = { removable: [], nonRemovable: [] };
@@ -1382,7 +1374,7 @@ Add tracking for:
    - Pass filters and showReport to TabbedReportPanel
 
 8. Update TabbedReportPanel filter integration
-   - Update `ReportTab.getFilterArray()` to handle four filter modes
+   - Update `useReportTab` hook's `getFilterArray()` to handle four filter modes
    - Add ID Search mode filter logic (subject ID filters)
    - Add URL Params mode filter logic (same as ID Search)
    - Add Alive, at Center mode filter logic (`Id/Demographics/calculated_status = 'Alive'`)
@@ -1436,7 +1428,9 @@ Add tracking for:
 
 14. Unit tests - Report integration components
     - ParticipantReports.tsx: URL hash detection, filter state management, `activeReportSupportsNonIdFilters` lookup from cached reports, mode switching, race conditions, fetchReports dependency injection, reportsLoading state
-    - TabbedReportPanel.tsx: Filter creation for all modes (ID Search, URL Params, All Records, Alive at Center), filter structure validation, error handling for unsupported modes
+    - TabbedReportPanel.tsx: Tab rendering, category navigation, report selection, onTabChange callbacks, empty state
+    - useReportTab.ts: Filter creation for all modes (ID Search, URL Params, All Records, Alive at Center), getQWPConfig, custom subjectIdFieldName, filter structure validation, edge cases
+    - Report wrappers (QueryReportWrapper, JSReportWrapper, OtherReportWrapper): ExtJS integration, error handling, panel delegation, cleanup
 
 ### Integration Tests (Selenium - Java)
 
@@ -1981,7 +1975,7 @@ Note: Visibility tests are in `SearchByIdPanel.test.tsx` under "resolution feedb
 * Test activeReportSupportsNonIdFilters computed from cached reports (no separate query)
 * Test activeReportSupportsNonIdFilters defaults to true when report not found
 
-**File: `TabbedReportPanel.test.tsx`**
+**File: `TabbedReportPanel.test.tsx`** (34 tests)
 
 *Basic rendering tests:*
 * Test renders query report tab and displays QueryReportWrapper
@@ -1993,6 +1987,9 @@ Note: Visibility tests are in `SearchByIdPanel.test.tsx` under "resolution feedb
 * Test displays message when reports array is empty
 * Test calls onTabChange when switching tabs
 * Test selects the specified active report on initial render
+* Test empty state placeholder shown when showReport is false
+
+**File: `useReportTab.test.tsx`** (29 tests)
 
 *Filter modes integration - ID Search mode:*
 * Test creates subject ID filter for single subject
@@ -2040,6 +2037,40 @@ Note: Visibility tests are in `SearchByIdPanel.test.tsx` under "resolution feedb
 *Filter modes integration - FilterArray structure validation:*
 * Test getFilterArray returns correct structure with nonRemovable filters
 * Test getFilterArray returns empty arrays for All Records mode
+
+**File: `QueryReportWrapper.test.tsx`** (6 tests)
+
+* Test creates Ext4 container and adds ldk-querycmp to tab
+* Test cleanup removes all from tab on unmount
+* Test adds error HTML when query config failure callback fires
+* Test adds error HTML when Ext4 tab.add throws exception
+* Test encodes HTML in error messages for XSS prevention
+* Test key prop forces remount when switching reports
+
+**File: `JSReportWrapper.test.tsx`** (14 tests)
+
+* Test calls JS function from window namespace when available
+* Test resolves function from report namespace
+* Test shows error when JS function is not found
+* Test shows error when JS function throws
+* Test encodes HTML in error messages for XSS prevention
+* Test panel getFilterArray delegates to tab
+* Test panel getQWPConfig delegates to tab
+* Test panel getTitleSuffix returns formatted subject string
+* Test cleanup destroys tab on unmount
+* Test key prop forces remount when switching reports
+
+**File: `OtherReportWrapper.test.tsx`** (12 tests)
+
+* Test renders LABKEY.WebPart with correct config
+* Test applies filter parameters to partConfig
+* Test includes containerPath when present
+* Test includes viewName as showSection when present
+* Test generates unique DOM element ID for render target
+* Test shows error when WebPart render throws
+* Test encodes HTML in error messages for XSS prevention
+* Test cleanup clears innerHTML on unmount
+* Test title includes subject suffix
 
 **File: `urlHashUtils.test.ts`**
 * Test `updateUrlHash()` for ID Search mode
