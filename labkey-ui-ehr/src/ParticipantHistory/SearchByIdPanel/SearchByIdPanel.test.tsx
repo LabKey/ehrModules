@@ -155,6 +155,11 @@ describe('SearchByIdPanel', () => {
                     inputIds: ['ID123', 'ID456', 'ID789'],
                 });
             });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
+            });
         });
 
         test('parses IDs with comma separators', async () => {
@@ -188,6 +193,11 @@ describe('SearchByIdPanel', () => {
                 expect(mockResolveAnimalIds).toHaveBeenCalledWith({
                     inputIds: ['ID123', 'ID456', 'ID789'],
                 });
+            });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
             });
         });
 
@@ -223,6 +233,11 @@ describe('SearchByIdPanel', () => {
                     inputIds: ['ID123', 'ID456', 'ID789'],
                 });
             });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
+            });
         });
 
         test('parses IDs with semicolon separators', async () => {
@@ -256,6 +271,11 @@ describe('SearchByIdPanel', () => {
                 expect(mockResolveAnimalIds).toHaveBeenCalledWith({
                     inputIds: ['ID123', 'ID456', 'ID789'],
                 });
+            });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
             });
         });
 
@@ -293,6 +313,11 @@ describe('SearchByIdPanel', () => {
                     inputIds: ['ID1', 'ID2', 'ID3', 'ID4', 'ID5'],
                 });
             });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID1', 'ID2', 'ID3', 'ID4', 'ID5']);
+            });
         });
 
         test('trims whitespace from IDs', async () => {
@@ -325,6 +350,11 @@ describe('SearchByIdPanel', () => {
                 expect(mockResolveAnimalIds).toHaveBeenCalledWith({
                     inputIds: ['ID123', 'ID456'],
                 });
+            });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
             });
         });
 
@@ -359,6 +389,11 @@ describe('SearchByIdPanel', () => {
                     inputIds: ['ID123', 'ID456'],
                 });
             });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
+            });
         });
 
         test('filters out empty strings from parsed IDs', async () => {
@@ -391,6 +426,11 @@ describe('SearchByIdPanel', () => {
                 expect(mockResolveAnimalIds).toHaveBeenCalledWith({
                     inputIds: ['ID123', 'ID456'],
                 });
+            });
+
+            // Verify onFilterChange was called with resolved subject IDs
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
             });
         });
     });
@@ -477,6 +517,12 @@ describe('SearchByIdPanel', () => {
 
             await waitFor(() => {
                 expect(mockResolveAnimalIds).toHaveBeenCalled();
+            });
+
+            // Verify onFilterChange was called with all 100 resolved subject IDs
+            const expectedIds = Array.from({ length: 100 }, (_, i) => `ID${i}`);
+            await waitFor(() => {
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, expectedIds);
             });
         });
 
@@ -997,6 +1043,14 @@ describe('SearchByIdPanel', () => {
             await waitFor(() => {
                 expect(screen.getByText(/id resolution/i)).toBeInTheDocument();
             });
+
+            // Verify alias content is displayed with arrow and type
+            expect(screen.getByText('alias1')).toBeInTheDocument();
+            expect(screen.getByText('→')).toBeInTheDocument();
+            expect(screen.getByText('ID123')).toBeInTheDocument();
+            expect(screen.getByText('(tattoo)')).toBeInTheDocument();
+            // Verify resolved count
+            expect(screen.getByText(/Resolved \(2\)/)).toBeInTheDocument();
         });
 
         test('shows resolution feedback when IDs are not found', async () => {
@@ -1024,6 +1078,12 @@ describe('SearchByIdPanel', () => {
             await waitFor(() => {
                 expect(screen.getByText(/id resolution/i)).toBeInTheDocument();
             });
+
+            // Verify not-found IDs are displayed
+            expect(screen.getByText('notfound1')).toBeInTheDocument();
+            expect(screen.getByText('notfound2')).toBeInTheDocument();
+            // Verify not-found count
+            expect(screen.getByText(/Not Found \(2\)/)).toBeInTheDocument();
         });
 
         test('hides resolution feedback when all IDs resolve directly', async () => {
