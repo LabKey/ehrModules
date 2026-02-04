@@ -50,7 +50,6 @@ describe('ServerAPIWrapper', () => {
 
                 mockSelectRows.mockImplementation((config: MockSelectRowsConfig) => {
                     if (config.schemaName === 'study' && config.queryName === 'directIdMatches') {
-                        expect(config.filterArray).toBeDefined();
                         config.success({
                             rows: [{ resolvedId: 'ID123' }],
                         });
@@ -70,6 +69,9 @@ describe('ServerAPIWrapper', () => {
                 ]);
                 expect(result.notFound).toEqual([]);
                 expect(result.error).toBeUndefined();
+                expect(mockSelectRows).toHaveBeenCalledWith(
+                    expect.objectContaining({ filterArray: expect.anything() })
+                );
             });
 
             test('resolves multiple direct ID matches', async () => {

@@ -22,7 +22,6 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = props => {
     const [userSelectedTabId, setUserSelectedTabId] = useState<string>();
     const hasNotifiedParent = useRef(false);
 
-    // Compute default active tab based on reports and activeReport prop
     const defaultActive = useMemo(() => {
         if (!reports || reports.length === 0) {
             return { category: '', tabId: '' };
@@ -39,7 +38,6 @@ const TabbedReportPanelComponent: FC<TabbedReportPanelProps> = props => {
             }
         }
 
-        // Default to first report
         const firstReport = reports[0];
         return {
             category: firstReport.category || 'Uncategorized',

@@ -14,7 +14,7 @@ import { IdResolutionResult } from '../models';
  * Only visible when there are aliases or not-found IDs (hidden for all direct matches)
  */
 
-export interface IdResolutionFeedbackProps {
+interface IdResolutionFeedbackProps {
     resolutionResult: IdResolutionResult;
 }
 

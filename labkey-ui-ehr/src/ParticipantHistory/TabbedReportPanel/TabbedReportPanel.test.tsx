@@ -15,10 +15,6 @@ import {
 } from '../models';
 import { defaultServerContext, renderWithServerContext } from '../../test/utils';
 
-// Define mock function outside jest.mock for access in tests
-// Jest hoists jest.mock calls, so we need to use a reference that jest.mock can see
-const mockFilterCreateFn = jest.fn();
-
 // Mock @labkey/api Query.selectRows and Filter.create
 jest.mock('@labkey/api', () => {
     const actual = jest.requireActual('@labkey/api');

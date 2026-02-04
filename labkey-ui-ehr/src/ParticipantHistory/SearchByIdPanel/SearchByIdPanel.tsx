@@ -58,7 +58,7 @@ export const validateInput = (ids: string[]): string | undefined => {
     return undefined;
 };
 
-export interface SearchByIdPanelProps {
+interface SearchByIdPanelProps {
     activeReportSupportsNonIdFilters: boolean;
     initialFilterType: FilterType;
     initialSubjects: string[];
