@@ -153,8 +153,11 @@ describe('ParticipantReports', () => {
         test('renders TabbedReportPanel component', async () => {
             renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
 
-            // Component should render and show the report category tabs
             await waitForReportsToLoad();
+
+            expectActiveFilterButton('search');
+            expect(screen.getByLabelText(/enter animal ids/i)).toBeInTheDocument();
+            expect(screen.getByText('Test Report')).toBeVisible();
         });
 
         test('renders with default subjects filter when no URL hash present', async () => {
