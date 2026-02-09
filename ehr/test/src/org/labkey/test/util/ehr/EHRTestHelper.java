@@ -76,18 +76,20 @@ public class EHRTestHelper
 
     public void setDataEntryFieldInTab(String tabName, String fieldName, String value)
     {
-        value += "\t"; //force blur event
         _test.log("setting data entry field: " + fieldName);
-        _test.setFormElement(Locator.xpath("//div[./div/span[text()='" + tabName + "']]//*[(self::input or self::textarea) and @name='" + fieldName + "']"), value);
+        Ext4FieldRef field = _test._ext4Helper.queryOne("panel[title='" + tabName + "'] [name='" + fieldName + "']", Ext4FieldRef.class);
+        if (field == null)
+            fail("Could not find Ext4 field with name: " + fieldName + " in tab: " + tabName);
+        field.setValue(value);
         _test.log("finished setting data entry field: " + fieldName);
-        _test.sleep(100);
     }
 
     public void setDataEntryField(String fieldName, String value)
     {
-        value += "\t"; //force blur event
-        _test.setFormElement(Locator.name(fieldName), value);
-        _test.sleep(100);
+        Ext4FieldRef field = _test._ext4Helper.queryOne("[name='" + fieldName + "']", Ext4FieldRef.class);
+        if (field == null)
+            fail("Could not find Ext4 field with name: " + fieldName);
+        field.setValue(value);
     }
 
     public void waitForCmp(final String query)
