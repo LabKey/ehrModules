@@ -22,32 +22,45 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.module.Module;
 import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
-import org.labkey.api.services.ServiceRegistry;
 import org.labkey.api.util.Pair;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Service to get a list of queries to be processed during a Billing Run. The listing is a collection of
  * BillingPipelineJobProcess objects that define what schema.query to execute and the mapping from that query's
  * columns to the ehr_billing.invoicedItem table's columns.
  * Additionally, get center specific generated invoice number.
- *
- * Currently registered server wide but should allow multiple co-existing services and resolve per container's active modules
  */
 public interface InvoicedItemsProcessingService
 {
-    @Nullable
-    static InvoicedItemsProcessingService get()
+    record Registration(String moduleName, InvoicedItemsProcessingService impl){}
+
+    List<Registration> REGISTRATION_LIST = new CopyOnWriteArrayList<>();
+
+    static void register(Module module, InvoicedItemsProcessingService impl)
     {
-        return ServiceRegistry.get().getService(InvoicedItemsProcessingService.class);
+        REGISTRATION_LIST.add(new Registration(module.getName(), impl));
+    }
+
+    @Nullable
+    static InvoicedItemsProcessingService get(Container c)
+    {
+        // Return the service implementation based on the registering module being active in the provided container
+        return REGISTRATION_LIST.stream()
+            .filter(reg -> c.hasActiveModuleByName(reg.moduleName()))
+            .map(Registration::impl)
+            .findFirst()
+            .orElse(null);
     }
 
     /** @return the inputs to the billing process that are capable of generating charges */
