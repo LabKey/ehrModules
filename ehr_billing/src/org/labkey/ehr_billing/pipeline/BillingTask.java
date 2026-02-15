@@ -84,7 +84,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     protected BillingTask(Factory factory, PipelineJob job)
     {
         super(factory, job);
-        _processingService = InvoicedItemsProcessingService.get(job.getContainer());
+        _processingService = InvoicedItemsProcessingService.get(EHR_BillingManager.get().getBillingContainer(job.getContainer()));
     }
 
     public static class Factory extends AbstractTaskFactory<AbstractTaskFactorySettings, Factory>
