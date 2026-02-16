@@ -15,15 +15,11 @@ import {
 } from '../models';
 import { defaultServerContext, renderWithServerContext } from '../../test/utils';
 
-// Mock @labkey/api Query.selectRows and Filter.create
+// Mock @labkey/api Filter.create
 jest.mock('@labkey/api', () => {
     const actual = jest.requireActual('@labkey/api');
     return {
         ...actual,
-        Query: {
-            ...actual.Query,
-            selectRows: jest.fn(),
-        },
         Filter: {
             ...actual.Filter,
             create: (field: string, value: string, type: any) => {
@@ -57,14 +53,9 @@ let capturedGetFilterArray: (() => FilterArray) | null = null;
 // Mock Ext4 global with Proxy to capture assigned methods
 const createMockExt4Container = () => {
     const container = {
-        report: null as any,
-        filters: null as any,
-        isDestroyed: false,
         add: jest.fn(),
         removeAll: jest.fn(),
         destroy: jest.fn(),
-        getFilterArray: jest.fn(() => ({ removable: [], nonRemovable: [] })),
-        getQWPConfig: jest.fn(() => ({})),
     };
 
     // Use Proxy to capture when getFilterArray is assigned
@@ -81,13 +72,6 @@ const createMockExt4Container = () => {
 
 (globalThis as any).Ext4 = {
     create: jest.fn(() => createMockExt4Container()),
-};
-
-// Mock LDK global for QueryReportWrapper
-(globalThis as any).LDK = {
-    Utils: {
-        getErrorCallback: jest.fn(() => jest.fn()),
-    },
 };
 
 // Mock LABKEY.WebPart for OtherReportWrapper

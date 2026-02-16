@@ -11,9 +11,7 @@ const mockFilterCreate = jest.fn((field: string, value: boolean | string | strin
 
 // Mock @labkey/api Query.selectRows
 jest.mock('@labkey/api', () => ({
-    ...jest.requireActual('@labkey/api'),
     Query: {
-        ...jest.requireActual('@labkey/api').Query,
         selectRows: jest.fn(),
     },
     Filter: {

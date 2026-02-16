@@ -9,14 +9,9 @@ import { defaultServerContext, renderWithServerContext } from '../../test/utils'
 let mockExt4Container: ExtReportTab;
 
 const createMockContainer = (): ExtReportTab => ({
-    report: null as any,
-    filters: null as any,
-    isDestroyed: false,
     add: jest.fn(),
     removeAll: jest.fn(),
     destroy: jest.fn(),
-    getFilterArray: jest.fn(() => ({ removable: [], nonRemovable: [] })),
-    getQWPConfig: jest.fn(() => ({})),
 });
 
 (globalThis as any).Ext4 = {

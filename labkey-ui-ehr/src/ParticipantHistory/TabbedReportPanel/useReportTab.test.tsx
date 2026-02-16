@@ -51,16 +51,7 @@ let mockContainerInstances: any[] = [];
 // Factory to create mock containers that track method calls
 const createMockContainer = (): any => {
     const container = {
-        report: null as any,
-        filters: null as any,
-        isDestroyed: false,
-        add: jest.fn(),
-        removeAll: jest.fn(),
-        destroy: jest.fn(() => {
-            container.isDestroyed = true;
-        }),
-        getFilterArray: jest.fn(() => ({ removable: [], nonRemovable: [] })),
-        getQWPConfig: jest.fn(() => ({})),
+        destroy: jest.fn(),
     };
     mockContainerInstances.push(container);
     return container;
@@ -104,7 +95,6 @@ describe('useReportTab', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockFilterCreate.mockClear();
         mockContainerInstances = [];
     });
 

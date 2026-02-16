@@ -11,14 +11,11 @@ const mockFetchReports = jest.fn<Promise<FetchReportsResult>, []>();
 
 // Mock Ext4 global
 const mockExt4Container = {
-    report: null as any,
     filters: null as any,
     isDestroyed: false,
     add: jest.fn(),
     removeAll: jest.fn(),
     destroy: jest.fn(),
-    getFilterArray: jest.fn(() => ({ removable: [], nonRemovable: [] })),
-    getQWPConfig: jest.fn(() => ({})),
 };
 
 (globalThis as any).Ext4 = {
@@ -872,7 +869,6 @@ describe('ParticipantReports', () => {
                 .spyOn(APIWrapperModule, 'getDefaultParticipantHistoryAPIWrapper')
                 .mockReturnValue({
                     fetchReports: defaultFetchReports,
-                    resolveAnimalIds: jest.fn(),
                 } as any);
 
             try {

@@ -4,16 +4,12 @@ import { render, waitFor } from '@testing-library/react';
 import { OtherReportWrapper } from './OtherReportWrapper';
 import { ExtReportTab, FILTER_TYPE_ID_SEARCH, OtherReportConfig } from '../models';
 
-const createMockContainer = (): ExtReportTab => ({
-    report: null as any,
-    filters: null as any,
-    isDestroyed: false,
-    add: jest.fn(),
-    removeAll: jest.fn(),
-    destroy: jest.fn(),
-    getFilterArray: jest.fn(() => ({ removable: [], nonRemovable: [] })),
-    getQWPConfig: jest.fn(() => ({})),
-});
+const createMockContainer = (): ExtReportTab =>
+    ({
+        add: jest.fn(),
+        removeAll: jest.fn(),
+        destroy: jest.fn(),
+    } as unknown as ExtReportTab);
 
 (globalThis as any).Ext4 = {
     create: jest.fn(() => createMockContainer()),

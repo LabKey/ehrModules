@@ -10,7 +10,6 @@ import { ExtReportTab, FILTER_TYPE_ID_SEARCH, JsReportConfig } from '../models';
 jest.mock('@labkey/api', () => ({
     ...jest.requireActual('@labkey/api'),
     Query: {
-        ...jest.requireActual('@labkey/api').Query,
         selectRows: jest.fn(),
     },
 }));
@@ -19,14 +18,9 @@ jest.mock('@labkey/api', () => ({
 let mockExt4Container: ExtReportTab;
 
 const createMockContainer = (): ExtReportTab => ({
-    report: null as any,
-    filters: null as any,
-    isDestroyed: false,
     add: jest.fn(),
     removeAll: jest.fn(),
     destroy: jest.fn(),
-    getFilterArray: jest.fn(() => ({ removable: [], nonRemovable: [] })),
-    getQWPConfig: jest.fn(() => ({})),
 });
 
 (globalThis as any).Ext4 = {
