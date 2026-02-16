@@ -84,7 +84,10 @@ describe('QueryReportWrapper', () => {
 
         try {
             // Act
-            renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
+            renderWithServerContext(
+                <QueryReportWrapper filters={filters} report={queryReport} />,
+                defaultServerContext()
+            );
 
             let addCall: any;
             // Assert - failure callback is attached to queryConfig before invoking the failure path
@@ -125,7 +128,10 @@ describe('QueryReportWrapper', () => {
 
         try {
             // Act
-            renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
+            renderWithServerContext(
+                <QueryReportWrapper filters={filters} report={queryReport} />,
+                defaultServerContext()
+            );
 
             // Assert - error is logged to console and error message is displayed in the tab
             await waitFor(() => {
@@ -160,5 +166,4 @@ describe('QueryReportWrapper', () => {
         // Assert - destroy is called on the Ext4 container
         expect(mockExt4Container.destroy).toHaveBeenCalled();
     });
-
 });

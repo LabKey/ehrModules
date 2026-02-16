@@ -562,7 +562,6 @@ describe('urlHashUtils', () => {
                 expect(filters.filterType).toBe(FILTER_TYPE_ID_SEARCH);
                 expect(filters.activeReport).toBe('test%2');
             });
-
         });
 
         describe('multiple parameters parsing', () => {
@@ -592,7 +591,6 @@ describe('urlHashUtils', () => {
                 // Assert - percent-encoded spaces are decoded
                 expect(filters.activeReport).toBe('report with spaces');
             });
-
         });
     });
 

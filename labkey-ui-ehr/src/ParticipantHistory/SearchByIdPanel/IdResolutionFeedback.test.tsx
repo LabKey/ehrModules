@@ -28,7 +28,9 @@ describe('IdResolutionFeedback', () => {
         test.each([
             {
                 scenario: 'single alias match',
-                resolved: [{ inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias' as const, aliasType: 'tattoo' }],
+                resolved: [
+                    { inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias' as const, aliasType: 'tattoo' },
+                ],
                 expectedAliasRows: [{ inputId: 'TATTOO_001', resolvedId: 'ID123', aliasType: 'tattoo' }],
             },
             {

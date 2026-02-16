@@ -292,22 +292,22 @@ describe('ParticipantReports', () => {
     });
 
     describe('renders with query parameters in URL', () => {
-        test.each([
-            '?participantId=44444',
-            '?participantId=66666&otherParam=value',
-        ])('ignores query params and keeps default state (%s)', async queryString => {
-            // Arrange
-            window.history.replaceState({}, '', window.location.pathname + queryString);
+        test.each(['?participantId=44444', '?participantId=66666&otherParam=value'])(
+            'ignores query params and keeps default state (%s)',
+            async queryString => {
+                // Arrange
+                window.history.replaceState({}, '', window.location.pathname + queryString);
 
-            // Act
-            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
-            await waitForReportsToLoad();
+                // Act
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
+                await waitForReportsToLoad();
 
-            // Assert - ID Search mode is active with empty textarea
-            expectActiveFilterButton('search');
-            const textarea = screen.getByLabelText(/enter animal ids/i);
-            expect(textarea).toHaveValue('');
-        });
+                // Assert - ID Search mode is active with empty textarea
+                expectActiveFilterButton('search');
+                const textarea = screen.getByLabelText(/enter animal ids/i);
+                expect(textarea).toHaveValue('');
+            }
+        );
 
         test('uses hash subjects independently of participantId in query params', async () => {
             // Arrange
@@ -322,7 +322,6 @@ describe('ParticipantReports', () => {
             const textarea = screen.getByLabelText(/enter animal ids/i);
             expect(textarea).toHaveValue('subject1,subject2');
         });
-
     });
 
     describe('Search By Id integration', () => {
@@ -366,7 +365,6 @@ describe('ParticipantReports', () => {
                 // Assert - Alive at Center button is active
                 expectActiveFilterButton('aliveAtCenter');
             });
-
         });
 
         describe('URL Params mode (readOnly)', () => {
@@ -415,20 +413,20 @@ describe('ParticipantReports', () => {
                 expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
             });
 
-        test('readOnly parameter takes priority over filterType parameter', async () => {
-            // Arrange
-            window.location.hash = '#filterType:all&subjects:ID123&readOnly:true';
+            test('readOnly parameter takes priority over filterType parameter', async () => {
+                // Arrange
+                window.location.hash = '#filterType:all&subjects:ID123&readOnly:true';
 
-            // Act
-            renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
-            await waitForReportsToLoad();
+                // Act
+                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
+                await waitForReportsToLoad();
 
-            // Assert - SearchByIdPanel is hidden, readOnly is preserved, and filterType:all is dropped from hash
-            expect(screen.queryByLabelText(/enter animal ids/i)).not.toBeInTheDocument();
-            expect(screen.queryByRole('button', { name: /all animals/i })).not.toBeInTheDocument();
-            expect(window.location.hash).toContain('readOnly:true');
-            expect(window.location.hash).not.toContain('filterType:all');
-        });
+                // Assert - SearchByIdPanel is hidden, readOnly is preserved, and filterType:all is dropped from hash
+                expect(screen.queryByLabelText(/enter animal ids/i)).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: /all animals/i })).not.toBeInTheDocument();
+                expect(window.location.hash).toContain('readOnly:true');
+                expect(window.location.hash).not.toContain('filterType:all');
+            });
         });
 
         describe('URL hash updates', () => {
@@ -619,22 +617,25 @@ describe('ParticipantReports', () => {
         });
 
         describe('malformed URL hash', () => {
-            test.each([
-                '#malformed&invalid::data',
-                '#filterType:&subjects:',
-            ])('falls back to default state for malformed hash (%s)', async hashValue => {
-                // Arrange
-                window.location.hash = hashValue;
+            test.each(['#malformed&invalid::data', '#filterType:&subjects:'])(
+                'falls back to default state for malformed hash (%s)',
+                async hashValue => {
+                    // Arrange
+                    window.location.hash = hashValue;
 
-                // Act
-                renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
-                await waitForReportsToLoad();
+                    // Act
+                    renderWithServerContext(
+                        <ParticipantReports fetchReports={mockFetchReports} />,
+                        defaultServerContext()
+                    );
+                    await waitForReportsToLoad();
 
-                // Assert - defaults to ID Search mode with empty textarea
-                expectActiveFilterButton('search');
-                const textarea = screen.getByLabelText(/enter animal ids/i);
-                expect(textarea).toHaveValue('');
-            });
+                    // Assert - defaults to ID Search mode with empty textarea
+                    expectActiveFilterButton('search');
+                    const textarea = screen.getByLabelText(/enter animal ids/i);
+                    expect(textarea).toHaveValue('');
+                }
+            );
         });
 
         describe('filter integration with TabbedReportPanel', () => {
@@ -707,7 +708,10 @@ describe('ParticipantReports', () => {
 
                 try {
                     // Act
-                    renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
+                    renderWithServerContext(
+                        <ParticipantReports fetchReports={mockFetchReports} />,
+                        defaultServerContext()
+                    );
 
                     // Act & Assert - empty state message is shown and error was logged to console
                     await waitFor(() => {
@@ -905,6 +909,5 @@ describe('ParticipantReports', () => {
             // Assert - empty state message is shown
             expect(screen.queryByText('No reports configuration provided.')).toBeInTheDocument();
         });
-
     });
 });

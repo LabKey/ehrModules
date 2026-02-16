@@ -177,7 +177,9 @@ describe('ServerAPIWrapper', () => {
                     expect.objectContaining({
                         schemaName: 'study',
                         queryName: 'directIdMatches',
-                        filterArray: [{ field: 'lowerIdForMatching', value: ['id123', 'tattoo_001', 'id456'], type: 'IN' }],
+                        filterArray: [
+                            { field: 'lowerIdForMatching', value: ['id123', 'tattoo_001', 'id456'], type: 'IN' },
+                        ],
                     })
                 );
                 expect(mockSelectRows).toHaveBeenNthCalledWith(
@@ -220,7 +222,9 @@ describe('ServerAPIWrapper', () => {
                     expect.objectContaining({
                         schemaName: 'study',
                         queryName: 'directIdMatches',
-                        filterArray: [{ field: 'lowerIdForMatching', value: ['id123', 'invalid_id', 'id456'], type: 'IN' }],
+                        filterArray: [
+                            { field: 'lowerIdForMatching', value: ['id123', 'invalid_id', 'id456'], type: 'IN' },
+                        ],
                     })
                 );
                 expect(mockSelectRows).toHaveBeenNthCalledWith(
@@ -580,6 +584,5 @@ describe('ServerAPIWrapper', () => {
             expect(result.error).toBe('Failed to load reports');
             expect(consoleSpy).toHaveBeenCalledWith('Failed to load reports', {});
         });
-
     });
 });

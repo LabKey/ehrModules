@@ -36,16 +36,24 @@ export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolution
                     </h4>
                     <div className="id-resolution-feedback__items">
                         {directMatches.map(match => (
-                            <div className="id-resolution-feedback__item id-resolution-feedback__item--resolved" key={match.inputId}>
+                            <div
+                                className="id-resolution-feedback__item id-resolution-feedback__item--resolved"
+                                key={match.inputId}
+                            >
                                 <span className="id-resolution-feedback__resolved-id">{match.resolvedId}</span>
                             </div>
                         ))}
                         {aliasMatches.map(match => (
-                            <div className="id-resolution-feedback__item id-resolution-feedback__item--resolved" key={match.inputId}>
+                            <div
+                                className="id-resolution-feedback__item id-resolution-feedback__item--resolved"
+                                key={match.inputId}
+                            >
                                 <span className="id-resolution-feedback__input-id">{match.inputId}</span>
                                 <span className="id-resolution-feedback__arrow">→</span>
                                 <span className="id-resolution-feedback__resolved-id">{match.resolvedId}</span>
-                                {match.aliasType && <span className="id-resolution-feedback__alias-type">({match.aliasType})</span>}
+                                {match.aliasType && (
+                                    <span className="id-resolution-feedback__alias-type">({match.aliasType})</span>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -59,7 +67,10 @@ export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolution
                     </h4>
                     <div className="id-resolution-feedback__items">
                         {notFound.map(id => (
-                            <div className="id-resolution-feedback__item id-resolution-feedback__item--not-found" key={id}>
+                            <div
+                                className="id-resolution-feedback__item id-resolution-feedback__item--not-found"
+                                key={id}
+                            >
                                 {id}
                             </div>
                         ))}
