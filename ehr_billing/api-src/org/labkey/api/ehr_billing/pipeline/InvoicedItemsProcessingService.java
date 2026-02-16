@@ -53,11 +53,11 @@ public interface InvoicedItemsProcessingService
     }
 
     @Nullable
-    static InvoicedItemsProcessingService get(Container c)
+    static InvoicedItemsProcessingService get(Container billingContainer)
     {
         // Return the service implementation based on the registering module being active in the provided container
         return REGISTRATION_LIST.stream()
-            .filter(reg -> c.hasActiveModuleByName(reg.moduleName()))
+            .filter(reg -> billingContainer.hasActiveModuleByName(reg.moduleName()))
             .map(Registration::impl)
             .findFirst()
             .orElse(null);
