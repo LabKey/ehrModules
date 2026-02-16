@@ -17,7 +17,7 @@
   "dependencies": {
     "@labkey/api": "1.45.0",
     "@labkey/components": "7.13.1",
-    "@labkey/ehr": "0.0.4-fb-ehr-hist-id-search.13"
+    "@labkey/ehr": "0.0.4-fb-ehr-hist-id-search.14"
   },
   "devDependencies": {
     "@labkey/build": "8.7.0",

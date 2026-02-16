@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import { IdResolutionResult } from '../models';
 
@@ -18,7 +18,7 @@ interface IdResolutionFeedbackProps {
     resolutionResult: IdResolutionResult;
 }
 
-export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolutionResult }) => {
+const IdResolutionFeedbackComponent: FC<IdResolutionFeedbackProps> = ({ resolutionResult }) => {
     const { resolved, notFound } = resolutionResult;
 
     // Separate direct matches from alias matches
@@ -80,3 +80,7 @@ export const IdResolutionFeedback: FC<IdResolutionFeedbackProps> = ({ resolution
         </div>
     );
 };
+
+IdResolutionFeedbackComponent.displayName = 'IdResolutionFeedback';
+
+export const IdResolutionFeedback = memo(IdResolutionFeedbackComponent);
