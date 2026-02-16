@@ -1,4 +1,4 @@
-import React, { act } from 'react';
+import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Filter } from '@labkey/api';
@@ -28,7 +28,7 @@ jest.mock('@labkey/api', () => {
             ...actual.Filter,
             create: (field: string, value: string, type: any) => {
                 // Access the mock through a global reference that survives hoisting
-                const mockFn = (global as any).__mockFilterCreate__;
+                const mockFn = (globalThis as any).__mockFilterCreate__;
                 if (mockFn) {
                     return mockFn(field, value, type);
                 }
@@ -49,7 +49,7 @@ const mockFilterCreate = jest.fn((field: string, value: string, type: any) => ({
     getURLParameterName: () => `query.${field}~${type?.getURLSuffix?.() || 'eq'}`,
     getURLParameterValue: () => value,
 }));
-(global as any).__mockFilterCreate__ = mockFilterCreate;
+(globalThis as any).__mockFilterCreate__ = mockFilterCreate;
 
 // Store the captured getFilterArray function from each container
 let capturedGetFilterArray: (() => FilterArray) | null = null;
@@ -79,26 +79,20 @@ const createMockExt4Container = () => {
     });
 };
 
-// Keep a reference for tests that need to check the container directly
-let mockExt4Container: ReturnType<typeof createMockExt4Container>;
-
-(global as any).Ext4 = {
-    create: jest.fn(() => {
-        mockExt4Container = createMockExt4Container();
-        return mockExt4Container;
-    }),
+(globalThis as any).Ext4 = {
+    create: jest.fn(() => createMockExt4Container()),
 };
 
 // Mock LDK global for QueryReportWrapper
-(global as any).LDK = {
+(globalThis as any).LDK = {
     Utils: {
         getErrorCallback: jest.fn(() => jest.fn()),
     },
 };
 
 // Mock LABKEY.WebPart for OtherReportWrapper
-(global as any).LABKEY = {
-    ...(global as any).LABKEY,
+(globalThis as any).LABKEY = {
+    ...(globalThis as any).LABKEY,
     WebPart: jest.fn().mockImplementation(() => ({
         render: jest.fn(),
     })),
@@ -124,7 +118,7 @@ const expectFilterCreated = (
 };
 
 /**
- * Verifies no filters were created - for All Records mode tests.
+ * Verifies no filters were created.
  */
 const expectNoFiltersCreated = (): void => {
     expect(mockFilterCreate).not.toHaveBeenCalled();
@@ -163,7 +157,6 @@ const invokeGetFilterArray = (): FilterArray | null => {
 describe('TabbedReportPanel', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockFilterCreate.mockClear();
         capturedGetFilterArray = null;
     });
 
@@ -207,8 +200,10 @@ describe('TabbedReportPanel', () => {
     };
 
     test('renders query report tab and displays QueryReportWrapper', async () => {
+        // Arrange
         const reports = [queryReport];
 
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -220,12 +215,10 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
-        // Verify the report title is shown in the tab
+        // Assert - tab title visible and Ext4 container created for query report
         expect(await screen.findByText('Query Report')).toBeVisible();
-
-        // Verify Ext4.create was called for the tab container
         await waitFor(() => {
-            expect((global as any).Ext4.create).toHaveBeenCalledWith(
+            expect((globalThis as any).Ext4.create).toHaveBeenCalledWith(
                 'Ext.container.Container',
                 expect.objectContaining({
                     border: false,
@@ -235,8 +228,10 @@ describe('TabbedReportPanel', () => {
     });
 
     test('renders js report tab and displays JSReportWrapper', async () => {
+        // Arrange
         const reports = [jsReport];
 
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -248,18 +243,18 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
-        // Verify the report title is shown in the tab
+        // Assert - tab title visible and Ext4.create was called
         expect(await screen.findByText('JS Report')).toBeVisible();
-
-        // Verify Ext4.create was called
         await waitFor(() => {
-            expect((global as any).Ext4.create).toHaveBeenCalled();
+            expect((globalThis as any).Ext4.create).toHaveBeenCalled();
         });
     });
 
     test('renders other report tab and displays OtherReportWrapper', async () => {
+        // Arrange
         const reports = [otherReport];
 
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -271,18 +266,18 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
-        // Verify the report title is shown in the tab
+        // Assert - tab title visible and LABKEY.WebPart was called
         expect(await screen.findByText('Other Report')).toBeVisible();
-
-        // Verify LABKEY.WebPart was instantiated for the report
         await waitFor(() => {
-            expect((global as any).LABKEY.WebPart).toHaveBeenCalled();
+            expect((globalThis as any).LABKEY.WebPart).toHaveBeenCalled();
         });
     });
 
     test('renders category tabs and allows switching between categories', async () => {
+        // Arrange
         const reports = [queryReport, jsReport, otherReport];
 
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -294,25 +289,26 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
-        // Verify category tabs are rendered
+        // Assert - both category tabs are rendered
         expect(await screen.findByText('Category A')).toBeVisible();
         expect(await screen.findByText('Category B')).toBeVisible();
 
-        // Click on Category B
+        // Act - click on Category B
+        const user = userEvent.setup();
         const categoryBTab = screen.getByText('Category B');
-        await act(async () => {
-            userEvent.click(categoryBTab);
-        });
+        await user.click(categoryBTab);
 
-        // Verify the Other Report is now active
+        // Assert - Other Report is now visible after switching categories
         await waitFor(() => {
             expect(screen.getByText('Other Report')).toBeVisible();
         });
     });
 
     test('allows switching between reports in the same category', async () => {
+        // Arrange
         const reports = [queryReport, jsReport];
 
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -324,17 +320,16 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
-        // Verify both report tabs are visible in Category A
+        // Assert - both report tabs are visible in Category A
         expect(await screen.findByText('Query Report')).toBeVisible();
         expect(await screen.findByText('JS Report')).toBeVisible();
 
-        // Click on JS Report tab
+        // Act - click on JS Report tab
+        const user = userEvent.setup();
         const jsReportTab = screen.getByText('JS Report');
-        await act(async () => {
-            userEvent.click(jsReportTab);
-        });
+        await user.click(jsReportTab);
 
-        // The JS Report tab should now be active
+        // Assert - JS Report tab has active class after switching
         await waitFor(() => {
             const jsTab = screen.getByText('JS Report').closest('button');
             expect(jsTab).toHaveClass('tabbed-report-panel__report-tab--active');
@@ -342,8 +337,7 @@ describe('TabbedReportPanel', () => {
     });
 
     test('displays loading state when no reports provided initially', () => {
-        // When reportsQuery is used but reports prop is not provided,
-        // it should show loading until data is fetched
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -355,10 +349,12 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
+        // Assert - loading message shown when reports prop is undefined
         expect(screen.getByText('Loading reports...')).toBeVisible();
     });
 
     test('displays message when reports array is empty', () => {
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -370,13 +366,16 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
+        // Assert - empty configuration message shown when reports array is empty
         expect(screen.getByText('No reports configuration provided.')).toBeVisible();
     });
 
     test('calls onTabChange when switching tabs', async () => {
+        // Arrange
         const onTabChange = jest.fn();
         const reports = [queryReport, jsReport];
 
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport={undefined}
@@ -387,25 +386,24 @@ describe('TabbedReportPanel', () => {
             />,
             defaultServerContext()
         );
-
-        // Wait for initial render
         await screen.findByText('Query Report');
 
-        // Click on JS Report tab
+        // Act - click on JS Report tab
+        const user = userEvent.setup();
         const jsReportTab = screen.getByText('JS Report');
-        await act(async () => {
-            userEvent.click(jsReportTab);
-        });
+        await user.click(jsReportTab);
 
-        // Verify onTabChange was called with the new tab id
+        // Assert - onTabChange called with the JS report id
         await waitFor(() => {
             expect(onTabChange).toHaveBeenCalledWith('js-report-1');
         });
     });
 
     test('selects the specified active report on initial render', async () => {
+        // Arrange
         const reports = [queryReport, jsReport];
 
+        // Act
         renderWithServerContext(
             <TabbedReportPanel
                 activeReport="js-report-1"
@@ -417,7 +415,7 @@ describe('TabbedReportPanel', () => {
             defaultServerContext()
         );
 
-        // Wait for render and verify JS Report tab is active
+        // Assert - JS Report tab is active based on activeReport prop
         await waitFor(() => {
             const jsTab = screen.getByText('JS Report').closest('button');
             expect(jsTab).toHaveClass('tabbed-report-panel__report-tab--active');
@@ -427,9 +425,11 @@ describe('TabbedReportPanel', () => {
     describe('filter modes integration', () => {
         describe('ID Search mode', () => {
             test('creates subject ID filter for single subject', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -440,25 +440,30 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
-                // Invoke getFilterArray to trigger filter creation
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
-                expect(filterArray).not.toBeNull();
 
-                // Verify Filter.create was called with correct arguments for single subject
+                // Assert - EQUAL filter created for single subject ID
+                expect(filterArray).not.toBeNull();
                 expectSubjectFilter(['ID123']);
+                expect(filterArray).toEqual({
+                    removable: [],
+                    nonRemovable: expect.arrayContaining([expect.objectContaining({ field: 'Id' })]),
+                });
             });
 
-            test('creates subject ID filter for multiple subjects', async () => {
+            test.each([
+                [['ID123', 'ID456', 'ID789'], 'ID123;ID456;ID789'],
+                [['ID123', 'ID456'], 'ID123;ID456'],
+            ])('creates EQUALS_ONE_OF subject filter for multiple subjects: %j', async (subjects, expectedValue) => {
+                // Arrange
                 const reports = [queryReport];
-                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456', 'ID789'] };
+                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -469,53 +474,26 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
+
+                // Assert - multi-subject input becomes a semicolon-joined EQUALS_ONE_OF Id filter
                 expect(filterArray).not.toBeNull();
-
-                // Verify Filter.create was called with semicolon-separated subjects
-                expectSubjectFilter(['ID123', 'ID456', 'ID789']);
-            });
-
-            test('uses EQUALS_ONE_OF filter type for multiple subjects', async () => {
-                const reports = [queryReport];
-                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                invokeGetFilterArray();
-
-                // Verify EQUALS_ONE_OF filter type is used for multiple subjects
-                expectFilterCreated('Id', 'ID123;ID456', Filter.Types.EQUALS_ONE_OF);
+                expectSubjectFilter(subjects);
+                expectFilterCreated('Id', expectedValue, Filter.Types.EQUALS_ONE_OF);
             });
         });
 
         describe('URL Params mode', () => {
             test('creates subject ID filter from URL-provided subjects', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const filters = { filterType: FILTER_TYPE_URL_PARAMS, subjects: ['ID123', 'ID456'] };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -526,23 +504,22 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 invokeGetFilterArray();
 
-                // URL Params mode should create same filters as ID Search mode
+                // Assert - URL Params mode creates same filters as ID Search mode
                 expectSubjectFilter(['ID123', 'ID456']);
             });
 
             test('handles single subject from URL params', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const filters = { filterType: FILTER_TYPE_URL_PARAMS, subjects: ['ID123'] };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -553,25 +530,24 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 invokeGetFilterArray();
 
-                // Single subject should use EQUAL filter type
+                // Assert - single subject uses EQUAL filter type
                 expectSubjectFilter(['ID123']);
             });
         });
 
         describe('All Records mode', () => {
             test('creates no filters when filterType is all', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const filters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -582,26 +558,24 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
 
-                // All Records mode should not create any filters
+                // Assert - no filters created and both arrays are empty
                 expectNoFiltersCreated();
                 expect(filterArray?.nonRemovable).toHaveLength(0);
                 expect(filterArray?.removable).toHaveLength(0);
             });
 
             test('ignores subjects when filterType is all', async () => {
+                // Arrange
                 const reports = [queryReport];
-                // Provide subjects that should be ignored in All Records mode
                 const filters = { filterType: FILTER_TYPE_ALL, subjects: ['ID123', 'ID456'] } as ReportFilters;
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -612,26 +586,25 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
 
-                // Should not apply subject filters even when subjects are provided
+                // Assert - no subject filters applied despite subjects being provided
                 expectNoFiltersCreated();
                 expect(filterArray?.nonRemovable).toHaveLength(0);
             });
         });
 
         describe('Alive at Center mode', () => {
-            test('creates calculated_status = Alive filter', async () => {
+            test('creates calculated_status = Alive filter and no subject filters', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -642,59 +615,27 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
 
-                // Should create filter on Id/Demographics/calculated_status field
+                // Assert - status filter created with one nonRemovable entry and no Id subject filter
                 expectAliveAtCenterFilter();
                 expect(filterArray?.nonRemovable).toHaveLength(1);
-            });
-
-            test('does not create subject filters in Alive at Center mode', async () => {
-                const reports = [queryReport];
-                const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                // Clear mocks to get fresh counts for this specific getFilterArray call
-                mockFilterCreate.mockClear();
-
-                invokeGetFilterArray();
-
-                // Only status filter should be created, not subject filter
-                expectAliveAtCenterFilter();
-                // Verify Filter.create was called only for status filter, not for subject ID
                 expect(mockFilterCreate).not.toHaveBeenCalledWith('Id', expect.any(String), expect.anything());
             });
         });
 
         describe('filter switching', () => {
             test('updates report filters when switching from ID Search to All Records', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const initialFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
                 const onTabChange = jest.fn();
 
+                // Act - render with ID Search filters
                 const { rerender } = renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -705,21 +646,20 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
 
-                // Verify initial ID Search filter was created
+                // Assert - initial ID Search filter was created
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
                 invokeGetFilterArray();
                 expectSubjectFilter(['ID123']);
 
-                // Clear mocks before switching
+                // Arrange - clear mocks before switching
                 mockFilterCreate.mockClear();
                 capturedGetFilterArray = null;
 
-                // Switch to All Records mode
+                // Act - switch to All Records mode
                 const newFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
                 rerender(
                     <TabbedReportPanel
@@ -730,22 +670,23 @@ describe('TabbedReportPanel', () => {
                         showReport={true}
                     />
                 );
-
-                // Report should update with no filters
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
+
+                // Assert - no filters after switching to All Records
                 expectNoFiltersCreated();
                 expect(filterArray?.nonRemovable).toHaveLength(0);
             });
 
             test('updates report filters when switching from All Records to Alive at Center', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const initialFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
                 const onTabChange = jest.fn();
 
+                // Act - render with All Records filters
                 const { rerender } = renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -756,21 +697,20 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
 
-                // Verify initial All Records mode has no filters
+                // Assert - initial All Records mode has no filters
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
                 invokeGetFilterArray();
                 expectNoFiltersCreated();
 
-                // Clear mocks before switching
+                // Arrange - clear mocks before switching
                 mockFilterCreate.mockClear();
                 capturedGetFilterArray = null;
 
-                // Switch to Alive at Center mode
+                // Act - switch to Alive at Center mode
                 const newFilters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
                 rerender(
                     <TabbedReportPanel
@@ -781,21 +721,22 @@ describe('TabbedReportPanel', () => {
                         showReport={true}
                     />
                 );
-
-                // Report should update with status filter
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 invokeGetFilterArray();
+
+                // Assert - status filter applied after switching to Alive at Center
                 expectAliveAtCenterFilter();
             });
 
             test('updates report filters when switching from Alive at Center to ID Search', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const initialFilters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
                 const onTabChange = jest.fn();
 
+                // Act - render with Alive at Center filters
                 const { rerender } = renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -806,21 +747,20 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
 
-                // Verify initial Alive at Center filter was created
+                // Assert - initial Alive at Center filter was created
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
                 invokeGetFilterArray();
                 expectAliveAtCenterFilter();
 
-                // Clear mocks before switching
+                // Arrange - clear mocks before switching
                 mockFilterCreate.mockClear();
                 capturedGetFilterArray = null;
 
-                // Switch to ID Search mode
+                // Act - switch to ID Search mode
                 const newFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] };
                 rerender(
                     <TabbedReportPanel
@@ -831,22 +771,23 @@ describe('TabbedReportPanel', () => {
                         showReport={true}
                     />
                 );
-
-                // Report should update with subject filters
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 invokeGetFilterArray();
+
+                // Assert - subject filters applied after switching to ID Search
                 expectSubjectFilter(['ID123', 'ID456']);
             });
         });
 
         describe('empty subjects validation', () => {
             test('creates no subject filters when ID Search mode has empty subjects array', async () => {
+                // Arrange
                 const reports = [queryReport];
                 const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: [] };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -857,147 +798,56 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
 
-                // Empty subjects array should not create any filters
+                // Assert - no filters created for empty subjects array
                 expectNoFiltersCreated();
                 expect(filterArray?.nonRemovable).toHaveLength(0);
             });
         });
 
         describe('report supportsNonIdFilters field', () => {
-            test('applies Alive at Center filter regardless of supportsnonidfilters setting', async () => {
-                // Note: The getFilterArray function applies filters based on filterType
-                // regardless of supportsnonidfilters. The parent component is responsible
-                // for showing error messages or hiding reports that don't support non-ID filters.
-                const unsupportedReport: ReportConfig = {
-                    ...queryReport,
-                    supportsnonidfilters: false,
-                };
-                const reports = [unsupportedReport];
-                const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
+            test.each([false, true])(
+                'applies Alive at Center filter when supportsnonidfilters is %s',
+                async supportsnonidfilters => {
+                    // Arrange
+                    const report: ReportConfig = {
+                        ...queryReport,
+                        supportsnonidfilters,
+                    };
+                    const reports = [report];
+                    const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
 
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
+                    // Act
+                    renderWithServerContext(
+                        <TabbedReportPanel
+                            activeReport={undefined}
+                            filters={filters}
+                            onTabChange={jest.fn()}
+                            reports={reports}
+                            showReport={true}
+                        />,
+                        defaultServerContext()
+                    );
+                    await screen.findByText('Query Report');
+                    await waitFor(() => {
+                        expect(capturedGetFilterArray).not.toBeNull();
+                    });
+                    invokeGetFilterArray();
 
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                invokeGetFilterArray();
-
-                // Filter is still created - parent component handles the error display
-                expectAliveAtCenterFilter();
-            });
-
-            test('applies Alive at Center filter when report supports non-ID filters', async () => {
-                const supportedReport: ReportConfig = {
-                    ...queryReport,
-                    supportsnonidfilters: true,
-                };
-                const reports = [supportedReport];
-                const filters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                invokeGetFilterArray();
-
-                // Should apply calculated_status filter
-                expectAliveAtCenterFilter();
-            });
-        });
-
-        describe('LabKey Filter API format', () => {
-            test('creates filters in correct LabKey Filter.create() format for single subject', async () => {
-                const reports = [queryReport];
-                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                invokeGetFilterArray();
-
-                // Should use Filter.Types.EQUAL for single subject
-                expect(mockFilterCreate).toHaveBeenCalledWith('Id', 'ID123', Filter.Types.EQUAL);
-            });
-
-            test('creates filters in correct LabKey Filter.create() format for multiple subjects', async () => {
-                const reports = [queryReport];
-                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456'] };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                invokeGetFilterArray();
-
-                // Should use Filter.Types.EQUALS_ONE_OF for multiple subjects
-                // Subjects should be joined with semicolon: 'ID123;ID456'
-                expect(mockFilterCreate).toHaveBeenCalledWith('Id', 'ID123;ID456', Filter.Types.EQUALS_ONE_OF);
-            });
+                    // Assert - calculated_status filter is applied regardless of supportsnonidfilters value
+                    expectAliveAtCenterFilter();
+                }
+            );
         });
 
         describe('custom subjectIdFieldName handling', () => {
             test('uses custom subjectIdFieldName from report config', async () => {
+                // Arrange
                 const customReport: ReportConfig = {
                     ...queryReport,
                     subjectIdFieldName: 'ParticipantId',
@@ -1005,6 +855,7 @@ describe('TabbedReportPanel', () => {
                 const reports = [customReport];
                 const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -1015,54 +866,29 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 invokeGetFilterArray();
 
-                // Should use custom subjectIdFieldName instead of default 'Id'
+                // Assert - filter uses custom ParticipantId field instead of default Id
                 expectSubjectFilter(['ID123'], 'ParticipantId');
             });
 
-            test('defaults to Id when subjectIdFieldName not specified', async () => {
-                const reports = [queryReport]; // No subjectIdFieldName specified
-                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                invokeGetFilterArray();
-
-                // Should default to 'Id' field
-                expectSubjectFilter(['ID123'], 'Id');
-            });
-
-            test('defaults to Id when subjectIdFieldName is null', async () => {
-                const reportWithNullField: ReportConfig = {
+            test.each([
+                [undefined, 'not specified'],
+                [null, 'null'],
+            ])('defaults to Id when subjectIdFieldName is %s (%s case)', async (subjectIdFieldName, _label) => {
+                // Arrange
+                const report: ReportConfig = {
                     ...queryReport,
-                    subjectIdFieldName: null,
+                    subjectIdFieldName: subjectIdFieldName as any,
                 };
-                const reports = [reportWithNullField];
+                const reports = [report];
                 const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -1073,26 +899,27 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 invokeGetFilterArray();
 
-                // Should default to 'Id' when subjectIdFieldName is null
+                // Assert - Id is used as fallback when subjectIdFieldName is missing or null
                 expectSubjectFilter(['ID123'], 'Id');
             });
         });
 
         describe('edge cases for filter modes', () => {
-            test('handles undefined filterType gracefully', async () => {
+            test.each([
+                ['undefined filterType', { subjects: ['ID123'] } as any],
+                ['null filters', null as any],
+                ['empty filterType string', { filterType: '', subjects: ['ID123'] } as any],
+            ])('handles %s gracefully', async (_caseLabel, filters) => {
+                // Arrange
                 const reports = [queryReport];
-                // Intentionally testing invalid filter object - cast to bypass type checking
-                const filters = { subjects: ['ID123'] } as any; // No filterType specified
 
+                // Act
                 renderWithServerContext(
                     <TabbedReportPanel
                         activeReport={undefined}
@@ -1103,138 +930,16 @@ describe('TabbedReportPanel', () => {
                     />,
                     defaultServerContext()
                 );
-
                 await screen.findByText('Query Report');
-
                 await waitFor(() => {
                     expect(capturedGetFilterArray).not.toBeNull();
                 });
-
                 const filterArray = invokeGetFilterArray();
 
-                // Should not crash, should create no filters (unrecognized filterType)
-                expectNoFiltersCreated();
-                expect(filterArray?.nonRemovable).toHaveLength(0);
-            });
-
-            test('handles null filters gracefully', async () => {
-                const reports = [queryReport];
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        // Intentionally testing null filter - cast to bypass type checking
-                        filters={null as any}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                const filterArray = invokeGetFilterArray();
-
-                // Should not crash with null filters, return empty filter array
+                // Assert - invalid filter inputs do not crash and produce empty filter arrays
                 expectNoFiltersCreated();
                 expect(filterArray?.nonRemovable).toHaveLength(0);
                 expect(filterArray?.removable).toHaveLength(0);
-            });
-
-            test('handles empty filterType string', async () => {
-                const reports = [queryReport];
-                // Intentionally testing invalid empty string - cast to bypass type checking
-                const filters = { filterType: '', subjects: ['ID123'] } as any;
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                const filterArray = invokeGetFilterArray();
-
-                // Should treat empty string as unrecognized filterType, creating no filters
-                expectNoFiltersCreated();
-                expect(filterArray?.nonRemovable).toHaveLength(0);
-            });
-        });
-
-        describe('FilterArray structure validation', () => {
-            test('getFilterArray returns correct structure with nonRemovable filters', async () => {
-                const reports = [queryReport];
-                const filters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                const filterArray = invokeGetFilterArray();
-
-                // Verify the structure of the returned FilterArray
-                expect(filterArray).toEqual({
-                    removable: [],
-                    nonRemovable: expect.arrayContaining([expect.objectContaining({ field: 'Id' })]),
-                });
-            });
-
-            test('getFilterArray returns empty arrays for All Records mode', async () => {
-                const reports = [queryReport];
-                const filters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
-
-                renderWithServerContext(
-                    <TabbedReportPanel
-                        activeReport={undefined}
-                        filters={filters}
-                        onTabChange={jest.fn()}
-                        reports={reports}
-                        showReport={true}
-                    />,
-                    defaultServerContext()
-                );
-
-                await screen.findByText('Query Report');
-
-                await waitFor(() => {
-                    expect(capturedGetFilterArray).not.toBeNull();
-                });
-
-                const filterArray = invokeGetFilterArray();
-
-                // Verify empty structure for All Records mode
-                expect(filterArray).toEqual({
-                    removable: [],
-                    nonRemovable: [],
-                });
             });
         });
     });

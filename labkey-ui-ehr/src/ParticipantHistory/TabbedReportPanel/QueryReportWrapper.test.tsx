@@ -1,6 +1,5 @@
 import React from 'react';
 import { waitFor } from '@testing-library/react';
-import { Filter } from '@labkey/api';
 
 import { QueryReportWrapper } from './QueryReportWrapper';
 import { ExtReportTab, FILTER_TYPE_ID_SEARCH, QueryReportConfig } from '../models';
@@ -20,22 +19,15 @@ const createMockContainer = (): ExtReportTab => ({
     getQWPConfig: jest.fn(() => ({})),
 });
 
-(global as any).Ext4 = {
+(globalThis as any).Ext4 = {
     create: jest.fn(() => {
         mockExt4Container = createMockContainer();
         return mockExt4Container;
     }),
 };
 
-// Mock LDK global
-(global as any).LDK = {
-    Utils: {
-        getErrorCallback: jest.fn(() => (error: any) => console.error(error)),
-    },
-};
-
 // Mock LABKEY global
-(global as any).LABKEY = {
+(globalThis as any).LABKEY = {
     Utils: {
         encodeHtml: jest.fn((s: string) => s),
     },
@@ -62,10 +54,12 @@ describe('QueryReportWrapper', () => {
     };
 
     test('creates Ext4 container and adds ldk-querycmp to tab', async () => {
+        // Act
         renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
+        // Assert - Ext4 container is created with the expected base config
         await waitFor(() => {
-            expect((global as any).Ext4.create).toHaveBeenCalledWith(
+            expect((globalThis as any).Ext4.create).toHaveBeenCalledWith(
                 'Ext.container.Container',
                 expect.objectContaining({
                     border: false,
@@ -73,6 +67,7 @@ describe('QueryReportWrapper', () => {
             );
         });
 
+        // Assert - query component is added to the tab with the expected report config
         await waitFor(() => {
             expect(mockExt4Container.add).toHaveBeenCalledWith({
                 xtype: 'ldk-querycmp',
@@ -83,42 +78,41 @@ describe('QueryReportWrapper', () => {
         });
     });
 
-    test('sets failure callback on queryConfig', async () => {
-        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
-
-        await waitFor(() => {
-            const addCall = (mockExt4Container.add as jest.Mock).mock.calls[0][0];
-            expect(addCall.queryConfig.failure).toBeDefined();
-            expect(typeof addCall.queryConfig.failure).toBe('function');
-        });
-    });
-
     test('failure callback logs error and displays error in tab', async () => {
+        // Arrange
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
+        try {
+            // Act
+            renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
-        await waitFor(() => {
-            const addCall = (mockExt4Container.add as jest.Mock).mock.calls[0][0];
+            let addCall: any;
+            // Assert - failure callback is attached to queryConfig before invoking the failure path
+            await waitFor(() => {
+                addCall = (mockExt4Container.add as jest.Mock).mock.calls[0][0];
+                expect(addCall?.queryConfig?.failure).toBeDefined();
+            });
+
+            // Act
             addCall.queryConfig.failure({ message: 'Test error' });
-        });
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to load query report', { message: 'Test error' });
+            // Assert - error is logged to console and error HTML is displayed in the tab
+            expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to load query report', { message: 'Test error' });
 
-        // Verify error is displayed in tab
-        const addCalls = (mockExt4Container.add as jest.Mock).mock.calls;
-        const errorCall = addCalls.find((call: any) => call[0].html?.includes('labkey-error'));
-        expect(errorCall).toBeDefined();
-        expect(errorCall[0].html).toContain("Failed to load 'Query Report'");
-
-        consoleErrorSpy.mockRestore();
+            const addCalls = (mockExt4Container.add as jest.Mock).mock.calls;
+            const errorCall = addCalls.find((call: any) => call[0].html?.includes('labkey-error'));
+            expect(errorCall).toBeDefined();
+            expect(errorCall[0].html).toContain("Failed to load 'Query Report'");
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
     });
 
-    test('displays error in tab when component creation throws', () => {
+    test('displays error in tab when component creation throws', async () => {
+        // Arrange
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-        // Override Ext4.create to return a container whose add throws on first call, then succeeds
-        const originalCreate = (global as any).Ext4.create;
+        const originalCreate = (globalThis as any).Ext4.create;
         const errorContainer = createMockContainer();
         let firstCall = true;
         errorContainer.add = jest.fn(() => {
@@ -127,42 +121,44 @@ describe('QueryReportWrapper', () => {
                 throw new Error('Failed to create ExtJS component');
             }
         });
-        (global as any).Ext4.create = jest.fn(() => errorContainer);
+        (globalThis as any).Ext4.create = jest.fn(() => errorContainer);
 
-        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
+        try {
+            // Act
+            renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create ExtJS component', expect.any(Error));
+            // Assert - error is logged to console and error message is displayed in the tab
+            await waitFor(() => {
+                expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create ExtJS component', expect.any(Error));
 
-        // Verify error is displayed in tab
-        const addCalls = (errorContainer.add as jest.Mock).mock.calls;
-        const errorCall = addCalls.find((call: any) => call[0].html?.includes('labkey-error'));
-        expect(errorCall).toBeDefined();
-        expect(errorCall[0].html).toContain("Error loading 'Query Report'");
-
-        consoleErrorSpy.mockRestore();
-        (global as any).Ext4.create = originalCreate;
+                const addCalls = (errorContainer.add as jest.Mock).mock.calls;
+                const errorCall = addCalls.find((call: any) => call[0].html?.includes('labkey-error'));
+                expect(errorCall).toBeDefined();
+                expect(errorCall[0].html).toContain("Error loading 'Query Report'");
+            });
+        } finally {
+            consoleErrorSpy.mockRestore();
+            (globalThis as any).Ext4.create = originalCreate;
+        }
     });
 
     test('cleans up by calling destroy on unmount', async () => {
+        // Arrange
         const { unmount } = renderWithServerContext(
             <QueryReportWrapper filters={filters} report={queryReport} />,
             defaultServerContext()
         );
 
+        // Assert - query component was created before unmount to ensure cleanup path is exercised
         await waitFor(() => {
             expect(mockExt4Container.add).toHaveBeenCalled();
         });
 
+        // Act
         unmount();
 
+        // Assert - destroy is called on the Ext4 container
         expect(mockExt4Container.destroy).toHaveBeenCalled();
     });
 
-    test('renders without server context dependency', async () => {
-        renderWithServerContext(<QueryReportWrapper filters={filters} report={queryReport} />, defaultServerContext());
-
-        await waitFor(() => {
-            expect(mockExt4Container.add).toHaveBeenCalled();
-        });
-    });
 });

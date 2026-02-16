@@ -15,99 +15,121 @@ import {
 const mockResolveAnimalIds = jest.fn<Promise<IdResolutionResult>, [ResolveIdsParams]>();
 
 describe('parseIds utility function', () => {
-    test('parses IDs with newline separators', () => {
-        const result = parseIds('ID1\nID2\nID3');
-        expect(result).toEqual(['ID1', 'ID2', 'ID3']);
-    });
+    test.each([
+        { name: 'newline', separator: '\n' },
+        { name: 'comma', separator: ',' },
+        { name: 'tab', separator: '\t' },
+        { name: 'semicolon', separator: ';' },
+    ])('parses IDs with $name separators', ({ separator }) => {
+        // Act
+        const result = parseIds(`ID1${separator}ID2${separator}ID3`);
 
-    test('parses IDs with comma separators', () => {
-        const result = parseIds('ID1,ID2,ID3');
-        expect(result).toEqual(['ID1', 'ID2', 'ID3']);
-    });
-
-    test('parses IDs with tab separators', () => {
-        const result = parseIds('ID1\tID2\tID3');
-        expect(result).toEqual(['ID1', 'ID2', 'ID3']);
-    });
-
-    test('parses IDs with semicolon separators', () => {
-        const result = parseIds('ID1;ID2;ID3');
+        // Assert - IDs are split on the given separator
         expect(result).toEqual(['ID1', 'ID2', 'ID3']);
     });
 
     test('parses IDs with mixed separators', () => {
+        // Act
         const result = parseIds('ID1,ID2\nID3;ID4\tID5');
+
+        // Assert - IDs are split on any supported separator
         expect(result).toEqual(['ID1', 'ID2', 'ID3', 'ID4', 'ID5']);
     });
 
     test('trims whitespace from IDs', () => {
+        // Act
         const result = parseIds('  ID1  ,  ID2  \n  ID3  ');
+
+        // Assert - leading and trailing whitespace is removed from each ID
         expect(result).toEqual(['ID1', 'ID2', 'ID3']);
     });
 
     test('filters out empty strings', () => {
+        // Act
         const result = parseIds('ID1,,ID2\n\nID3');
+
+        // Assert - consecutive separators do not produce empty entries
         expect(result).toEqual(['ID1', 'ID2', 'ID3']);
     });
 
     test('de-duplicates IDs (case-insensitive)', () => {
+        // Act
         const result = parseIds('ID1,id1,ID2,Id2');
+
+        // Assert - duplicate IDs are removed regardless of casing
         expect(result).toEqual(['ID1', 'ID2']);
     });
 
     test('preserves original casing of first occurrence', () => {
+        // Act
         const result = parseIds('id1,ID1,Id2,ID2');
+
+        // Assert - first occurrence casing is kept when deduplicating
         expect(result).toEqual(['id1', 'Id2']);
     });
 
     test('handles empty input', () => {
+        // Act
         const result = parseIds('');
+
+        // Assert - empty string produces empty array
         expect(result).toEqual([]);
     });
 
     test('handles whitespace-only input', () => {
+        // Act
         const result = parseIds('   \n\t  ');
+
+        // Assert - whitespace-only input produces empty array
         expect(result).toEqual([]);
     });
 
     test('handles special characters in IDs', () => {
+        // Act
         const result = parseIds('ID-123,ID_456,ID@789');
+
+        // Assert - special characters within IDs are preserved
         expect(result).toEqual(['ID-123', 'ID_456', 'ID@789']);
     });
 
     test('handles IDs with spaces', () => {
+        // Act
         const result = parseIds('ID 123,ID 456');
+
+        // Assert - internal spaces within IDs are preserved
         expect(result).toEqual(['ID 123', 'ID 456']);
     });
 });
 
 describe('validateInput utility function', () => {
-    test('returns undefined for valid input with 1 ID', () => {
-        const result = validateInput(['ID1']);
-        expect(result).toBeUndefined();
-    });
+    test.each([1, 100])('returns undefined for valid input with %i ID(s)', count => {
+        // Arrange
+        const ids = Array.from({ length: count }, (_, i) => `ID${i}`);
 
-    test('returns undefined for valid input with 100 IDs', () => {
-        const ids = Array.from({ length: 100 }, (_, i) => `ID${i}`);
+        // Act
         const result = validateInput(ids);
+
+        // Assert - within-limit ID count passes validation
         expect(result).toBeUndefined();
     });
 
     test('returns error for empty array', () => {
+        // Act
         const result = validateInput([]);
+
+        // Assert - empty input returns minimum ID error message
         expect(result).toBe('Please enter at least one animal ID.');
     });
 
-    test('returns error for 101 IDs', () => {
-        const ids = Array.from({ length: 101 }, (_, i) => `ID${i}`);
-        const result = validateInput(ids);
-        expect(result).toBe('Maximum of 100 animal IDs allowed. You entered 101 IDs.');
-    });
+    test.each([101, 150])('returns error for %i IDs', count => {
+        // Arrange
+        const ids = Array.from({ length: count }, (_, i) => `ID${i}`);
 
-    test('returns error for 150 IDs', () => {
-        const ids = Array.from({ length: 150 }, (_, i) => `ID${i}`);
+        // Act
         const result = validateInput(ids);
-        expect(result).toBe('Maximum of 100 animal IDs allowed. You entered 150 IDs.');
+
+        // Assert - exceeding 100 IDs returns maximum limit error with actual count
+        expect(result).toBe(`Maximum of 100 animal IDs allowed. You entered ${count} IDs.`);
     });
 });
 
@@ -123,163 +145,8 @@ describe('SearchByIdPanel', () => {
     });
 
     describe('ID parsing', () => {
-        test('parses IDs with newline separators', async () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-            const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
-            await userEvent.type(textarea, 'ID123\nID456\nID789');
-
-            mockResolveAnimalIds.mockResolvedValue({
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID456', resolvedId: 'ID456', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID789', resolvedId: 'ID789', resolvedBy: 'direct', aliasType: null },
-                ],
-                notFound: [],
-            });
-
-            fireEvent.click(updateButton);
-
-            await waitFor(() => {
-                expect(mockResolveAnimalIds).toHaveBeenCalledWith({
-                    inputIds: ['ID123', 'ID456', 'ID789'],
-                });
-            });
-
-            // Verify onFilterChange was called with resolved subject IDs
-            await waitFor(() => {
-                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
-            });
-        });
-
-        test('parses IDs with comma separators', async () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-            const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
-            await userEvent.type(textarea, 'ID123,ID456,ID789');
-
-            mockResolveAnimalIds.mockResolvedValue({
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID456', resolvedId: 'ID456', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID789', resolvedId: 'ID789', resolvedBy: 'direct', aliasType: null },
-                ],
-                notFound: [],
-            });
-
-            fireEvent.click(updateButton);
-
-            await waitFor(() => {
-                expect(mockResolveAnimalIds).toHaveBeenCalledWith({
-                    inputIds: ['ID123', 'ID456', 'ID789'],
-                });
-            });
-
-            // Verify onFilterChange was called with resolved subject IDs
-            await waitFor(() => {
-                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
-            });
-        });
-
-        test('parses IDs with tab separators', async () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-            const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
-            fireEvent.change(textarea, { target: { value: 'ID123\tID456\tID789' } });
-
-            mockResolveAnimalIds.mockResolvedValue({
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID456', resolvedId: 'ID456', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID789', resolvedId: 'ID789', resolvedBy: 'direct', aliasType: null },
-                ],
-                notFound: [],
-            });
-
-            fireEvent.click(updateButton);
-
-            await waitFor(() => {
-                expect(mockResolveAnimalIds).toHaveBeenCalledWith({
-                    inputIds: ['ID123', 'ID456', 'ID789'],
-                });
-            });
-
-            // Verify onFilterChange was called with resolved subject IDs
-            await waitFor(() => {
-                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
-            });
-        });
-
-        test('parses IDs with semicolon separators', async () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-            const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
-            await userEvent.type(textarea, 'ID123;ID456;ID789');
-
-            mockResolveAnimalIds.mockResolvedValue({
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID456', resolvedId: 'ID456', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID789', resolvedId: 'ID789', resolvedBy: 'direct', aliasType: null },
-                ],
-                notFound: [],
-            });
-
-            fireEvent.click(updateButton);
-
-            await waitFor(() => {
-                expect(mockResolveAnimalIds).toHaveBeenCalledWith({
-                    inputIds: ['ID123', 'ID456', 'ID789'],
-                });
-            });
-
-            // Verify onFilterChange was called with resolved subject IDs
-            await waitFor(() => {
-                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456', 'ID789']);
-            });
-        });
-
         test('parses IDs with mixed separators', async () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -289,12 +156,9 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             fireEvent.change(textarea, { target: { value: 'ID1,ID2\nID3;ID4\tID5' } });
-
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: [
                     { inputId: 'ID1', resolvedId: 'ID1', resolvedBy: 'direct', aliasType: null },
@@ -306,59 +170,28 @@ describe('SearchByIdPanel', () => {
                 notFound: [],
             });
 
+            // Act
             fireEvent.click(updateButton);
 
+            // Assert - IDs split across different separator types are all parsed correctly
             await waitFor(() => {
                 expect(mockResolveAnimalIds).toHaveBeenCalledWith({
                     inputIds: ['ID1', 'ID2', 'ID3', 'ID4', 'ID5'],
                 });
             });
-
-            // Verify onFilterChange was called with resolved subject IDs
             await waitFor(() => {
-                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID1', 'ID2', 'ID3', 'ID4', 'ID5']);
-            });
-        });
-
-        test('trims whitespace from IDs', async () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-            const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
-            fireEvent.change(textarea, { target: { value: '  ID123  ,  ID456  ' } });
-
-            mockResolveAnimalIds.mockResolvedValue({
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID456', resolvedId: 'ID456', resolvedBy: 'direct', aliasType: null },
-                ],
-                notFound: [],
-            });
-
-            fireEvent.click(updateButton);
-
-            await waitFor(() => {
-                expect(mockResolveAnimalIds).toHaveBeenCalledWith({
-                    inputIds: ['ID123', 'ID456'],
-                });
-            });
-
-            // Verify onFilterChange was called with resolved subject IDs
-            await waitFor(() => {
-                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
+                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, [
+                    'ID1',
+                    'ID2',
+                    'ID3',
+                    'ID4',
+                    'ID5',
+                ]);
             });
         });
 
         test('de-duplicates IDs across different separators', async () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -368,12 +201,9 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             fireEvent.change(textarea, { target: { value: 'ID123,ID456\nID123;ID456' } });
-
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: [
                     { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
@@ -382,53 +212,15 @@ describe('SearchByIdPanel', () => {
                 notFound: [],
             });
 
+            // Act
             fireEvent.click(updateButton);
 
+            // Assert - duplicate IDs across separators are resolved to unique set
             await waitFor(() => {
                 expect(mockResolveAnimalIds).toHaveBeenCalledWith({
                     inputIds: ['ID123', 'ID456'],
                 });
             });
-
-            // Verify onFilterChange was called with resolved subject IDs
-            await waitFor(() => {
-                expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
-            });
-        });
-
-        test('filters out empty strings from parsed IDs', async () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-            const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
-            fireEvent.change(textarea, { target: { value: 'ID123,,ID456' } });
-
-            mockResolveAnimalIds.mockResolvedValue({
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'ID456', resolvedId: 'ID456', resolvedBy: 'direct', aliasType: null },
-                ],
-                notFound: [],
-            });
-
-            fireEvent.click(updateButton);
-
-            await waitFor(() => {
-                expect(mockResolveAnimalIds).toHaveBeenCalledWith({
-                    inputIds: ['ID123', 'ID456'],
-                });
-            });
-
-            // Verify onFilterChange was called with resolved subject IDs
             await waitFor(() => {
                 expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
             });
@@ -436,7 +228,8 @@ describe('SearchByIdPanel', () => {
     });
 
     describe('validation', () => {
-        test('shows validation error when input is empty', async () => {
+        test('shows validation error when input is empty', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -446,19 +239,19 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
+
+            // Act
             fireEvent.click(updateButton);
 
-            await waitFor(() => {
-                expect(screen.getByText(/please enter at least one animal id/i)).toBeVisible();
-            });
-
+            // Assert - empty input shows validation error and prevents resolution
+            expect(screen.getByText(/please enter at least one animal id/i)).toBeVisible();
             expect(mockResolveAnimalIds).not.toHaveBeenCalled();
             expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, []);
         });
 
-        test('treats whitespace-only input as empty', async () => {
+        test('treats whitespace-only input as empty', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -468,22 +261,21 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             fireEvent.change(textarea, { target: { value: '   \n\t  ' } });
+
+            // Act
             fireEvent.click(updateButton);
 
-            await waitFor(() => {
-                expect(screen.getByText(/please enter at least one animal id/i)).toBeVisible();
-            });
-
+            // Assert - whitespace-only input triggers empty validation error
+            expect(screen.getByText(/please enter at least one animal id/i)).toBeVisible();
             expect(mockResolveAnimalIds).not.toHaveBeenCalled();
             expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, []);
         });
 
         test('allows exactly 100 IDs without validation error', async () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -493,16 +285,15 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             const ids = Array.from({ length: 100 }, (_, i) => `ID${i}`).join(',');
             fireEvent.change(textarea, { target: { value: ids } });
 
-            // Should not show validation error
+            // Assert - no validation error shown for exactly 100 IDs
             expect(screen.queryByText(/maximum of 100 animal ids/i)).not.toBeInTheDocument();
 
+            // Arrange
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: Array.from({ length: 100 }, (_, i) => ({
                     inputId: `ID${i}`,
@@ -513,20 +304,21 @@ describe('SearchByIdPanel', () => {
                 notFound: [],
             });
 
+            // Act
             fireEvent.click(updateButton);
 
+            // Assert - resolution proceeds with all 100 IDs
             await waitFor(() => {
                 expect(mockResolveAnimalIds).toHaveBeenCalled();
             });
-
-            // Verify onFilterChange was called with all 100 resolved subject IDs
             const expectedIds = Array.from({ length: 100 }, (_, i) => `ID${i}`);
             await waitFor(() => {
                 expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, expectedIds);
             });
         });
 
-        test('shows validation error when more than 100 IDs entered', async () => {
+        test('shows validation error when more than 100 IDs entered', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -536,18 +328,18 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const ids = Array.from({ length: 101 }, (_, i) => `ID${i}`).join(',');
 
+            // Act
             fireEvent.change(textarea, { target: { value: ids } });
 
-            await waitFor(() => {
-                expect(screen.getByText(/maximum of 100 animal ids allowed\. you entered 101 ids/i)).toBeVisible();
-            });
+            // Assert - exceeding 100 IDs shows validation error with count
+            expect(screen.getByText(/maximum of 100 animal ids allowed\. you entered 101 ids/i)).toBeVisible();
         });
 
-        test('button remains enabled when validation fails', async () => {
+        test('button remains enabled when validation fails', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -557,27 +349,29 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             const ids = Array.from({ length: 101 }, (_, i) => `ID${i}`).join(',');
+
+            // Act - enter more than 100 IDs
             fireEvent.change(textarea, { target: { value: ids } });
 
-            await waitFor(() => {
-                expect(screen.getByText(/maximum of 100 animal ids/i)).toBeVisible();
-            });
+            // Assert - validation error is shown
+            expect(screen.getByText(/maximum of 100 animal ids/i)).toBeVisible();
 
-            // Button should still be enabled even with validation error
+            // Assert - button remains enabled despite validation error
             expect(updateButton).not.toBeDisabled();
 
-            // Clicking button should call onFilterChange with empty array to show no records
+            // Act - click button with validation error present
             fireEvent.click(updateButton);
+
+            // Assert - filter is set to empty and resolution is skipped
             expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, []);
             expect(mockResolveAnimalIds).not.toHaveBeenCalled();
         });
 
-        test('clears validation error when IDs reduced below limit', async () => {
+        test('clears validation error when IDs reduced below limit', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -587,45 +381,27 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
 
-            // First enter 101 IDs
+            // Act - enter 101 IDs to trigger validation error
             const ids101 = Array.from({ length: 101 }, (_, i) => `ID${i}`).join(',');
             fireEvent.change(textarea, { target: { value: ids101 } });
 
-            await waitFor(() => {
-                expect(screen.getByText(/maximum of 100 animal ids/i)).toBeVisible();
-            });
+            // Assert - validation error appears
+            expect(screen.getByText(/maximum of 100 animal ids/i)).toBeVisible();
 
-            // Then reduce to 100 IDs
+            // Act - reduce to 100 IDs
             const ids100 = Array.from({ length: 100 }, (_, i) => `ID${i}`).join(',');
             fireEvent.change(textarea, { target: { value: ids100 } });
 
-            await waitFor(() => {
-                expect(screen.queryByText(/maximum of 100 animal ids/i)).not.toBeInTheDocument();
-            });
+            // Assert - validation error is cleared
+            expect(screen.queryByText(/maximum of 100 animal ids/i)).not.toBeInTheDocument();
         });
     });
 
     describe('filter mode toggles', () => {
-        test('renders filter mode toggle buttons', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            expect(screen.getByRole('button', { name: /search by ids/i })).toBeVisible();
-            expect(screen.getByRole('button', { name: /all animals/i })).toBeVisible();
-            expect(screen.getByRole('button', { name: /all alive at center/i })).toBeVisible();
-        });
-
         test('filter buttons visible in all modes except URL Params', () => {
+            // Arrange
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -636,11 +412,11 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
-            // ID Search mode - buttons visible
+            // Assert - Search by IDs and All Animals buttons are visible in ID Search mode
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /all animals/i })).toBeInTheDocument();
 
-            // all animals mode - buttons visible
+            // Act - switch to all animals mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -650,10 +426,12 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
+
+            // Assert - Search by IDs and All Animals buttons remain visible in all animals mode
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /all animals/i })).toBeInTheDocument();
 
-            // all alive at center mode - buttons visible
+            // Act - switch to all alive at center mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -663,10 +441,12 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
+
+            // Assert - Search by IDs and All Alive at Center buttons are visible in all alive at center mode
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /all alive at center/i })).toBeInTheDocument();
 
-            // URL Params mode - buttons NOT visible
+            // Act - switch to URL Params mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -676,11 +456,14 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
+
+            // Assert - Search by IDs and All Animals buttons are hidden in URL Params mode
             expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
             expect(screen.queryByRole('button', { name: /all animals/i })).not.toBeInTheDocument();
         });
 
         test('switches between filter modes', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -690,14 +473,17 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const allRecordsButton = screen.getByRole('button', { name: /all animals/i });
+
+            // Act
             fireEvent.click(allRecordsButton);
 
+            // Assert - clicking all animals button triggers filter change
             expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ALL, undefined);
         });
 
         test('search by ids button sets filter mode even with validation error', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -708,28 +494,36 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
-            // First switch to All Animals mode
+            // Act - switch to All Animals mode
             const allAnimalsButton = screen.getByRole('button', { name: /all animals/i });
             fireEvent.click(allAnimalsButton);
 
-            // Verify All Animals is active
+            // Assert - All Animals is active
             expect(allAnimalsButton).toHaveClass('search-by-id-panel__filter-button--active');
 
-            // Now click Search By Ids with no input (will trigger validation error)
+            // Act - click Search By Ids with no input
             const searchByIdsButton = screen.getByRole('button', { name: /search by ids/i });
             fireEvent.click(searchByIdsButton);
 
-            // Verify validation error appears
+            // Assert - validation error appears and search mode becomes active
             expect(screen.getByRole('alert')).toHaveTextContent('Please enter at least one animal ID');
-
-            // Verify Search By Ids button is now active
             expect(searchByIdsButton).toHaveClass('search-by-id-panel__search-button--active');
-
-            // Verify All Animals button is now inactive
             expect(allAnimalsButton).toHaveClass('search-by-id-panel__filter-button--inactive');
         });
 
-        test('ID textarea is always visible', () => {
+        test.each([
+            {
+                buttonPattern: /all animals/i,
+                filterType: 'All Animals',
+                expectedFilterType: FILTER_TYPE_ALL,
+            },
+            {
+                buttonPattern: /all alive at center/i,
+                filterType: 'All Alive at Center',
+                expectedFilterType: FILTER_TYPE_ALIVE_AT_CENTER,
+            },
+        ])('clears input when switching to $filterType mode', ({ buttonPattern, expectedFilterType }) => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -739,56 +533,23 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
-            expect(screen.getByRole('textbox')).toBeVisible();
-
-            const allRecordsButton = screen.getByRole('button', { name: /all animals/i });
-            fireEvent.click(allRecordsButton);
-
-            expect(screen.getByRole('textbox')).toBeVisible();
-        });
-
-        test('search by ids button is always visible', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            expect(screen.getByRole('button', { name: /search by ids/i })).toBeVisible();
-
-            const allRecordsButton = screen.getByRole('button', { name: /all animals/i });
-            fireEvent.click(allRecordsButton);
-
-            expect(screen.getByRole('button', { name: /search by ids/i })).toBeVisible();
-        });
-
-        test('clears input when switching to all animals mode', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
             const textarea = screen.getByRole('textbox');
             fireEvent.change(textarea, { target: { value: 'ID123,ID456' } });
 
-            const allRecordsButton = screen.getByRole('button', { name: /all animals/i });
-            fireEvent.click(allRecordsButton);
+            // Act
+            const filterButton = screen.getByRole('button', { name: buttonPattern });
+            fireEvent.click(filterButton);
 
-            // Verify input was cleared
+            // Assert - input is cleared and filter change is triggered
             expect(textarea).toHaveValue('');
+            expect(mockOnFilterChange).toHaveBeenCalledWith(expectedFilterType, undefined);
         });
 
-        test('clears input when switching to all alive at center mode', () => {
+        test.each([
+            { buttonPattern: /all animals/i, filterType: 'All Animals' },
+            { buttonPattern: /all alive at center/i, filterType: 'All Alive at Center' },
+        ])('clears validation error when switching to $filterType mode', ({ buttonPattern }) => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -798,77 +559,24 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
-            fireEvent.change(textarea, { target: { value: 'ID123,ID456' } });
-
-            const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
-            fireEvent.click(aliveAtCenterButton);
-
-            expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ALIVE_AT_CENTER, undefined);
-        });
-
-        test('clears validation error when switching to all animals mode', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-
-            // Enter more than 100 IDs to trigger validation error
             const manyIds = Array.from({ length: 101 }, (_, i) => `ID${i + 1}`).join(',');
             fireEvent.change(textarea, { target: { value: manyIds } });
-
-            // Verify validation error appears
             expect(screen.getByRole('alert')).toHaveTextContent('Maximum of 100 animal IDs allowed');
 
-            // Switch to All Animals mode
-            const allAnimalsButton = screen.getByRole('button', { name: /all animals/i });
-            fireEvent.click(allAnimalsButton);
+            // Act
+            const filterButton = screen.getByRole('button', { name: buttonPattern });
+            fireEvent.click(filterButton);
 
-            // Verify validation error is cleared
-            expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-            expect(textarea).toHaveValue('');
-        });
-
-        test('clears validation error when switching to all alive at center mode', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const textarea = screen.getByRole('textbox');
-
-            // Enter more than 100 IDs to trigger validation error
-            const manyIds = Array.from({ length: 101 }, (_, i) => `ID${i + 1}`).join(',');
-            fireEvent.change(textarea, { target: { value: manyIds } });
-
-            // Verify validation error appears
-            expect(screen.getByRole('alert')).toHaveTextContent('Maximum of 100 animal IDs allowed');
-
-            // Switch to All Alive at Center mode
-            const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
-            fireEvent.click(aliveAtCenterButton);
-
-            // Verify validation error is cleared
+            // Assert - validation error is cleared and input is emptied
             expect(screen.queryByRole('alert')).not.toBeInTheDocument();
             expect(textarea).toHaveValue('');
         });
     });
 
     describe('textarea and button visibility', () => {
-        test('textarea and search by ids button always visible in all modes', () => {
+        test('textarea and search by ids button always visible in non-URL modes', () => {
+            // Arrange
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -879,11 +587,11 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
-            // ID Search mode - always visible
+            // Assert - textarea and search button visible in ID Search mode
             expect(screen.getByRole('textbox')).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
 
-            // all animals mode - still visible
+            // Act - switch to all animals mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -893,10 +601,12 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
+
+            // Assert - textarea and search button still visible in all animals mode
             expect(screen.getByRole('textbox')).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
 
-            // all alive at center mode - still visible
+            // Act - switch to all alive at center mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -906,18 +616,34 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
+
+            // Assert - textarea and search button still visible in all alive at center mode
             expect(screen.getByRole('textbox')).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
+
+            // Act - switch to URL Params mode
+            rerender(
+                <SearchByIdPanel
+                    activeReportSupportsNonIdFilters={true}
+                    initialFilterType={FILTER_TYPE_URL_PARAMS}
+                    initialSubjects={['ID123']}
+                    onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
+                />
+            );
+
+            // Assert - textarea and search button hidden in URL Params mode
+            expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
         });
 
         test('shows loading state while resolving IDs', async () => {
-            // Mock a slow resolution
+            // Arrange
             let resolvePromise: (value: IdResolutionResult) => void;
             const slowPromise = new Promise<IdResolutionResult>(resolve => {
                 resolvePromise = resolve;
             });
             mockResolveAnimalIds.mockReturnValue(slowPromise);
-
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -927,25 +653,25 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             fireEvent.change(textarea, { target: { value: 'ID123' } });
+
+            // Act
             fireEvent.click(updateButton);
 
-            // Button should be disabled while loading
+            // Assert - button is disabled while loading
             await waitFor(() => {
                 expect(screen.getByRole('button', { name: /search by ids/i })).toBeDisabled();
             });
 
-            // Resolve the promise
+            // Act - resolve the promise
             resolvePromise!({
                 resolved: [{ inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null }],
                 notFound: [],
             });
 
-            // Button should be re-enabled after loading
+            // Assert - button is re-enabled after loading completes
             await waitFor(() => {
                 expect(screen.getByRole('button', { name: /search by ids/i })).toBeEnabled();
             });
@@ -954,11 +680,11 @@ describe('SearchByIdPanel', () => {
 
     describe('resolution feedback visibility', () => {
         test('resolution feedback always visible when there are aliases or not-found IDs', async () => {
+            // Arrange
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: [{ inputId: 'alias1', resolvedId: 'ID123', resolvedBy: 'alias', aliasType: 'tattoo' }],
                 notFound: ['notfound1'],
             });
-
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -968,25 +694,22 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
-            // Trigger resolution
             fireEvent.change(textarea, { target: { value: 'alias1,notfound1' } });
+
+            // Act
             fireEvent.click(updateButton);
 
-            // Wait for resolution to complete
+            // Assert - resolution feedback is visible after resolution
             await waitFor(() => {
                 expect(mockResolveAnimalIds).toHaveBeenCalled();
             });
-
-            // Resolution feedback should be visible
             await waitFor(() => {
                 expect(screen.getByText(/id resolution/i)).toBeInTheDocument();
             });
 
-            // Switch to all animals mode
+            // Act - switch to all animals mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -997,10 +720,10 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
-            // Resolution feedback should still be visible (textarea is always visible)
+            // Assert - resolution feedback persists in all animals mode
             expect(screen.getByText(/id resolution/i)).toBeInTheDocument();
 
-            // Switch to all alive at center mode
+            // Act - switch to all alive at center mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1011,11 +734,12 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
-            // Resolution feedback should still be visible
+            // Assert - resolution feedback persists in all alive at center mode
             expect(screen.getByText(/id resolution/i)).toBeInTheDocument();
         });
 
         test('shows resolution feedback when aliases are resolved', async () => {
+            // Arrange
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: [
                     { inputId: 'alias1', resolvedId: 'ID123', resolvedBy: 'alias', aliasType: 'tattoo' },
@@ -1023,7 +747,6 @@ describe('SearchByIdPanel', () => {
                 ],
                 notFound: [],
             });
-
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1033,32 +756,30 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             fireEvent.change(textarea, { target: { value: 'alias1,ID456' } });
+
+            // Act
             fireEvent.click(updateButton);
 
+            // Assert - alias resolution details are displayed with arrow and type
             await waitFor(() => {
                 expect(screen.getByText(/id resolution/i)).toBeInTheDocument();
             });
-
-            // Verify alias content is displayed with arrow and type
             expect(screen.getByText('alias1')).toBeInTheDocument();
             expect(screen.getByText('→')).toBeInTheDocument();
             expect(screen.getByText('ID123')).toBeInTheDocument();
             expect(screen.getByText('(tattoo)')).toBeInTheDocument();
-            // Verify resolved count
             expect(screen.getByText(/Resolved \(2\)/)).toBeInTheDocument();
         });
 
         test('shows resolution feedback when IDs are not found', async () => {
+            // Arrange
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: [{ inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null }],
                 notFound: ['notfound1', 'notfound2'],
             });
-
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1068,25 +789,24 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             fireEvent.change(textarea, { target: { value: 'ID123,notfound1,notfound2' } });
+
+            // Act
             fireEvent.click(updateButton);
 
+            // Assert - not-found IDs are displayed with count
             await waitFor(() => {
                 expect(screen.getByText(/id resolution/i)).toBeInTheDocument();
             });
-
-            // Verify not-found IDs are displayed
             expect(screen.getByText('notfound1')).toBeInTheDocument();
             expect(screen.getByText('notfound2')).toBeInTheDocument();
-            // Verify not-found count
             expect(screen.getByText(/Not Found \(2\)/)).toBeInTheDocument();
         });
 
         test('hides resolution feedback when all IDs resolve directly', async () => {
+            // Arrange
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: [
                     { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
@@ -1094,7 +814,6 @@ describe('SearchByIdPanel', () => {
                 ],
                 notFound: [],
             });
-
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1104,87 +823,24 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             fireEvent.change(textarea, { target: { value: 'ID123,ID456' } });
+
+            // Act
             fireEvent.click(updateButton);
 
+            // Assert - no resolution feedback shown when all IDs resolve directly
             await waitFor(() => {
                 expect(mockResolveAnimalIds).toHaveBeenCalled();
             });
-
-            // Should not show resolution feedback when all resolve directly
             expect(screen.queryByText(/id resolution/i)).not.toBeInTheDocument();
         });
     });
 
-    describe('all alive at center button state', () => {
-        test('all alive at center button enabled when activeReportSupportsNonIdFilters is true', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
-            expect(aliveAtCenterButton).not.toBeDisabled();
-        });
-
-        test('all alive at center button disabled when activeReportSupportsNonIdFilters is false', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={false}
-                    initialFilterType={FILTER_TYPE_ID_SEARCH}
-                    initialSubjects={[]}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
-            expect(aliveAtCenterButton).toBeDisabled();
-        });
-    });
-
     describe('URL Params mode (read-only)', () => {
-        test('hides filter toggle buttons in URL Params mode', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_URL_PARAMS}
-                    initialSubjects={['ID123', 'ID456']}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
-            expect(screen.queryByRole('button', { name: /all animals/i })).not.toBeInTheDocument();
-            expect(screen.queryByRole('button', { name: /all alive at center/i })).not.toBeInTheDocument();
-        });
-
-        test('hides ID textarea and search by ids button in URL Params mode', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_URL_PARAMS}
-                    initialSubjects={['ID123', 'ID456']}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-            expect(screen.queryByRole('button', { name: /search by ids/i })).not.toBeInTheDocument();
-        });
-
         test('shows read-only summary in URL Params mode', () => {
+            // Act - render panel in URL Params mode
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1195,27 +851,15 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
+            // Assert - read-only summary shows count and lists all subject IDs
             expect(screen.getByText(/viewing 3 animal\(s\)/i)).toBeVisible();
             expect(screen.getByText(/ID123/)).toBeVisible();
             expect(screen.getByText(/ID456/)).toBeVisible();
             expect(screen.getByText(/ID789/)).toBeVisible();
         });
 
-        test('shows Modify Search button in URL Params mode', () => {
-            render(
-                <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
-                    initialFilterType={FILTER_TYPE_URL_PARAMS}
-                    initialSubjects={['ID123', 'ID456']}
-                    onFilterChange={mockOnFilterChange}
-                    resolveAnimalIds={mockResolveAnimalIds}
-                />
-            );
-
-            expect(screen.getByRole('button', { name: /modify search/i })).toBeVisible();
-        });
-
         test('Modify Search button switches to ID Search mode with subjects pre-populated', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1225,16 +869,19 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const modifyButton = screen.getByRole('button', { name: /modify search/i });
+
+            // Act
             fireEvent.click(modifyButton);
 
+            // Assert - filter changes to ID Search with existing subjects
             expect(mockOnFilterChange).toHaveBeenCalledWith(FILTER_TYPE_ID_SEARCH, ['ID123', 'ID456']);
         });
     });
 
     describe('component behavior with initialSubjects prop', () => {
         test('pre-populates textarea when transitioning from URL Params to ID Search', () => {
+            // Arrange
             const { rerender } = render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1245,16 +892,18 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
-            // Simulate switching to ID Search mode
+            // Act - switch to ID Search mode
             rerender(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={['ID123', 'ID456']}
                     onFilterChange={mockOnFilterChange}
+                    resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
 
+            // Assert - textarea is pre-populated with the initial subjects
             const textarea = screen.getByRole('textbox');
             expect(textarea).toHaveValue('ID123,ID456');
         });
@@ -1262,6 +911,7 @@ describe('SearchByIdPanel', () => {
 
     describe('accessibility', () => {
         test('textarea has accessible label', () => {
+            // Act - render panel
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1272,14 +922,16 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
+            // Assert - textarea has an accessible name for screen readers
             const textarea = screen.getByRole('textbox');
             expect(textarea).toHaveAccessibleName();
         });
 
-        test('buttons have accessible names', () => {
+        test('all alive at center button exposes disabled semantics and helper title when unsupported', () => {
+            // Act - render panel with non-ID filters unsupported
             render(
                 <SearchByIdPanel
-                    activeReportSupportsNonIdFilters={true}
+                    activeReportSupportsNonIdFilters={false}
                     initialFilterType={FILTER_TYPE_ID_SEARCH}
                     initialSubjects={[]}
                     onFilterChange={mockOnFilterChange}
@@ -1287,12 +939,14 @@ describe('SearchByIdPanel', () => {
                 />
             );
 
-            expect(screen.getByRole('button', { name: /search by ids/i })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /all animals/i })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /all alive at center/i })).toBeInTheDocument();
+            // Assert - disabled control has accessible name and explanatory title when unsupported
+            const aliveAtCenterButton = screen.getByRole('button', { name: /all alive at center/i });
+            expect(aliveAtCenterButton).toBeDisabled();
+            expect(aliveAtCenterButton).toHaveAttribute('title', 'This filter type is not supported for this report');
         });
 
-        test('validation errors have role="alert" for screen readers', async () => {
+        test('validation errors have role="alert" for screen readers', () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1302,19 +956,20 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const ids = Array.from({ length: 101 }, (_, i) => `ID${i}`).join(',');
+
+            // Act
             fireEvent.change(textarea, { target: { value: ids } });
 
-            await waitFor(() => {
-                const alert = screen.getByRole('alert');
-                expect(alert).toBeInTheDocument();
-                expect(alert).toHaveTextContent(/maximum of 100 animal ids/i);
-            });
+            // Assert - validation error uses alert role for screen reader announcement
+            const alert = screen.getByRole('alert');
+            expect(alert).toBeInTheDocument();
+            expect(alert).toHaveTextContent(/maximum of 100 animal ids/i);
         });
 
         test('keyboard navigation works correctly', async () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1324,31 +979,34 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
 
-            // Tab to textarea first (it's rendered first)
+            // Act & Assert - tab navigates to textarea first
             await userEvent.tab();
             expect(textarea).toHaveFocus();
 
-            // Type IDs
+            // Act - type IDs into focused textarea
             await userEvent.keyboard('ID123');
 
-            // Tab to search by ids button
+            // Act & Assert - tab navigates to search by ids button
             await userEvent.tab();
             expect(updateButton).toHaveFocus();
 
-            // Tab through remaining filter buttons (all animals, all alive at center)
+            // Act - tab through remaining filter buttons
             await userEvent.tab(); // all animals button
+            // Assert - focus moves to all animals button
+            expect(screen.getByRole('button', { name: /all animals/i })).toHaveFocus();
+
             await userEvent.tab(); // all alive at center button
-            // Note: Tab order is textarea -> search by ids -> all animals -> all alive at center
-            // This test verifies tab order is logical
+            // Assert - focus moves to all alive at center button
+            expect(screen.getByRole('button', { name: /all alive at center/i })).toHaveFocus();
         });
     });
 
     describe('security - SQL injection protection', () => {
         test('treats IDs with SQL injection patterns as literal strings', async () => {
+            // Arrange
             render(
                 <SearchByIdPanel
                     activeReportSupportsNonIdFilters={true}
@@ -1358,23 +1016,21 @@ describe('SearchByIdPanel', () => {
                     resolveAnimalIds={mockResolveAnimalIds}
                 />
             );
-
             const textarea = screen.getByRole('textbox');
             const updateButton = screen.getByRole('button', { name: /search by ids/i });
-
             // Note: Semicolons are treated as separators, so this input will be split
             const maliciousInput = "'; DROP TABLE--;,ID123' OR '1'='1";
             fireEvent.change(textarea, { target: { value: maliciousInput } });
-
             mockResolveAnimalIds.mockResolvedValue({
                 resolved: [],
                 notFound: ["'", 'DROP TABLE--', "ID123' OR '1'='1"],
             });
 
+            // Act
             fireEvent.click(updateButton);
 
+            // Assert - SQL injection patterns are treated as literal ID strings
             await waitFor(() => {
-                // Semicolon acts as separator, so "'; DROP TABLE--;" splits into "'" and "DROP TABLE--"
                 expect(mockResolveAnimalIds).toHaveBeenCalledWith({
                     inputIds: ["'", 'DROP TABLE--', "ID123' OR '1'='1"],
                 });

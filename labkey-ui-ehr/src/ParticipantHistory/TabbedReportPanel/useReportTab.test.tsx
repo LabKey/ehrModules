@@ -25,7 +25,8 @@ const mockFilterCreate = jest.fn((field: string, value: string, type: any) => ({
     getURLParameterName: () => `query.${field}~${type?.getURLSuffix?.() || 'eq'}`,
     getURLParameterValue: () => value,
 }));
-(global as any).__mockFilterCreate__ = mockFilterCreate;
+const originalMockFilterCreate = (globalThis as any).__mockFilterCreate__;
+(globalThis as any).__mockFilterCreate__ = mockFilterCreate;
 
 jest.mock('@labkey/api', () => {
     const actual = jest.requireActual('@labkey/api');
@@ -34,7 +35,7 @@ jest.mock('@labkey/api', () => {
         Filter: {
             ...actual.Filter,
             create: (field: string, value: string, type: any) => {
-                const mockFn = (global as any).__mockFilterCreate__;
+                const mockFn = (globalThis as any).__mockFilterCreate__;
                 if (mockFn) {
                     return mockFn(field, value, type);
                 }
@@ -65,8 +66,9 @@ const createMockContainer = (): any => {
     return container;
 };
 
-// Setup Ext4 global mock
-(global as any).Ext4 = {
+// Setup Ext4 global mock and preserve original global for restoration
+const originalExt4 = (globalThis as any).Ext4;
+(globalThis as any).Ext4 = {
     create: jest.fn(() => createMockContainer()),
 };
 
@@ -86,6 +88,20 @@ const TestHarness: FC<{
 };
 
 describe('useReportTab', () => {
+    afterAll(() => {
+        if (originalMockFilterCreate === undefined) {
+            delete (globalThis as any).__mockFilterCreate__;
+        } else {
+            (globalThis as any).__mockFilterCreate__ = originalMockFilterCreate;
+        }
+
+        if (originalExt4 === undefined) {
+            delete (globalThis as any).Ext4;
+        } else {
+            (globalThis as any).Ext4 = originalExt4;
+        }
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
         mockFilterCreate.mockClear();
@@ -109,41 +125,53 @@ describe('useReportTab', () => {
 
     describe('basic hook behavior (without DOM)', () => {
         test('returns a ref that can be attached to a DOM element', () => {
+            // Act
             const { result } = renderHook(() => useReportTab(queryReport, filters));
 
+            // Assert - ref object exists and initially points to null
             expect(result.current.targetRef).toBeDefined();
             expect(result.current.targetRef.current).toBeNull();
         });
 
         test('tab starts as null when no DOM element attached', () => {
+            // Act
             const { result } = renderHook(() => useReportTab(queryReport, filters));
 
+            // Assert - tab is null without a DOM element
             expect(result.current.tab).toBeNull();
         });
 
         test('does not create tab if Ext4 is undefined', () => {
-            const originalExt4 = (global as any).Ext4;
-            (global as any).Ext4 = undefined;
+            // Arrange
+            const previousExt4 = (globalThis as any).Ext4;
+            (globalThis as any).Ext4 = undefined;
 
-            const { result } = renderHook(() => useReportTab(queryReport, filters));
+            try {
+                // Act
+                const { result } = renderHook(() => useReportTab(queryReport, filters));
 
-            expect(result.current.tab).toBeNull();
-
-            (global as any).Ext4 = originalExt4;
+                // Assert - tab remains null when Ext4 is unavailable
+                expect(result.current.tab).toBeNull();
+            } finally {
+                (globalThis as any).Ext4 = previousExt4;
+            }
         });
 
         test('cleans up without error on unmount when tab is null', () => {
+            // Act
             const { unmount } = renderHook(() => useReportTab(queryReport, filters));
 
-            // Should not throw
+            // Assert - cleanup runs without throwing when tab is null
             unmount();
         });
     });
 
     describe('Ext4 container creation (with DOM attachment)', () => {
-        test('creates Ext4 container with correct configuration when ref is attached', async () => {
+        test('creates tab with expected container config, data, and helper behavior when ref is attached', async () => {
+            // Arrange
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={filters}
@@ -153,113 +181,42 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => {
                 expect(capturedTab).not.toBeNull();
             });
+            const filterArray = capturedTab!.getFilterArray();
+            const qwpConfig = capturedTab!.getQWPConfig();
 
-            expect((global as any).Ext4.create).toHaveBeenCalledWith(
+            // Assert - Ext4.create receives the target element and borderless container config
+            expect((globalThis as any).Ext4.create).toHaveBeenCalledWith(
                 'Ext.container.Container',
                 expect.objectContaining({
+                    renderTo: expect.any(HTMLDivElement),
                     border: false,
                     defaults: { border: false },
                 })
             );
-        });
 
-        test('passes renderTo option with the target DOM element', async () => {
-            let capturedTab: ExtReportTab | null = null;
-
-            render(
-                <TestHarness
-                    filters={filters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
-            );
-
-            await waitFor(() => {
-                expect(capturedTab).not.toBeNull();
-            });
-
-            // Verify renderTo was passed (we can't verify the exact element, but we can check it's present)
-            expect((global as any).Ext4.create).toHaveBeenCalledWith(
-                'Ext.container.Container',
-                expect.objectContaining({
-                    renderTo: expect.any(HTMLDivElement),
-                })
-            );
-        });
-
-        test('assigns report and filters to the created tab', async () => {
-            let capturedTab: ExtReportTab | null = null;
-
-            render(
-                <TestHarness
-                    filters={filters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
-            );
-
-            await waitFor(() => {
-                expect(capturedTab).not.toBeNull();
-            });
-
+            // Assert - tab holds report/filter references and helper methods produce expected structures
             expect(capturedTab!.report).toBe(queryReport);
             expect(capturedTab!.filters).toBe(filters);
-        });
-
-        test('attaches getFilterArray method to the tab', async () => {
-            let capturedTab: ExtReportTab | null = null;
-
-            render(
-                <TestHarness
-                    filters={filters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
+            expect(filterArray).toEqual(
+                expect.objectContaining({
+                    removable: expect.any(Array),
+                    nonRemovable: expect.any(Array),
+                })
             );
-
-            await waitFor(() => {
-                expect(capturedTab).not.toBeNull();
-            });
-
-            expect(typeof capturedTab!.getFilterArray).toBe('function');
-        });
-
-        test('attaches getQWPConfig method to the tab', async () => {
-            let capturedTab: ExtReportTab | null = null;
-
-            render(
-                <TestHarness
-                    filters={filters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
-            );
-
-            await waitFor(() => {
-                expect(capturedTab).not.toBeNull();
-            });
-
-            expect(typeof capturedTab!.getQWPConfig).toBe('function');
+            expect(qwpConfig.tab).toBe(capturedTab);
         });
     });
 
     describe('getFilterArray', () => {
         test('returns subject filter for ID Search mode with single subject', async () => {
+            // Arrange
             const idSearchFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={idSearchFilters}
@@ -269,15 +226,12 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
+            // Assert - single subject produces an EQUAL filter on the Id field
             expect(filterArray.nonRemovable).toHaveLength(1);
             expect(filterArray.removable).toHaveLength(0);
-
-            // Verify the actual filter object
             const filter = filterArray.nonRemovable[0];
             expect(filter.getColumnName()).toBe('Id');
             expect(filter.getValue()).toBe('ID123');
@@ -285,9 +239,11 @@ describe('useReportTab', () => {
         });
 
         test('returns EQUALS_ONE_OF filter for multiple subjects', async () => {
+            // Arrange
             const multiSubjectFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123', 'ID456', 'ID789'] };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={multiSubjectFilters}
@@ -297,14 +253,11 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
+            // Assert - multiple subjects produce semicolon-joined EQUALS_ONE_OF filter
             expect(filterArray.nonRemovable).toHaveLength(1);
-
-            // Verify semicolon-joined value and EQUALS_ONE_OF type
             const filter = filterArray.nonRemovable[0];
             expect(filter.getColumnName()).toBe('Id');
             expect(filter.getValue()).toBe('ID123;ID456;ID789');
@@ -312,9 +265,11 @@ describe('useReportTab', () => {
         });
 
         test('returns empty arrays for All Records mode', async () => {
+            // Arrange
             const allFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={allFilters}
@@ -324,19 +279,20 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
+            // Assert - All Records mode applies no filters
             expect(filterArray.nonRemovable).toHaveLength(0);
             expect(filterArray.removable).toHaveLength(0);
         });
 
         test('returns calculated_status filter for Alive at Center mode', async () => {
+            // Arrange
             const aliveFilters = { filterType: FILTER_TYPE_ALIVE_AT_CENTER, subjects: undefined };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={aliveFilters}
@@ -346,15 +302,12 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
+            // Assert - Alive at Center produces EQUAL filter on calculated_status
             expect(filterArray.nonRemovable).toHaveLength(1);
             expect(filterArray.removable).toHaveLength(0);
-
-            // Verify the calculated_status filter
             const filter = filterArray.nonRemovable[0];
             expect(filter.getColumnName()).toBe('Id/Demographics/calculated_status');
             expect(filter.getValue()).toBe('Alive');
@@ -362,6 +315,7 @@ describe('useReportTab', () => {
         });
 
         test('uses custom subjectIdFieldName when provided', async () => {
+            // Arrange
             const customReport: ReportConfig = {
                 ...queryReport,
                 subjectIdFieldName: 'ParticipantId',
@@ -369,6 +323,7 @@ describe('useReportTab', () => {
             const idSearchFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={idSearchFilters}
@@ -378,20 +333,20 @@ describe('useReportTab', () => {
                     report={customReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
-            // Verify custom field name is used
+            // Assert - filter uses custom field name instead of default 'Id'
             const filter = filterArray.nonRemovable[0];
             expect(filter.getColumnName()).toBe('ParticipantId');
             expect(filter.getValue()).toBe('ID123');
         });
 
         test('returns empty arrays when filters is null', async () => {
+            // Arrange
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={null as any}
@@ -401,19 +356,20 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
+            // Assert - null filters produce empty filter arrays
             expect(filterArray.nonRemovable).toHaveLength(0);
             expect(filterArray.removable).toHaveLength(0);
         });
 
         test('URL Params mode creates same filters as ID Search mode', async () => {
+            // Arrange
             const urlFilters = { filterType: FILTER_TYPE_URL_PARAMS, subjects: ['ID123', 'ID456'] };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={urlFilters}
@@ -423,67 +379,50 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
+            // Assert - URL Params mode produces same subject filters as ID Search
             expect(filterArray.nonRemovable).toHaveLength(1);
-
             const filter = filterArray.nonRemovable[0];
             expect(filter.getColumnName()).toBe('Id');
             expect(filter.getValue()).toBe('ID123;ID456');
             expect(filter.getFilterType()).toBe(Filter.Types.EQUALS_ONE_OF);
         });
 
-        test('returns empty arrays when ID Search mode has empty subjects', async () => {
-            const emptySubjectsFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: [] };
+        test.each([
+            { label: 'empty subjects', subjects: [] },
+            { label: 'undefined subjects', subjects: undefined },
+        ])('returns empty arrays when ID Search mode has $label', async ({ subjects }) => {
+            // Arrange
+            const noSubjectsFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
-                    filters={emptySubjectsFilters}
+                    filters={noSubjectsFilters}
                     onTab={t => {
                         capturedTab = t;
                     }}
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
-            expect(filterArray.nonRemovable).toHaveLength(0);
-            expect(filterArray.removable).toHaveLength(0);
-        });
-
-        test('returns empty arrays when ID Search mode has undefined subjects', async () => {
-            const undefinedSubjectsFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: undefined };
-            let capturedTab: ExtReportTab | null = null;
-
-            render(
-                <TestHarness
-                    filters={undefinedSubjectsFilters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
-            );
-
-            await waitFor(() => expect(capturedTab).not.toBeNull());
-
-            const filterArray = capturedTab!.getFilterArray();
-
+            // Assert - missing subjects in ID Search mode produce no filters
             expect(filterArray.nonRemovable).toHaveLength(0);
             expect(filterArray.removable).toHaveLength(0);
         });
     });
 
     describe('getQWPConfig', () => {
-        test('returns config with standard QueryWebPart properties', async () => {
+        test('returns config with QueryWebPart defaults and expected derived values', async () => {
+            // Arrange
             let capturedTab: ExtReportTab | null = null;
+
+            // Act
             render(
                 <TestHarness
                     filters={filters}
@@ -493,11 +432,10 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const config = capturedTab!.getQWPConfig();
 
+            // Assert - config includes core defaults, derived filter fields, and excludes internal report fields
             expect(config.partName).toBe('Report');
             expect(config.suppressRenderErrors).toBe(true);
             expect(config.title).toBe('Query Report');
@@ -513,60 +451,28 @@ describe('useReportTab', () => {
             expect(config.buttonBarPosition).toBe('top');
             expect(config.timeout).toBe(0);
             expect(config.linkTarget).toBe('_blank');
-        });
-
-        test('includes tab reference in config', async () => {
-            let capturedTab: ExtReportTab | null = null;
-            render(
-                <TestHarness
-                    filters={filters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
-            );
-
-            await waitFor(() => expect(capturedTab).not.toBeNull());
-
-            const config = capturedTab!.getQWPConfig();
-
             expect(config.tab).toBe(capturedTab);
-        });
-
-        test('includes filters from getFilterArray in config', async () => {
-            const idSearchFilters = { filterType: FILTER_TYPE_ID_SEARCH, subjects: ['ID123'] };
-            let capturedTab: ExtReportTab | null = null;
-            render(
-                <TestHarness
-                    filters={idSearchFilters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
-            );
-
-            await waitFor(() => expect(capturedTab).not.toBeNull());
-
-            const config = capturedTab!.getQWPConfig();
-
-            // Should have filters array from getFilterArray.nonRemovable
             expect(config.filters).toHaveLength(1);
             expect(config.filters[0].getColumnName()).toBe('Id');
             expect(config.filters[0].getValue()).toBe('ID123');
-
-            // Should have removeableFilters array from getFilterArray.removable
             expect(config.removeableFilters).toHaveLength(0);
+            expect(config.id).toBeUndefined();
+            expect(config.reportType).toBeUndefined();
+            expect(config.category).toBeUndefined();
+            expect(config.supportsnonidfilters).toBeUndefined();
+            expect(config.subjectIdFieldName).toBeUndefined();
         });
 
-        test('spreads additional report properties into config', async () => {
+        test('includes report schema and query properties in config', async () => {
+            // Arrange
             const reportWithSchema: ReportConfig = {
                 ...queryReport,
                 schemaName: 'ehr',
                 queryName: 'animals',
             };
             let capturedTab: ExtReportTab | null = null;
+
+            // Act
             render(
                 <TestHarness
                     filters={filters}
@@ -576,46 +482,18 @@ describe('useReportTab', () => {
                     report={reportWithSchema}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const config = capturedTab!.getQWPConfig();
 
-            // Report-specific properties should be spread into config
+            // Assert - report-specific properties flow through to the config
             expect(config.schemaName).toBe('ehr');
             expect(config.queryName).toBe('animals');
-        });
-
-        test('excludes internal report properties from config', async () => {
-            let capturedTab: ExtReportTab | null = null;
-            render(
-                <TestHarness
-                    filters={filters}
-                    onTab={t => {
-                        capturedTab = t;
-                    }}
-                    report={queryReport}
-                />
-            );
-
-            await waitFor(() => expect(capturedTab).not.toBeNull());
-
-            const config = capturedTab!.getQWPConfig();
-
-            // Internal properties should be excluded from the config
-            expect(config.id).toBeUndefined();
-            expect(config.reportType).toBeUndefined();
-            expect(config.category).toBeUndefined();
-            expect(config.supportsnonidfilters).toBeUndefined();
-            expect(config.subjectIdFieldName).toBeUndefined();
-
-            // But title should be present (it's explicitly set)
-            expect(config.title).toBe('Query Report');
         });
     });
 
     describe('cleanup behavior', () => {
         test('destroys Ext4 container on unmount', async () => {
+            // Arrange
             let capturedTab: ExtReportTab | null = null;
             const { unmount } = render(
                 <TestHarness
@@ -626,82 +504,57 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const container = mockContainerInstances[0];
             expect(container.destroy).not.toHaveBeenCalled();
 
+            // Act
             unmount();
 
+            // Assert - container is destroyed on unmount
             expect(container.destroy).toHaveBeenCalled();
         });
 
         test('recreates container when report changes', async () => {
+            // Arrange
             const onTab = jest.fn();
             const { rerender } = render(<TestHarness filters={filters} onTab={onTab} report={queryReport} />);
-
             await waitFor(() => expect(onTab).toHaveBeenCalledWith(expect.anything()));
-
             const firstContainer = mockContainerInstances[0];
-            expect((global as any).Ext4.create).toHaveBeenCalledTimes(1);
+            expect((globalThis as any).Ext4.create).toHaveBeenCalledTimes(1);
 
-            // Change the report
+            // Act
             const newReport: ReportConfig = { ...queryReport, id: 'new-report', title: 'New Report' };
             rerender(<TestHarness filters={filters} onTab={onTab} report={newReport} />);
 
-            // Wait for new container to be created
+            // Assert - old container destroyed and new one created
             await waitFor(() => expect(mockContainerInstances.length).toBe(2));
-
-            // Old container should be destroyed
             expect(firstContainer.destroy).toHaveBeenCalled();
-            // New container should be created
-            expect((global as any).Ext4.create).toHaveBeenCalledTimes(2);
+            expect((globalThis as any).Ext4.create).toHaveBeenCalledTimes(2);
         });
 
         test('recreates container when filters change', async () => {
+            // Arrange
             const onTab = jest.fn();
             const { rerender } = render(<TestHarness filters={filters} onTab={onTab} report={queryReport} />);
-
             await waitFor(() => expect(onTab).toHaveBeenCalledWith(expect.anything()));
-
             const firstContainer = mockContainerInstances[0];
-            expect((global as any).Ext4.create).toHaveBeenCalledTimes(1);
+            expect((globalThis as any).Ext4.create).toHaveBeenCalledTimes(1);
 
-            // Change the filters
+            // Act
             const newFilters: ReportFilters = { filterType: FILTER_TYPE_ALL, subjects: undefined };
             rerender(<TestHarness filters={newFilters} onTab={onTab} report={queryReport} />);
 
-            // Wait for new container to be created
+            // Assert - old container destroyed and new one created
             await waitFor(() => expect(mockContainerInstances.length).toBe(2));
-
-            // Old container should be destroyed
             expect(firstContainer.destroy).toHaveBeenCalled();
-            // New container should be created
-            expect((global as any).Ext4.create).toHaveBeenCalledTimes(2);
-        });
-
-        test('sets tab to null on cleanup', async () => {
-            let lastTab: ExtReportTab | null = null;
-            const onTab = jest.fn(t => {
-                lastTab = t;
-            });
-
-            const { unmount } = render(<TestHarness filters={filters} onTab={onTab} report={queryReport} />);
-
-            await waitFor(() => expect(lastTab).not.toBeNull());
-
-            unmount();
-
-            // After unmount, the last callback should have been called with null
-            // (though React may not call it depending on timing)
-            // The important thing is destroy was called
-            expect(mockContainerInstances[0].destroy).toHaveBeenCalled();
+            expect((globalThis as any).Ext4.create).toHaveBeenCalledTimes(2);
         });
     });
 
     describe('edge cases', () => {
         test('handles report with all optional fields null', async () => {
+            // Arrange
             const minimalReport: ReportConfig = {
                 id: 'minimal',
                 title: 'Minimal Report',
@@ -716,6 +569,7 @@ describe('useReportTab', () => {
             };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={filters}
@@ -725,19 +579,20 @@ describe('useReportTab', () => {
                     report={minimalReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
-            // Should not throw and should create valid filter array
             const filterArray = capturedTab!.getFilterArray();
+
+            // Assert - null optional fields fall back to defaults without errors
             expect(filterArray.nonRemovable).toHaveLength(1);
-            expect(filterArray.nonRemovable[0].getColumnName()).toBe('Id'); // Default field name
+            expect(filterArray.nonRemovable[0].getColumnName()).toBe('Id');
         });
 
         test('handles unrecognized filterType gracefully', async () => {
+            // Arrange
             const unknownFilters = { filterType: 'unknownType' as any, subjects: ['ID123'] };
             let capturedTab: ExtReportTab | null = null;
 
+            // Act
             render(
                 <TestHarness
                     filters={unknownFilters}
@@ -747,12 +602,10 @@ describe('useReportTab', () => {
                     report={queryReport}
                 />
             );
-
             await waitFor(() => expect(capturedTab).not.toBeNull());
-
             const filterArray = capturedTab!.getFilterArray();
 
-            // Unrecognized filterType should not create subject filters
+            // Assert - unrecognized filterType produces no filters
             expect(filterArray.nonRemovable).toHaveLength(0);
             expect(filterArray.removable).toHaveLength(0);
         });

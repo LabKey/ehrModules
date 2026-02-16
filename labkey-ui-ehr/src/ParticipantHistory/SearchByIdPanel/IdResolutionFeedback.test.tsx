@@ -7,6 +7,7 @@ import { IdResolutionResult } from '../models';
 describe('IdResolutionFeedback', () => {
     describe('resolved section display', () => {
         test('displays direct matches without arrow', () => {
+            // Arrange
             const resolutionResult: IdResolutionResult = {
                 resolved: [
                     { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
@@ -15,47 +16,53 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
+            // Act
             render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
+            // Assert - both direct-match IDs are visible and no arrow symbol is rendered
             expect(screen.getByText('ID123')).toBeVisible();
             expect(screen.getByText('ID456')).toBeVisible();
-            // Should not contain arrow symbols for direct matches
             expect(screen.queryByText(/→/)).not.toBeInTheDocument();
         });
 
-        test('displays alias matches with arrow and type', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [{ inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias', aliasType: 'tattoo' }],
-                notFound: [],
-            };
-
-            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
-
-            // Should show: "TATTOO_001 → ID123 (tattoo)"
-            expect(screen.getByText(/TATTOO_001/)).toBeVisible();
-            expect(screen.getByText(/→/)).toBeVisible();
-            expect(screen.getByText(/ID123/)).toBeVisible();
-            expect(screen.getByText('(tattoo)')).toBeVisible();
-        });
-
-        test('displays multiple alias matches with different types', () => {
-            const resolutionResult: IdResolutionResult = {
+        test.each([
+            {
+                scenario: 'single alias match',
+                resolved: [{ inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias' as const, aliasType: 'tattoo' }],
+                expectedAliasRows: [{ inputId: 'TATTOO_001', resolvedId: 'ID123', aliasType: 'tattoo' }],
+            },
+            {
+                scenario: 'multiple alias matches with different types',
                 resolved: [
-                    { inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias', aliasType: 'tattoo' },
-                    { inputId: 'CHIP_12345', resolvedId: 'ID456', resolvedBy: 'alias', aliasType: 'chip' },
+                    { inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias' as const, aliasType: 'tattoo' },
+                    { inputId: 'CHIP_12345', resolvedId: 'ID456', resolvedBy: 'alias' as const, aliasType: 'chip' },
                 ],
+                expectedAliasRows: [
+                    { inputId: 'TATTOO_001', resolvedId: 'ID123', aliasType: 'tattoo' },
+                    { inputId: 'CHIP_12345', resolvedId: 'ID456', aliasType: 'chip' },
+                ],
+            },
+        ])('displays alias matches with arrow and type for $scenario', ({ resolved, expectedAliasRows }) => {
+            // Arrange
+            const resolutionResult: IdResolutionResult = {
+                resolved,
                 notFound: [],
             };
 
+            // Act
             render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
-            expect(screen.getByText(/TATTOO_001/)).toBeVisible();
-            expect(screen.getByText('(tattoo)')).toBeVisible();
-            expect(screen.getByText(/CHIP_12345/)).toBeVisible();
-            expect(screen.getByText('(chip)')).toBeVisible();
+            // Assert - each alias row shows input ID, arrow, resolved ID, and alias type label
+            expect(screen.getAllByText(/→/)).toHaveLength(expectedAliasRows.length);
+            expectedAliasRows.forEach(({ inputId, resolvedId, aliasType }) => {
+                expect(screen.getByText(inputId)).toBeVisible();
+                expect(screen.getByText(resolvedId)).toBeVisible();
+                expect(screen.getByText(`(${aliasType})`)).toBeVisible();
+            });
         });
 
         test('displays mixed direct and alias matches correctly', () => {
+            // Arrange
             const resolutionResult: IdResolutionResult = {
                 resolved: [
                     { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
@@ -65,47 +72,53 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
+            // Act
             render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
-            // Direct matches should not have arrow
+            // Assert - direct-match IDs are visible, and the alias match shows arrow plus type label
             expect(screen.getByText('ID123')).toBeVisible();
             expect(screen.getByText('ID789')).toBeVisible();
 
             // Alias match should have arrow and type
             expect(screen.getByText(/TATTOO_001/)).toBeVisible();
+            expect(screen.getByText(/→/)).toBeVisible();
             expect(screen.getByText('(tattoo)')).toBeVisible();
         });
     });
 
     describe('not found section display', () => {
-        test('displays unresolved IDs in not found section', () => {
-            const resolutionResult: IdResolutionResult = {
+        test.each([
+            {
+                scenario: 'single unresolved ID alongside resolved content',
+                resolved: [{ inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct' as const, aliasType: null }],
+                notFound: ['INVALID_ID'],
+            },
+            {
+                scenario: 'multiple unresolved IDs',
                 resolved: [],
                 notFound: ['INVALID_ID_1', 'INVALID_ID_2'],
-            };
-
-            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
-
-            expect(screen.getByText(/not found/i)).toBeVisible();
-            expect(screen.getByText('INVALID_ID_1')).toBeVisible();
-            expect(screen.getByText('INVALID_ID_2')).toBeVisible();
-        });
-
-        test('displays single not found ID', () => {
+            },
+        ])('displays not found section for $scenario', ({ resolved, notFound }) => {
+            // Arrange
             const resolutionResult: IdResolutionResult = {
-                resolved: [{ inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null }],
-                notFound: ['INVALID_ID'],
+                resolved,
+                notFound,
             };
 
+            // Act
             render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
-            expect(screen.getByText(/not found/i)).toBeVisible();
-            expect(screen.getByText('INVALID_ID')).toBeVisible();
+            // Assert - "not found" heading and each unresolved ID are visible
+            expect(screen.getByRole('heading', { name: /not found/i })).toBeInTheDocument();
+            notFound.forEach(id => {
+                expect(screen.getByText(id)).toBeVisible();
+            });
         });
     });
 
     describe('multiple inputs resolving to same ID', () => {
         test('displays all inputs that resolved to same ID', () => {
+            // Arrange
             const resolutionResult: IdResolutionResult = {
                 resolved: [
                     { inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias', aliasType: 'tattoo' },
@@ -114,28 +127,30 @@ describe('IdResolutionFeedback', () => {
                 notFound: [],
             };
 
+            // Act
             render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
-            // Both inputs should be displayed even though they resolve to the same ID
+            // Assert - both alias inputs are visible and the shared resolved ID appears twice
             expect(screen.getByText(/TATTOO_001/)).toBeVisible();
             expect(screen.getByText(/CHIP_12345/)).toBeVisible();
             // ID123 should appear twice (once for each resolution)
             const id123Elements = screen.getAllByText(/ID123/);
-            expect(id123Elements.length).toBeGreaterThanOrEqual(2);
+            expect(id123Elements).toHaveLength(2);
         });
     });
 
     describe('empty results', () => {
         test('renders container with title but no sections when no resolved and no not found IDs', () => {
+            // Arrange
             const resolutionResult: IdResolutionResult = {
                 resolved: [],
                 notFound: [],
             };
 
-            const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
+            // Act
+            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
-            // Component renders container with title
-            expect(container.firstChild).not.toBeNull();
+            // Assert - title renders but neither Resolved nor Not Found sections appear
             expect(screen.getByText('ID Resolution')).toBeVisible();
             // But no sections are rendered
             expect(screen.queryByText(/Resolved/)).not.toBeInTheDocument();
@@ -143,75 +158,24 @@ describe('IdResolutionFeedback', () => {
         });
     });
 
-    describe('section headings', () => {
-        test('resolved section has proper heading', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [{ inputId: 'TATTOO_001', resolvedId: 'ID123', resolvedBy: 'alias', aliasType: 'tattoo' }],
-                notFound: [],
-            };
-
-            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
-
-            const heading = screen.getByRole('heading', { name: /resolved/i });
-            expect(heading).toBeInTheDocument();
-        });
-
-        test('not found section has proper heading', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [],
-                notFound: ['INVALID_ID'],
-            };
-
-            render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
-
-            const heading = screen.getByRole('heading', { name: /not found/i });
-            expect(heading).toBeInTheDocument();
-        });
-    });
-
-    describe('accessibility', () => {
-        test('displays resolved IDs with proper structure', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [
-                    { inputId: 'ID123', resolvedId: 'ID123', resolvedBy: 'direct', aliasType: null },
-                    { inputId: 'TATTOO_001', resolvedId: 'ID456', resolvedBy: 'alias', aliasType: 'tattoo' },
-                ],
-                notFound: [],
-            };
-
-            const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
-
-            const resolvedItems = container.querySelectorAll('.id-resolution-feedback__item--resolved');
-            expect(resolvedItems).toHaveLength(2);
-        });
-
-        test('displays not found IDs with proper structure', () => {
-            const resolutionResult: IdResolutionResult = {
-                resolved: [],
-                notFound: ['INVALID_ID_1', 'INVALID_ID_2'],
-            };
-
-            const { container } = render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
-
-            const notFoundItems = container.querySelectorAll('.id-resolution-feedback__item--not-found');
-            expect(notFoundItems).toHaveLength(2);
-        });
-    });
-
     describe('special characters in IDs', () => {
         test('handles IDs with spaces', () => {
+            // Arrange
             const resolutionResult: IdResolutionResult = {
                 resolved: [{ inputId: 'ID 123', resolvedId: 'ID 123', resolvedBy: 'direct', aliasType: null }],
                 notFound: ['INVALID ID'],
             };
 
+            // Act
             render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
+            // Assert - IDs containing spaces render correctly in both resolved and not-found sections
             expect(screen.getByText('ID 123')).toBeVisible();
             expect(screen.getByText('INVALID ID')).toBeVisible();
         });
 
         test('handles IDs with special characters', () => {
+            // Arrange
             const resolutionResult: IdResolutionResult = {
                 resolved: [
                     { inputId: 'ID-123', resolvedId: 'ID-123', resolvedBy: 'direct', aliasType: null },
@@ -220,8 +184,10 @@ describe('IdResolutionFeedback', () => {
                 notFound: ['INVALID@ID'],
             };
 
+            // Act
             render(<IdResolutionFeedback resolutionResult={resolutionResult} />);
 
+            // Assert - IDs with hyphens, underscores, dots, and @ symbols all render correctly
             expect(screen.getByText('ID-123')).toBeVisible();
             expect(screen.getByText(/TAG_456/)).toBeVisible();
             expect(screen.getByText(/ID\.789/)).toBeVisible();
