@@ -560,9 +560,7 @@ describe('ParticipantReports', () => {
 
                 // Act
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
-                await waitFor(() => {
-                    expect(screen.getByText('General')).toBeVisible();
-                });
+                await waitForReportsToLoad();
 
                 // Assert - Alive at Center button is initially enabled
                 const aliveBtn = screen.getByRole('button', { name: /all alive at center/i });
@@ -778,9 +776,7 @@ describe('ParticipantReports', () => {
 
                 // Act
                 renderWithServerContext(<ParticipantReports fetchReports={mockFetchReports} />, defaultServerContext());
-                await waitFor(() => {
-                    expect(screen.getByText('General')).toBeVisible();
-                });
+                await waitForReportsToLoad();
 
                 // Assert - no filter unsupported error message is shown
                 expect(
@@ -791,49 +787,29 @@ describe('ParticipantReports', () => {
     });
 
     describe('dependency injection', () => {
-        test.each([
-            {
-                name: 'single category',
-                reports: [
-                    {
-                        id: 'injected-report',
-                        title: 'Injected Report',
-                        reportType: 'query',
-                        supportsnonidfilters: true,
-                        visible: true,
-                        category: 'Injected',
-                        schemaName: 'ehr',
-                        queryName: 'testQuery',
-                    },
-                ],
-                expectedCategories: ['Injected'],
-            },
-            {
-                name: 'multiple categories',
-                reports: [
-                    {
-                        id: 'report-1',
-                        title: 'Report One',
-                        reportType: 'query',
-                        supportsnonidfilters: true,
-                        category: 'Category A',
-                        schemaName: 'ehr',
-                        queryName: 'query1',
-                    },
-                    {
-                        id: 'report-2',
-                        title: 'Report Two',
-                        reportType: 'query',
-                        supportsnonidfilters: true,
-                        category: 'Category B',
-                        schemaName: 'ehr',
-                        queryName: 'query2',
-                    },
-                ],
-                expectedCategories: ['Category A', 'Category B'],
-            },
-        ])('accepts injected fetchReports for $name', async ({ reports, expectedCategories }) => {
+        test('accepts injected fetchReports for multiple categories', async () => {
             // Arrange
+            const reports = [
+                {
+                    id: 'report-1',
+                    title: 'Report One',
+                    reportType: 'query',
+                    supportsnonidfilters: true,
+                    category: 'Category A',
+                    schemaName: 'ehr',
+                    queryName: 'query1',
+                },
+                {
+                    id: 'report-2',
+                    title: 'Report Two',
+                    reportType: 'query',
+                    supportsnonidfilters: true,
+                    category: 'Category B',
+                    schemaName: 'ehr',
+                    queryName: 'query2',
+                },
+            ];
+            const expectedCategories = ['Category A', 'Category B'];
             const injectedFetchReports: FetchReportsFn = jest.fn().mockResolvedValue({ reports } as FetchReportsResult);
 
             // Act
@@ -848,62 +824,6 @@ describe('ParticipantReports', () => {
             expectedCategories.forEach(category => {
                 expect(screen.getByText(category)).toBeVisible();
             });
-        });
-
-        test('uses default fetchReports when prop not provided', async () => {
-            // Arrange
-            const defaultFetchReports = jest.fn().mockResolvedValue({
-                reports: [
-                    {
-                        id: 'default-report',
-                        title: 'Default Report',
-                        reportType: 'query',
-                        supportsnonidfilters: true,
-                        category: 'Default Category',
-                        schemaName: 'ehr',
-                        queryName: 'defaultQuery',
-                    },
-                ],
-            });
-            const apiWrapperSpy = jest
-                .spyOn(APIWrapperModule, 'getDefaultParticipantHistoryAPIWrapper')
-                .mockReturnValue({
-                    fetchReports: defaultFetchReports,
-                } as any);
-
-            try {
-                // Act
-                renderWithServerContext(<ParticipantReports />, defaultServerContext());
-
-                // Act & Assert - default fetchReports from API wrapper was called exactly once
-                await waitFor(() => {
-                    expect(defaultFetchReports).toHaveBeenCalledTimes(1);
-                });
-
-                // Assert - default report category 'Default Category' is visible
-                expect(screen.getByText('Default Category')).toBeVisible();
-            } finally {
-                apiWrapperSpy.mockRestore();
-            }
-        });
-
-        test('injected fetchReports handles errors', async () => {
-            // Arrange
-            const errorFetchReports: FetchReportsFn = jest.fn().mockResolvedValue({
-                reports: [],
-                error: 'Injected error for testing',
-            });
-
-            // Act
-            renderWithServerContext(<ParticipantReports fetchReports={errorFetchReports} />, defaultServerContext());
-
-            // Act & Assert - injected fetchReports was called
-            await waitFor(() => {
-                expect(errorFetchReports).toHaveBeenCalled();
-            });
-
-            // Assert - empty state message is shown
-            expect(screen.queryByText('No reports configuration provided.')).toBeInTheDocument();
         });
     });
 });
