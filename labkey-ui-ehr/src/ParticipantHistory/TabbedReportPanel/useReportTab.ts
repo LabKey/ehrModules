@@ -12,6 +12,11 @@ import {
     ReportFilters,
 } from '../models';
 
+export interface ReportTabState {
+    tab: ExtReportTab | null;
+    targetRef: React.RefObject<HTMLDivElement>;
+}
+
 /**
  * Hook that creates and manages an ExtJS report tab container.
  *
@@ -21,7 +26,7 @@ import {
 export function useReportTab(
     report: ReportConfig,
     filters: ReportFilters
-): { tab: ExtReportTab | null; targetRef: React.RefObject<HTMLDivElement> } {
+): ReportTabState {
     const targetRef = useRef<HTMLDivElement>(null);
     const [tab, setTab] = useState<ExtReportTab | null>(null);
 

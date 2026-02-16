@@ -193,7 +193,7 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
                         disabled={isResolving}
                         onClick={handleUpdateReport}
                     >
-                        {'Search By Ids'}
+                        Search By Ids
                     </button>
                     <button
                         className={classNames('search-by-id-panel__filter-button', {
