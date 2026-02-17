@@ -15,9 +15,9 @@
     "lint-fix": "eslint --fix"
   },
   "dependencies": {
-    "@labkey/api": "1.44.0",
-    "@labkey/components": "6.72.1",
-    "@labkey/ehr": "0.0.4"
+    "@labkey/api": "1.45.0",
+    "@labkey/components": "7.13.1",
+    "@labkey/ehr": "0.0.5"
   },
   "devDependencies": {
     "@labkey/build": "8.7.0",

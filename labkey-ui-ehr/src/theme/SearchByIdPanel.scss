@@ -1,0 +1,150 @@
+.search-by-id-panel {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 900px;
+
+    // Main container
+    &__container {
+        background-color: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    // URL Params mode (read-only)
+    &--url-params {
+        background-color: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+
+        button {
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #0052a3;
+            }
+        }
+    }
+
+    &__label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    &__input {
+        width: 100%;
+        min-height: 80px;
+        padding: 10px;
+        font-size: 14px;
+        font-family: monospace;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+        box-sizing: border-box;
+    }
+
+    &__validation-error {
+        margin-top: 8px;
+        padding: 8px 12px;
+        background-color: #ffebee;
+        color: #c62828;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    &__buttons {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    &__search-button {
+        padding: 10px 20px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+
+        &--active {
+            background-color: #0066cc;
+            cursor: pointer;
+
+            &:not(:disabled):hover {
+                background-color: #0052a3;
+            }
+        }
+
+        &--inactive {
+            background-color: #6c757d;
+            cursor: pointer;
+        }
+
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    }
+
+    &__filter-button {
+        padding: 10px 20px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+
+        &--active {
+            background-color: #28a745;
+
+            &:hover {
+                background-color: #218838;
+            }
+        }
+
+        &--inactive {
+            background-color: #6c757d;
+        }
+
+        &--alive-at-center {
+            &.search-by-id-panel__filter-button--active {
+                background-color: #17a2b8;
+
+                &:hover {
+                    background-color: #138496;
+                }
+            }
+
+            &:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    &__summary {
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    &__modify-button {
+        padding: 10px 20px;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+    }
+}

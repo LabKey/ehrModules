@@ -1,6 +1,14 @@
 # @labkey/ehr
 Components, models, actions, and utility functions for LabKey EHR applications and pages.
 
+### version 0.0.5
+*Released*: 17 February 2026
+* Animal History V1
+  * Hidden React Animal History
+  * Single and Multi Animal Search
+  * All Animal and All Alive Animal Search
+  * URL Binding and Participant View
+  
 ### version 0.0.4
 *Released*: 5 January 2026
 * Add experimental version of participant view with React wrapper. Currently hidden behind experimental flag and not

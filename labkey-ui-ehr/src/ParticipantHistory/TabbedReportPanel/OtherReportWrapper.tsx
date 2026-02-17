@@ -1,50 +1,52 @@
-import React, { FC, memo, useEffect, useId } from 'react';
+import React, { FC, memo, useEffect, useId, useRef } from 'react';
+import { Filter } from '@labkey/api';
 
-import { ReportConfig } from './TabbedReportPanel';
+import { OtherReportConfig, QueryWebPartConfig, ReportFilters } from '../models';
 
-// Declare global variables for ExtJS and LABKEY
-declare const Ext4: any;
-declare const LABKEY: any;
+import { useReportTab } from './useReportTab';
+import { getTitleSuffix } from './JSReportWrapper';
 
-export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo(({ tab, report }) => {
+interface OtherReportWrapperProps {
+    filters: ReportFilters;
+    report: OtherReportConfig;
+}
+
+const OtherReportWrapperComponent: FC<OtherReportWrapperProps> = ({ report, filters }) => {
+    const { tab, targetRef } = useReportTab(report, filters);
+    const otherReportRef = useRef<HTMLDivElement>(null);
+
     // Generate a unique ID for the render target - LABKEY.WebPart expects a string ID, not a DOM element
     const uniqueId = useId();
     const targetId = `report-target-${report.id}-${uniqueId.replace(/:/g, '-')}`;
 
     useEffect(() => {
-        if (!tab || !Ext4 || !LABKEY) {
-            return;
-        }
+        if (!tab) return;
 
         // Ensure the DOM element exists before rendering
-        const targetElement = document.getElementById(targetId);
+        const targetElement = otherReportRef.current;
         if (!targetElement) {
             return;
         }
 
         try {
             const filterArray = tab.getFilterArray();
-            const filters = filterArray.nonRemovable.concat(filterArray.removable);
+            const filterList = filterArray.nonRemovable.concat(filterArray.removable);
 
-            // Get title suffix from filters
-            const getTitleSuffix = () => {
-                const { subjects } = tab.filters || {};
-                if (subjects && subjects.length > 0) {
-                    return ' - ' + subjects.join(', ');
-                }
-                return '';
-            };
+            const { subjects } = tab?.filters || {};
 
-            const partConfig: any = {
-                title: report.title + getTitleSuffix(),
+            // partConfig requires an index signature because filter.getURLParameterName()
+            // generates dynamic keys (e.g., "query.Id~eq") that can't be statically typed.
+            // The LABKEY.WebPart API accepts these as arbitrary string keys.
+            const partConfig: Record<string, unknown> = {
+                title: report.title + getTitleSuffix(subjects),
                 schemaName: report.schemaName,
                 reportId: report.reportId,
                 'query.queryName': report.queryName,
             };
 
             // Add filter parameters to partConfig
-            if (filters.length) {
-                filters.forEach((filter: any) => {
+            if (filterList?.length) {
+                filterList.forEach((filter: Filter.IFilter) => {
                     partConfig[filter.getURLParameterName('query')] = filter.getURLParameterValue();
                 });
             }
@@ -53,16 +55,17 @@ export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
                 partConfig.showSection = report.viewName;
             }
 
-            const queryConfig: any = {
+            const queryConfig: QueryWebPartConfig = {
                 partName: 'Report',
                 renderTo: targetId,
-                suppressRenderErrors: true,
                 partConfig,
-                filters,
-                success: () => {
-                    // Report loaded successfully
+                filters: filterList,
+                failure: (error: unknown) => {
+                    console.error('Failed to load report', error);
+                    const safeTitle = report.title ? LABKEY.Utils.encodeHtml(report.title) : 'report';
+                    const safeError = LABKEY.Utils.encodeHtml(String(error));
+                    targetElement.innerHTML = `<div class="labkey-error">Failed to load report '${safeTitle}': ${safeError}</div>`;
                 },
-                failure: (error: any) => console.error('Failed to load report', error),
             };
 
             if (report.containerPath) {
@@ -72,12 +75,26 @@ export const OtherReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
             new LABKEY.WebPart(queryConfig).render();
         } catch (e) {
             console.error('Error loading report', e);
+            const safeTitle = report.title ? LABKEY.Utils.encodeHtml(report.title) : 'report';
+            const safeError = LABKEY.Utils.encodeHtml(String(e));
+            targetElement.innerHTML = `<div class="labkey-error">Error loading report '${safeTitle}': ${safeError}</div>`;
         }
 
         return () => {
-            // Clean up if needed
+            if (targetElement) {
+                targetElement.innerHTML = '';
+            }
         };
     }, [tab, report, targetId]);
 
-    return <div id={targetId} style={{ minHeight: '50px' }} />;
-});
+    return (
+        <>
+            <div className="other-report-wrapper__target report-target" ref={targetRef} />
+            <div className="other-report-wrapper__content" id={targetId} ref={otherReportRef} />
+        </>
+    );
+};
+
+OtherReportWrapperComponent.displayName = 'OtherReportWrapper';
+
+export const OtherReportWrapper = memo(OtherReportWrapperComponent);

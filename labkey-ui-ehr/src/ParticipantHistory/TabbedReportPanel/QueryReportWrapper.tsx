@@ -1,38 +1,46 @@
 import React, { FC, memo, useEffect } from 'react';
-import { useServerContext } from '@labkey/components';
 
-import { ReportConfig } from './TabbedReportPanel';
+import { QueryReportConfig, QueryWebPartConfig, ReportFilters } from '../models';
 
-// Declare global variables for ExtJS and LDK
-declare const Ext4: any;
-declare const LDK: any;
+import { useReportTab } from './useReportTab';
 
-export const QueryReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo(({ tab, report }) => {
-    const { container } = useServerContext();
+interface QueryReportWrapperProps {
+    filters: ReportFilters;
+    report: QueryReportConfig;
+}
+
+const QueryReportWrapperComponent: FC<QueryReportWrapperProps> = ({ report, filters }) => {
+    const { tab, targetRef } = useReportTab(report, filters);
 
     useEffect(() => {
-        if (!tab || !Ext4 || !LDK) {
-            return;
-        }
+        if (!tab) return;
 
-        const queryConfig = tab.getQWPConfig();
-
-        // Use LDK.Utils.getErrorCallback() if available, otherwise simple console error
-        const failureCallback = (error: any) => console.error(error);
-
-        queryConfig.failure = failureCallback;
-        queryConfig.success = () => {
-            // Optional: signal loaded
+        const queryConfig: QueryWebPartConfig = tab.getQWPConfig();
+        queryConfig.failure = (error: unknown) => {
+            console.error('Failed to load query report', error);
+            if (tab && !tab.isDestroyed) {
+                const safeTitle = report.title ? LABKEY.Utils.encodeHtml(report.title) : 'query report';
+                const safeError = LABKEY.Utils.encodeHtml(String(error));
+                tab.add({
+                    html: `<div class="labkey-error">Failed to load '${safeTitle}': ${safeError}</div>`,
+                });
+            }
         };
 
         try {
-            // Add ldk-querycmp to the tab
             tab.add({
                 xtype: 'ldk-querycmp',
                 queryConfig: queryConfig,
             });
         } catch (e) {
             console.error('Failed to create ExtJS component', e);
+            if (tab && !tab.isDestroyed) {
+                const safeTitle = report.title ? LABKEY.Utils.encodeHtml(report.title) : 'query report';
+                const safeError = LABKEY.Utils.encodeHtml(String(e));
+                tab.add({
+                    html: `<div class="labkey-error">Error loading '${safeTitle}': ${safeError}</div>`,
+                });
+            }
         }
 
         return () => {
@@ -40,7 +48,11 @@ export const QueryReportWrapper: FC<{ report: ReportConfig; tab: any }> = memo((
                 tab.removeAll();
             }
         };
-    }, [tab, report, container]);
+    }, [tab, report]);
 
-    return null;
-});
+    return <div className="query-report-wrapper__target report-target" ref={targetRef} />;
+};
+
+QueryReportWrapperComponent.displayName = 'QueryReportWrapper';
+
+export const QueryReportWrapper = memo(QueryReportWrapperComponent);

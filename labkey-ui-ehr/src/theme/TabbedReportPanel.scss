@@ -1,11 +1,22 @@
 .tabbed-report-panel {
+    // Button reset for tab elements
+    &__category-tab,
+    &__category-tab--active,
+    &__report-tab,
+    &__report-tab--active {
+        background: none;
+        border: none;
+        text-align: left;
+        font-family: inherit;
+    }
+
     .category-tabs {
         margin-bottom: 0;
         background-color: #f8f9fa;
         padding: 5px 10px 0 10px;
         border-radius: 4px 4px 0 0;
 
-        .category-tab {
+        .tabbed-report-panel__category-tab {
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
@@ -13,7 +24,7 @@
             color: #333;
         }
 
-        .category-tab-active {
+        .tabbed-report-panel__category-tab--active {
             cursor: pointer;
             font-weight: 700;
             font-size: 14px;
@@ -30,14 +41,14 @@
         padding: 8px 10px 0 10px;
         border-bottom: 1px solid #dee2e6;
 
-        .report-tab {
+        .tabbed-report-panel__report-tab {
             cursor: pointer;
             font-size: 13px;
             padding: 8px 15px;
             color: #555;
         }
 
-        .report-tab-active {
+        .tabbed-report-panel__report-tab--active {
             cursor: pointer;
             font-size: 13px;
             padding: 8px 15px;
@@ -46,4 +57,29 @@
             font-weight: 600;
         }
     }
+
+    // Empty state placeholder
+    &__empty-state {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 300px;
+        padding: 40px;
+        color: #666;
+        font-size: 16px;
+        font-weight: 500;
+    }
+}
+
+// Report target containers scoped to each wrapper component
+.js-report-wrapper__target {
+    min-height: 300px;
+}
+
+.query-report-wrapper__target {
+    min-height: 300px;
+}
+
+.other-report-wrapper__target {
+    min-height: 300px;
 }

@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -29,14 +29,16 @@
     "clean": "rimraf dist",
     "cleanAll": "rimraf dist && rimraf node_modules",
     "prepublishOnly": "npm install --legacy-peer-deps && cross-env WEBPACK_STATS=errors-only npm run build",
-    "test": "cross-env NODE_ENV=test jest --maxWorkers=6 --silent",
+    "test": "cross-env NODE_ENV=test jest --maxWorkers=6",
     "test-ci": "cross-env NODE_ENV=test jest --ci --silent",
+    "test-coverage": "cross-env NODE_ENV=test jest --maxWorkers=6 --coverage",
     "lint": "npx eslint",
     "lint-fix": "npx eslint --fix",
     "lint-precommit": "node lint.diff.mjs",
     "lint-precommit-fix": "node lint.diff.mjs --fix",
     "lint-branch": "node lint.diff.mjs --currentBranch",
-    "lint-branch-fix": "node lint.diff.mjs --currentBranch --fix"
+    "lint-branch-fix": "node lint.diff.mjs --currentBranch --fix",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -52,7 +54,7 @@
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
   "dependencies": {
-    "@labkey/components": "6.72.1"
+    "@labkey/components": "7.13.1"
   },
   "devDependencies": {
     "@labkey/build": "8.7.0",

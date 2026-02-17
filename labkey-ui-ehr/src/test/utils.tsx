@@ -13,7 +13,13 @@ export const renderWithServerContext = (
     options?: Omit<RenderOptions, 'wrapper'>
 ): RenderResult => {
     return render(node, {
-        wrapper: _props => <ServerContextProvider {..._props} {...(serverContext as ServerContextProviderProps)} initialContext={serverContext} />,
+        wrapper: _props => (
+            <ServerContextProvider
+                {..._props}
+                {...(serverContext as ServerContextProviderProps)}
+                initialContext={serverContext}
+            />
+        ),
         ...options,
     });
 };

@@ -1,0 +1,25 @@
+reportname	category	reporttype	reporttitle	visible	containerpath	schemaname	queryname	viewname	report	datefieldname	todayonly	queryhaslocation	sort_order	QCStateLabelFieldName	description supportsNonIdFilters
+behaviorRemarks
+clinObsBehavior
+pairingsBehavior
+pairingHousingSummary
+pairingHistory
+alopecia
+biopsy
+clinremarks
+currentBlood
+obs
+physicalExam
+serology
+breeder
+exemptions
+pairings
+bloodSchedule
+clinMedicationSchedule
+dietSchedule
+incompleteTreatments
+surgMedicationSchedule
+surgMedicationScheduleDaily
+inbreeding
+necropsy
+pregnancy
