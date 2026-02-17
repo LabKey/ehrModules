@@ -49,7 +49,7 @@ public interface InvoicedItemsProcessingService
 
     static void register(Module module, InvoicedItemsProcessingService impl)
     {
-        REGISTRATION_LIST.add(new Registration(module.getName(), impl));
+        REGISTRATION_LIST.addFirst(new Registration(module.getName(), impl));
     }
 
     @Nullable
