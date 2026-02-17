@@ -7,6 +7,7 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.util.DataRegionTable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.Optional;
@@ -298,7 +299,15 @@ public class  ReactAnimalHistoryPage extends LabKeyPage<ReactAnimalHistoryPage.E
      */
     public boolean isNotFoundSectionPresent()
     {
-        return isElementPresent(Locators.NOT_FOUND_SECTION_TITLE);
+        try
+        {
+            waitForElement(Locators.NOT_FOUND_SECTION_TITLE, 2000);
+            return true;
+        }
+        catch (TimeoutException ignored)
+        {
+            return false;
+        }
     }
 
     /**
@@ -306,7 +315,15 @@ public class  ReactAnimalHistoryPage extends LabKeyPage<ReactAnimalHistoryPage.E
      */
     public boolean hasNotFoundItem(String item)
     {
-        return isElementPresent(Locators.NOT_FOUND_ITEMS.withText(item));
+        try
+        {
+            waitForElement(Locators.NOT_FOUND_ITEMS.withText(item), 2000);
+            return true;
+        }
+        catch (TimeoutException ignored)
+        {
+            return false;
+        }
     }
 
     /**
@@ -346,7 +363,15 @@ public class  ReactAnimalHistoryPage extends LabKeyPage<ReactAnimalHistoryPage.E
      */
     public boolean isIdResolutionFeedbackVisible()
     {
-        return isElementPresent(Locators.ID_RESOLUTION_FEEDBACK);
+        try
+        {
+            waitForElement(Locators.ID_RESOLUTION_FEEDBACK, 2000);
+            return true;
+        }
+        catch (TimeoutException ignored)
+        {
+            return false;
+        }
     }
 
     /**
