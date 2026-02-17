@@ -89,7 +89,7 @@ const OtherReportWrapperComponent: FC<OtherReportWrapperProps> = ({ report, filt
 
     return (
         <>
-            <div className="other-report-wrapper__target" ref={targetRef} />
+            <div className="other-report-wrapper__target report-target" ref={targetRef} />
             <div className="other-report-wrapper__content" id={targetId} ref={otherReportRef} />
         </>
     );

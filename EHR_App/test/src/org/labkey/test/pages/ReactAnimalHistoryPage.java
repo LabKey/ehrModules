@@ -402,23 +402,23 @@ public class  ReactAnimalHistoryPage extends LabKeyPage<ReactAnimalHistoryPage.E
     public static class Locators
     {
         public static final Locator SEARCH_BY_ID_PANEL = Locator.css(".search-by-id-panel");
-        public static final Locator ANIMAL_ID_TEXTAREA = Locator.css(".animal-id-input");
-        public static final Locator SEARCH_BY_IDS_BUTTON = Locator.css(".search-button");
-        public static final Locator SEARCH_BY_IDS_BUTTON_ACTIVE = Locator.css(".search-button.active");
-        public static final Locator ALL_ANIMALS_BUTTON = Locator.css(".filter-button.all-animals");
-        public static final Locator ALL_ANIMALS_BUTTON_ACTIVE = Locator.css(".filter-button.all-animals.active");
-        public static final Locator ALIVE_AT_CENTER_BUTTON = Locator.css(".filter-button.alive-at-center");
-        public static final Locator ALIVE_AT_CENTER_BUTTON_ACTIVE = Locator.css(".filter-button.alive-at-center.active");
-        public static final Locator ALIVE_AT_CENTER_BUTTON_ENABLED = Locator.css(".filter-button.alive-at-center:not(:disabled)");
+        public static final Locator ANIMAL_ID_TEXTAREA = Locator.css(".search-by-id-panel__input");
+        public static final Locator SEARCH_BY_IDS_BUTTON = Locator.css(".search-by-id-panel__search-button");
+        public static final Locator SEARCH_BY_IDS_BUTTON_ACTIVE = Locator.css(".search-by-id-panel__search-button--active");
+        public static final Locator ALL_ANIMALS_BUTTON = Locator.css(".search-by-id-panel__filter-button--all-animals");
+        public static final Locator ALL_ANIMALS_BUTTON_ACTIVE = Locator.css(".search-by-id-panel__filter-button--all-animals.search-by-id-panel__filter-button--active");
+        public static final Locator ALIVE_AT_CENTER_BUTTON = Locator.css(".search-by-id-panel__filter-button--alive-at-center");
+        public static final Locator ALIVE_AT_CENTER_BUTTON_ACTIVE = Locator.css(".search-by-id-panel__filter-button--alive-at-center.search-by-id-panel__filter-button--active");
+        public static final Locator ALIVE_AT_CENTER_BUTTON_ENABLED = Locator.css(".search-by-id-panel__filter-button--alive-at-center:not(:disabled)");
         public static final Locator REPORT_TARGET = Locator.css(".tabbed-report-panel .report-target");
         public static final Locator ID_RESOLUTION_FEEDBACK = Locator.css(".id-resolution-feedback");
-        public static final Locator RESOLVED_SECTION_TITLE = Locator.css(".id-resolution-feedback .section-title.resolved");
-        public static final Locator NOT_FOUND_SECTION_TITLE = Locator.css(".id-resolution-feedback .section-title.not-found");
-        public static final Locator RESOLVED_ITEMS = Locator.css(".id-resolution-feedback .section .items .resolved-item");
-        public static final Locator NOT_FOUND_ITEMS = Locator.css(".id-resolution-feedback .section .items .not-found-item");
+        public static final Locator RESOLVED_SECTION_TITLE = Locator.css(".id-resolution-feedback__section-title--resolved");
+        public static final Locator NOT_FOUND_SECTION_TITLE = Locator.css(".id-resolution-feedback__section-title--not-found");
+        public static final Locator RESOLVED_ITEMS = Locator.css(".id-resolution-feedback__item--resolved");
+        public static final Locator NOT_FOUND_ITEMS = Locator.css(".id-resolution-feedback__item--not-found");
         public static final Locator CATEGORY_TAB = Locator.css(".tabbed-report-panel .category-tabs button");
         public static final Locator REPORT_TAB = Locator.css(".tabbed-report-panel .report-tabs button");
-        public static final Locator VALIDATION_ERROR = Locator.css(".search-by-id-panel .validation-error");
-        public static final Locator EMPTY_STATE_PLACEHOLDER = Locator.css(".tabbed-report-panel .empty-state-placeholder");
+        public static final Locator VALIDATION_ERROR = Locator.css(".search-by-id-panel__validation-error");
+        public static final Locator EMPTY_STATE_PLACEHOLDER = Locator.css(".tabbed-report-panel__empty-state");
     }
 }

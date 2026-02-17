@@ -196,10 +196,14 @@ const SearchByIdPanelComponent: FC<SearchByIdPanelProps> = ({
                         Search By Ids
                     </button>
                     <button
-                        className={classNames('search-by-id-panel__filter-button', {
-                            'search-by-id-panel__filter-button--active': filterType === FILTER_TYPE_ALL,
-                            'search-by-id-panel__filter-button--inactive': filterType !== FILTER_TYPE_ALL,
-                        })}
+                        className={classNames(
+                            'search-by-id-panel__filter-button',
+                            'search-by-id-panel__filter-button--all-animals',
+                            {
+                                'search-by-id-panel__filter-button--active': filterType === FILTER_TYPE_ALL,
+                                'search-by-id-panel__filter-button--inactive': filterType !== FILTER_TYPE_ALL,
+                            }
+                        )}
                         onClick={() => handleFilterModeChange(FILTER_TYPE_ALL)}
                     >
                         All Animals
