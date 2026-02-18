@@ -104,7 +104,7 @@ public class EHR_BillingController extends SpringActionController
                     throw new PipelineJobException("Cannot create a billing run with the same start and end date");
                 }
 
-                InvoicedItemsProcessingService processingService = InvoicedItemsProcessingService.get();
+                InvoicedItemsProcessingService processingService = InvoicedItemsProcessingService.get(EHR_BillingManager.get().getBillingContainer(getContainer()));
                 if (null != processingService)
                 {
                     Pair<String,String> previousInvoice = processingService.verifyBillingRunPeriod(getUser(), getContainer(), form.getStartDate(), form.getEndDate());

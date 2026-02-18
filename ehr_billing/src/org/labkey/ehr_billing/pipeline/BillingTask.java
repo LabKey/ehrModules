@@ -78,11 +78,13 @@ import java.util.Set;
 public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 {
     private final static DbSchema EHR_BILLING_SCHEMA = EHR_BillingSchema.getInstance().getSchema();
-    private final static InvoicedItemsProcessingService processingService =  InvoicedItemsProcessingService.get();
+
+    private final InvoicedItemsProcessingService _processingService;
 
     protected BillingTask(Factory factory, PipelineJob job)
     {
         super(factory, job);
+        _processingService = InvoicedItemsProcessingService.get(EHR_BillingManager.get().getBillingContainer(job.getContainer()));
     }
 
     public static class Factory extends AbstractTaskFactory<AbstractTaskFactorySettings, Factory>
@@ -148,16 +150,16 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             getOrCreateInvoiceRunRecord();
             loadTransactionNumber();
-            processingService.setBillingStartDate(getSupport().getStartDate());
+            _processingService.setBillingStartDate(getSupport().getStartDate());
 
             if (null != _previousInvoice)
             {
-                processingService.processBillingRerun(_invoiceId, _invoiceRowId, getSupport().getStartDate(), getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer, getJob().getLogger());
+                _processingService.processBillingRerun(_invoiceId, _invoiceRowId, getSupport().getStartDate(), getSupport().getEndDate(), getNextTransactionNumber(), user, billingContainer, getJob().getLogger());
             }
             else
             {
 
-                for (BillingPipelineJobProcess process : processingService.getProcessList())
+                for (BillingPipelineJobProcess process : _processingService.getProcessList())
                 {
                     Container billingRunContainer = process.isUseEHRContainer() ? ehrContainer : billingContainer;
                     runProcessing(process, billingRunContainer);
@@ -166,7 +168,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             updateInvoiceTable(billingContainer);
 
-            processingService.performAdditionalProcessing(_invoiceId, user, container);
+            _processingService.performAdditionalProcessing(_invoiceId, user, container);
 
             transaction.commit();
         }
@@ -278,7 +280,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
     @Nullable
     private String getOrCreateInvoiceRecord(Map<String, Object> row, Date endDate) throws PipelineJobException
     {
-        String invoiceNumber = processingService.getInvoiceNum(row, endDate);
+        String invoiceNumber = _processingService.getInvoiceNum(row, endDate);
         if (null != invoiceNumber)
         {
             try
@@ -499,25 +501,25 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
                     // get cost
                     Double unitCost = ci.getUnitCost();
-                    procedureRow.put(processingService.getUnitCostColName(), unitCost);
+                    procedureRow.put(_processingService.getUnitCostColName(), unitCost);
 
                     // total cost
                     Double totalCost = unitCost * (Double) procedureRow.get("quantity");
-                    procedureRow.put(processingService.getTotalCostColName(), totalCost);
+                    procedureRow.put(_processingService.getTotalCostColName(), totalCost);
 
                     // calculate total cost with additional/other rate (ex. tier rate for WNPRC)
                     Double otherRate = (Double) procedureRow.get("otherRate");
                     Double unitCostWithOtherRate;
                     double totalCostWithOtherRate;
                     if (null != otherRate &&
-                            null != processingService.getAdditionalUnitCostColName() &&
-                            null != processingService.getAdditionalTotalCostColName())
+                            null != _processingService.getAdditionalUnitCostColName() &&
+                            null != _processingService.getAdditionalTotalCostColName())
                     {
                         unitCostWithOtherRate = unitCost + (unitCost * otherRate);
-                        procedureRow.put(processingService.getAdditionalUnitCostColName(), unitCostWithOtherRate);
+                        procedureRow.put(_processingService.getAdditionalUnitCostColName(), unitCostWithOtherRate);
 
                         totalCostWithOtherRate = unitCostWithOtherRate * (Double) procedureRow.get("quantity");
-                        procedureRow.put(processingService.getAdditionalTotalCostColName(), totalCostWithOtherRate);
+                        procedureRow.put(_processingService.getAdditionalTotalCostColName(), totalCostWithOtherRate);
                     }
                 }
                 writeToInvoicedItems(process, procedureRows, getSupport());
