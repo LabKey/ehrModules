@@ -106,7 +106,7 @@ public class SNDController extends SpringActionController
     public static class BeginAction extends SimpleRedirectAction<Object>
     {
         @Override
-        public URLHelper getRedirectURL(Object o)
+        public ActionURL getRedirectURL(Object o)
         {
             return new ActionURL(NAME, "app", getContainer());
         }
