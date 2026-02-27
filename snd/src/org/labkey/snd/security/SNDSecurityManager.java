@@ -32,11 +32,11 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.Group;
 import org.labkey.api.security.MutableSecurityPolicy;
+import org.labkey.api.security.PermissionsContext;
 import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
-import org.labkey.api.security.impersonation.ImpersonationContext;
 import org.labkey.api.security.impersonation.RoleImpersonationContextFactory;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.roles.Role;
@@ -218,8 +218,8 @@ public class SNDSecurityManager
         // SND has permissions bound to SND categories which can be assigned to packages (domains). Impersonating roles is used
         // in automated and manual testing to verify this behavior. The behavior of role impersonation was changed in core
         // labkey to only check for roles related to containers. This is a workaround to go back to checking all roles.
-        ImpersonationContext impersonationContext = u.getImpersonationContext();
-        if (impersonationContext instanceof RoleImpersonationContextFactory.RoleImpersonationContext context)
+        PermissionsContext permissionsContext = u.getPermissionsContext();
+        if (permissionsContext instanceof RoleImpersonationContextFactory.RoleImpersonationContext context)
         {
             roles = context.getRoles().getRoles();
         }
