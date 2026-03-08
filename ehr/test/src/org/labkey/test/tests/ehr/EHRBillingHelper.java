@@ -145,7 +145,7 @@ public class EHRBillingHelper
                     if (row.get("quantity") != null)
                         sumQuantity += ((Number) row.get("quantity")).intValue();
 
-                assertEquals("Total quantity is not as expected", String.valueOf(sumQuantity), item.getTotalQuantity());
+                assertEquals("Total quantity is not as expected", item.getTotalQuantity(), String.valueOf(sumQuantity));
             }
 
             if (item.getTotalCost() != null && !item.getTotalCost().equalsIgnoreCase("n/a"))
@@ -155,7 +155,7 @@ public class EHRBillingHelper
                     if (row.get("totalcost") != null)
                         sumCost += (double) row.get("totalcost");
 
-                assertEquals("Total cost is not as expected", formatter.format(sumCost), item.getTotalCost());
+                assertEquals("Total cost is not as expected", item.getTotalCost(), formatter.format(sumCost));
             }
 
             if (!item.getColumnTextCheckMap().isEmpty())
@@ -173,7 +173,7 @@ public class EHRBillingHelper
 
                     }
 
-                    assertEquals("Wrong values for column: " + entry.getKey(), input, entry.getValue());
+                    assertEquals("Wrong values for column: " + entry.getKey(), entry.getValue(), input);
                 }
 
             }
