@@ -17,11 +17,11 @@ ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE
 
 ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE) / 12, 1) AS ageInYears,
 
-TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.lastDayAtCenter, now())) as ageInDays,
+TIMESTAMPDIFF('SQL_TSI_DAY', CAST(CAST(d.birth AS DATE) AS TIMESTAMP), COALESCE(d.lastDayAtCenter, now())) as ageInDays,
 
 case
   when (age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now()))) < 1
-    then (CONVERT(CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.lastDayAtCenter, now())), float), VARCHAR) || ' days')
+    then (CONVERT(CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY', CAST(CAST(d.birth AS DATE) AS TIMESTAMP), COALESCE(d.lastDayAtCenter, now())), float), VARCHAR) || ' days')
   when (age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now()))) < 12
     then (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), 1), float), VARCHAR) || ' months')
   else
