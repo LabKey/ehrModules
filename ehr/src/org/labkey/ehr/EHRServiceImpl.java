@@ -621,21 +621,6 @@ public class EHRServiceImpl extends EHRService
     }
 
     @Override
-    public void unregisterMoreActionsButtons(String schema, String query)
-    {
-        unregisterButtonsForQuery(schema, query, _moreActionsButtons);
-    }
-
-    private void unregisterButtonsForQuery(String schema, String query, Map<String, Map<String, List<ButtonConfigFactory>>> map)
-    {
-        Map<String, List<ButtonConfigFactory>> schemaMap = map.get(schema);
-        if (schemaMap == null)
-            return;
-
-        schemaMap.remove(query);
-    }
-
-    @Override
     @NotNull
     public List<ButtonConfigFactory> getMoreActionsButtons(TableInfo ti)
     {
