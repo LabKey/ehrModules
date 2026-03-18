@@ -17,7 +17,6 @@ package org.labkey.snd.security.roles;
 
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.security.SecurableResource;
-import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.roles.AbstractModuleScopedRole;
 import org.labkey.api.snd.Category;
 import org.labkey.snd.SNDModule;
@@ -42,7 +41,7 @@ public class SNDDataReviewerRole extends AbstractModuleScopedRole
     }
 
     @Override
-    public boolean isApplicable(SecurityPolicy policy, SecurableResource resource)
+    public boolean isApplicable(SecurableResource resource)
     {
         return resource instanceof Category && ((Category)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(SNDModule.class));
     }
