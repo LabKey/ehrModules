@@ -19,7 +19,6 @@ import org.labkey.api.data.Container;
 import org.labkey.api.ehr.security.*;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.security.SecurableResource;
-import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -115,7 +114,7 @@ public class EHRDataAdminRole extends AbstractEHRDatasetRole
     }
 
     @Override
-    public boolean isApplicable(SecurityPolicy policy, SecurableResource resource)
+    public boolean isApplicable(SecurableResource resource)
     {
         if (resource instanceof Container)
             return ((Container)resource).getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
