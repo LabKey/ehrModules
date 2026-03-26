@@ -963,6 +963,17 @@
                 <shownInInsertView>false</shownInInsertView>
                 <shownInUpdateView>false</shownInUpdateView>
             </column>
+            <column columnName="lsid">
+                <datatype>lsidtype</datatype>
+                <isReadOnly>true</isReadOnly>
+                <isHidden>true</isHidden>
+                <isUserEditable>false</isUserEditable>
+                <fk>
+                    <fkColumnName>ObjectUri</fkColumnName>
+                    <fkTable>Object</fkTable>
+                    <fkDbSchema>exp</fkDbSchema>
+                </fk>
+            </column>
             <column columnName="meaning">
             </column>
             <column columnName="sort_order">
@@ -2967,6 +2978,20 @@
             <column columnName="Month" />
             <column columnName="Day" />
             <column columnName="Year" />
+        </columns>
+    </table>
+
+    <table tableName="editable_lookups" tableDbType="TABLE">
+        <description>Table containing the list of lookups that can be edited by admin users.</description>
+        <auditLogging>DETAILED</auditLogging>
+        <columns>
+            <column columnName="rowid" />
+            <!-- schema and schemaName are reserved so using sch -->
+            <column columnName="sch" />
+            <column columnName="query" />
+            <column columnName="category" />
+            <column columnName="title" />
+            <column columnName="description" />
         </columns>
     </table>
 

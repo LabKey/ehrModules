@@ -147,7 +147,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                         "WARN: Weight above the allowable value of 20.0 kg for Cynomolgus",
                         "INFO: Weight gain of >10%. Last weight 12 kg")
         );
-        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
+        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", getWeightFields(), data, expected);
 
         //expect INFO for +10% diff
         data = new Object[][]{
@@ -155,7 +155,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("INFO: Weight gain of >10%. Last weight 12 kg"));
-        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
+        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", getWeightFields(), data, expected);
 
         //expect INFO for -10% diff
         data = new Object[][]{
@@ -163,7 +163,7 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         };
         expected = new HashMap<>();
         expected.put("weight", Collections.singletonList("INFO: Weight drop of >10%. Last weight 12 kg"));
-        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", weightFields, data, expected);
+        getApiHelper().testValidationMessage(DATA_ADMIN.getEmail(), "study", "weight", getWeightFields(), data, expected);
 
         //TODO: test error threshold
     }
@@ -245,10 +245,10 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         _saveRowsTimes = new ArrayList<>();
 
         //test insert
-        Object[][] insertData = {weightData1};
-        insertData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = null;
-        insertData[0][Arrays.asList(weightFields).indexOf(FIELD_LSID)] = null;
-        SimplePostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, insertData);
+        Object[][] insertData = {getWeightData1()};
+        insertData[0][Arrays.asList(getWeightFields()).indexOf(FIELD_OBJECTID)] = null;
+        insertData[0][Arrays.asList(getWeightFields()).indexOf(FIELD_LSID)] = null;
+        SimplePostCommand insertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, getWeightFields(), insertData);
 
         for (EHRQCState qc : EHRQCState.values())
         {
@@ -268,24 +268,24 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         {
             // first create an initial row as a data admin
             UUID objectId = UUID.randomUUID();
-            Object[][] originalData = {weightData1};
-            originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
+            Object[][] originalData = {getWeightData1()};
+            originalData[0][Arrays.asList(getWeightFields()).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
             extraContext.put("targetQC", originalQc.label);
-            originalData[0][Arrays.asList(weightFields).indexOf(FIELD_OBJECTID)] = objectId.toString();
-            SimplePostCommand initialInsertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, weightFields, originalData);
+            originalData[0][Arrays.asList(getWeightFields()).indexOf(FIELD_OBJECTID)] = objectId.toString();
+            SimplePostCommand initialInsertCommand = getApiHelper().prepareInsertCommand("study", "Weight", FIELD_LSID, getWeightFields(), originalData);
             log("Inserting initial record for update test, with initial QCState of: " + originalQc.label);
             response = getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), initialInsertCommand, extraContext);
 
             String lsid = getLsidFromResponse(response);
-            originalData[0][Arrays.asList(weightFields).indexOf(FIELD_LSID)] = lsid;
+            originalData[0][Arrays.asList(getWeightFields()).indexOf(FIELD_LSID)] = lsid;
 
             //then try to update to all other QCStates
             for (EHRQCState qc : EHRQCState.values())
             {
                 boolean successExpected = originalQc.equals(qc) ? successExpected(user.getRole(), originalQc, "update") : successExpected(user.getRole(), originalQc, "update") && successExpected(user.getRole(), qc, "insert");
                 log("Testing role: " + user.getRole().name() + " with update from QCState " + originalQc.label + " to: " + qc.label);
-                originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = qc.label;
-                SimplePostCommand updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
+                originalData[0][Arrays.asList(getWeightFields()).indexOf(FIELD_QCSTATELABEL)] = qc.label;
+                SimplePostCommand updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, getWeightFields(), originalData, null);
                 extraContext.put("targetQC", qc.label);
                 if (!successExpected)
                     getApiHelper().doSaveRowsExpectingError(user.getEmail(), updateCommand, extraContext);
@@ -293,9 +293,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 {
                     getApiHelper().doSaveRows(user.getEmail(), updateCommand, extraContext);
                     log("Resetting QCState of record to: " + originalQc.label);
-                    originalData[0][Arrays.asList(weightFields).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
+                    originalData[0][Arrays.asList(getWeightFields()).indexOf(FIELD_QCSTATELABEL)] = originalQc.label;
                     extraContext.put("targetQC", originalQc.label);
-                    updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, weightFields, originalData, null);
+                    updateCommand = getApiHelper().prepareUpdateCommand("study", "Weight", FIELD_LSID, getWeightFields(), originalData, null);
                     getApiHelper().doSaveRows(DATA_ADMIN.getEmail(), updateCommand, extraContext);
                 }
             }
@@ -329,7 +329,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         return List.of(
                 "showAllErrors.view",
                 "query-exportRowsExcel.view",
-                "ldk-runNotification.view"  // need to scope notifications to enabled modules then can remove this
+                "ldk-runNotification.view",  // need to scope notifications to enabled modules then can remove this
+                "ehr-postgresMigration.view"
         ); // Override if there are links to pages that are known to throw errors
     }
 
@@ -340,7 +341,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "query-begin.view",
                 "query-searchPanel.view",
                 "query-executeQuery.view",
-                "study-manageStudy.view",
                 "ehr-animalHistory.view",
                 "ehr-updateQuery.view",
                 "ehr-updateTable.view",
@@ -354,7 +354,8 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
                 "ldk-updateQuery",
                 "junit-begin.view",
                 "admin-",
-                "ehr-datasets.view"
+                "ehr-datasets.view",
+                "study-"    // Don't crawl any study links
         );
     }
 
