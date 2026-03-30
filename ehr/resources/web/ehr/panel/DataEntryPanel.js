@@ -12,6 +12,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     storeCollection: null,
     hideErrorPanel: false,
     useSectionBorder: true,
+    validationInProgress: false,
 
     layout: 'anchor',
     border: false,
@@ -33,7 +34,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.storeCollection.on('initialload', this.onStoreCollectionInitialLoad, this);
         this.storeCollection.on('commitcomplete', this.onStoreCollectionCommitComplete, this);
         this.storeCollection.on('validation', this.onStoreCollectionValidation, this);
+        this.storeCollection.on('validationstart', this.onValidationStart, this);
+        this.storeCollection.on('validationcomplete', this.onValidationComplete, this);
         this.storeCollection.on('beforecommit', this.onStoreCollectionBeforeCommit, this);
+        this.storeCollection.on('beforevalidation', this.onBeforeValidation, this);
         this.storeCollection.on('commitexception', this.onStoreCollectionCommitException, this);
         //this.storeCollection.on('serverdatachanged', this.onStoreCollectionServerDataChanged, this);
 
@@ -81,6 +85,45 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         else {
             this.updateDirtyStateMessage();
         }
+    },
+
+    onBeforeValidation: function(sc){
+        function processItem(item) {
+            if(item.disableOn) {
+                item.setDisabled(true);
+                if (item.setTooltip)
+                    item.setTooltip('Disabled waiting on validation. Select "More Actions" -> "Re-Validate" if this is not clearing.');
+            }
+
+            if (item.menu) {
+                item.menu.items.each(function (menuItem) {
+                    processItem(menuItem);
+                }, this);
+            }
+        }
+
+        var btns = this.getToolbarItems();
+        if (btns){
+            Ext4.Array.forEach(btns, function(toolbar){
+                toolbar.items.each(function(item){
+                    processItem(item);
+                }, this);
+            }, this);
+        }
+    },
+
+    onValidationStart: function(){
+        if (!this.hasStoreCollectionLoaded){
+            return;
+        }
+
+        this.validationInProgress = true;
+        this.setValidationIndicatorVisible(true);
+    },
+
+    onValidationComplete: function(){
+        this.validationInProgress = false;
+        this.setValidationIndicatorVisible(false);
     },
 
     onStoreCollectionValidation: function(sc){
@@ -509,6 +552,21 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         return this.dirtyStateArea;
     },
 
+    getValidationIndicator: function(){
+        if (!this.validationIndicator || this.validationIndicator.isDestroyed){
+            this.validationIndicator = this.down('#validationIndicator');
+        }
+
+        return this.validationIndicator;
+    },
+
+    setValidationIndicatorVisible: function(visible){
+        var indicator = this.getValidationIndicator();
+        if (indicator){
+            indicator.setVisible(visible);
+        }
+    },
+
     getButtons: function(){
         var buttons = [{
             xtype: 'container',
@@ -561,6 +619,14 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 }
             }
         }
+
+        buttons.push({
+            xtype: 'container',
+            itemId: 'validationIndicator',
+            hidden: !this.validationInProgress,
+            html: '<span><i class="fa fa-spinner fa-pulse"></i> Validating...</span>',
+            style: 'padding-left: 8px; line-height: 24px;'
+        });
 
         return buttons;
     },
