@@ -665,13 +665,13 @@ Ext4.define('EHR.data.StoreCollection', {
                 perRowWarningThreshold = this.formConfig.perRowWarningThreshold;
             }
             if (this.formConfig.totalTransactionWarningThrehsold){
-                perRowWarningThreshold = this.formConfig.totalTransactionWarningThrehsold;
+                totalTransactionWarningThreshold = this.formConfig.totalTransactionWarningThrehsold;
             }
             if (this.formConfig.perRowValidationWarningThrehsold){
-                perRowWarningThreshold = this.formConfig.perRowValidationWarningThrehsold;
+                perRowValidationWarningThreshold = this.formConfig.perRowValidationWarningThrehsold;
             }
             if (this.formConfig.totalValidationTransactionWarningThrehsold){
-                perRowWarningThreshold = this.formConfig.totalValidationTransactionWarningThrehsold;
+                totalValidationTransactionWarningThreshold = this.formConfig.totalValidationTransactionWarningThrehsold;
             }
         }
 
