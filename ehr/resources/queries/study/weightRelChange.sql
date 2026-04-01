@@ -20,13 +20,13 @@ SELECT
 
   w.weight,
   CASE WHEN w.date >= timestampadd('SQL_TSI_DAY', -730, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
-    Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.weight), 1)
+    Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / NULLIF(w.weight,0)), 1)
   ELSE
     null
   END  AS PctChange,
 
   CASE WHEN w.date >= timestampadd('SQL_TSI_DAY', -730, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
-    Abs(Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.weight), 1))
+    Abs(Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / NULLIF(w.weight,0)), 1))
   else
     null
   END  AS AbsPctChange,

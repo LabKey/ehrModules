@@ -15,12 +15,12 @@ SELECT
   pd1.PrevDate as prevDate1,
   pw1.weight AS prevWeight1,
 
-  Round(((w.weight - pw1.weight) * 100 / w.weight), 1) AS pctChange1,
+  Round(((w.weight - pw1.weight) * 100 / NULLIF(w.weight,0)), 1) AS pctChange1,
   timestampdiff('SQL_TSI_DAY', pw1.date, w.date) AS interval1,
 
   pd2.PrevDate as PrevDate2,
   pw2.weight AS PrevWeight2,
-  Round(((pw1.weight - pw2.weight) * 100 / pw1.weight), 1) AS PctChange2,
+  Round(((pw1.weight - pw2.weight) * 100 / NULLIF(pw1.weight,0)), 1) AS PctChange2,
   timestampdiff('SQL_TSI_DAY', pw2.date, pw1.date) AS Interval2
 
 FROM study.weight w
@@ -61,4 +61,4 @@ AND pd2.date is not null
 --only include drops
 AND w.weight < pw1.weight
 AND pw1.weight < pw2.weight
-AND ((w.weight - pw2.weight) * 100 / w.weight) < -3.0
+AND ((w.weight - pw2.weight) * 100 / NULLIF(w.weight,0)) < -3.0
