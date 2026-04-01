@@ -19,6 +19,7 @@ Ext4.define('EHR.panel.DataEntryErrorPanel', {
         this.callParent(arguments);
 
         this.mon(this.storeCollection, 'validation', this.updateErrorMessages, this, {buffer: 1000});
+        this.mon(this.storeCollection, 'validationcomplete', this.updateErrorMessages, this, {buffer: 50});
         this.mon(this.storeCollection, 'commitcomplete', this.updateErrorMessages, this, {buffer: 200});
         this.mon(this.storeCollection, 'commitexception', this.updateErrorMessages, this, {buffer: 200});
     },

@@ -124,6 +124,13 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     onValidationComplete: function(){
         this.validationInProgress = false;
         this.setValidationIndicatorVisible(false);
+
+        var errorPanel = this.getErrorPanel();
+        if (errorPanel){
+            errorPanel.updateErrorMessages();
+        }
+
+        this.onStoreCollectionValidation(this.storeCollection);
     },
 
     onStoreCollectionValidation: function(sc){
@@ -132,6 +139,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
 
         this.updateDirtyStateMessage();
+
+        if (this.storeCollection && this.storeCollection.validationRequestsInFlight > 0){
+            return;
+        }
 
         var maxSeverity = sc.getMaxErrorSeverity();
 
@@ -550,6 +561,14 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             this.dirtyStateArea = this.down('#dirtyStateIcon');
 
         return this.dirtyStateArea;
+    },
+
+    getErrorPanel: function(){
+        if (!this.errorPanel || this.errorPanel.isDestroyed){
+            this.errorPanel = this.down('#errorPanel');
+        }
+
+        return this.errorPanel;
     },
 
     getValidationIndicator: function(){
