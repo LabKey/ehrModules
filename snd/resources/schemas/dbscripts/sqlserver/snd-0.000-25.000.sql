@@ -14,41 +14,6 @@
  * limitations under the License.
  */
 
-/* snd-17.20-17.30.sql */
-
-EXEC core.fn_dropifexists 'CodedEvents','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'EventNotes','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'EventsCache','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'PkgCategoryJunction','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'ProjectItems','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'SuperPkgs','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'PkgCategories','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'Pkgs','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'Events','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists 'Projects','codedprocs','TABLE';
-GO
-
-EXEC core.fn_dropifexists NULL,'codedprocs','SCHEMA';
-GO
-
 CREATE SCHEMA snd;
 GO
 
@@ -98,7 +63,6 @@ CREATE TABLE snd.SuperPkgs (
    CONSTRAINT PK_SND_SUPERPKGS PRIMARY KEY (SuperPkgId),
    CONSTRAINT FK_SND_SUPERPKGS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_SUPERPKGS_PKGID FOREIGN KEY (PkgId) REFERENCES snd.Pkgs (PkgId)
-
 )
 GO
 
@@ -124,7 +88,6 @@ CREATE TABLE snd.PkgCategories (
 
    CONSTRAINT PK_SND_PKGCATEGORIES PRIMARY KEY (CategoryId),
    CONSTRAINT FK_SND_PKGCATEGORIES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
-
 )
 GO
 
@@ -148,7 +111,6 @@ CREATE TABLE snd.PkgCategoryJunction (
    CONSTRAINT FK_SND_PKGCATEGORYJUNCTION_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_PKGCATEGORYJUNCTION_PKGID FOREIGN KEY (PkgId) REFERENCES snd.Pkgs (PkgId),
    CONSTRAINT FK_SND_PKGCATEGORYJUNCTION_CATEGORYID FOREIGN KEY (CategoryId) REFERENCES snd.PkgCategories (CategoryId)
-
 )
 GO
 
@@ -177,7 +139,6 @@ CREATE TABLE snd.Projects (
 
    CONSTRAINT PK_SND_PROJECTS PRIMARY KEY (ProjectId, RevisionNum),
    CONSTRAINT FK_SND_PROJECTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
-
 )
 GO
 
@@ -204,7 +165,6 @@ CREATE TABLE snd.ProjectItems (
    CONSTRAINT FK_SND_PROJECTITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_PROJECTITEMS_SUPERPKGID FOREIGN KEY (SuperPkgId) REFERENCES snd.SuperPkgs (SuperPkgId),
    CONSTRAINT FK_SND_PROJECTITEMS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId)
-
 )
 GO
 
@@ -234,7 +194,6 @@ CREATE TABLE snd.Events (
    CONSTRAINT FK_SND_EVENTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_EVENTS_QCSTATE FOREIGN Key (QcState) REFERENCES core.DataStates (RowId),
    CONSTRAINT FK_SND_EVENTS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId)
-
 )
 GO
 
@@ -262,7 +221,6 @@ CREATE TABLE snd.CodedEvents (
    CONSTRAINT FK_SND_CODEDEVENTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_CODEDEVENTS_EVENTID FOREIGN KEY (EventId) REFERENCES snd.Events (EventId),
    CONSTRAINT FK_SND_CODEDEVENTS_SUPERPKGID FOREIGN KEY (SuperPkgId) REFERENCES snd.SuperPkgs(SuperPkgId)
-
 )
 GO
 
@@ -288,7 +246,6 @@ CREATE TABLE snd.EventNotes (
    CONSTRAINT PK_SND_EVENTNOTES PRIMARY KEY (EventNoteId),
    CONSTRAINT FK_SND_EVENTNOTES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_EVENTNOTES_EVENTNOTEID FOREIGN KEY (EventNoteId) REFERENCES snd.Events (EventId)
-
 )
 GO
 
