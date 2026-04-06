@@ -37,8 +37,7 @@ CREATE TABLE snd.Pkgs (
    CONSTRAINT PK_SND_PKGS PRIMARY KEY (PkgId),
    CONSTRAINT FK_SND_PKGS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_PKGS_QCSTATE FOREIGN Key (QcState) REFERENCES core.DataStates (RowId)
-
-)
+);
 GO
 
 CREATE INDEX IDX_SND_PKGS_CONTAINER ON snd.Pkgs(Container);
@@ -63,7 +62,7 @@ CREATE TABLE snd.SuperPkgs (
    CONSTRAINT PK_SND_SUPERPKGS PRIMARY KEY (SuperPkgId),
    CONSTRAINT FK_SND_SUPERPKGS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_SUPERPKGS_PKGID FOREIGN KEY (PkgId) REFERENCES snd.Pkgs (PkgId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_SUPERPKGS_CONTAINER ON snd.SuperPkgs(Container);
@@ -88,7 +87,7 @@ CREATE TABLE snd.PkgCategories (
 
    CONSTRAINT PK_SND_PKGCATEGORIES PRIMARY KEY (CategoryId),
    CONSTRAINT FK_SND_PKGCATEGORIES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_PKGCATEGORIES_CONTAINER ON snd.PkgCategories(Container);
@@ -111,7 +110,7 @@ CREATE TABLE snd.PkgCategoryJunction (
    CONSTRAINT FK_SND_PKGCATEGORYJUNCTION_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_PKGCATEGORYJUNCTION_PKGID FOREIGN KEY (PkgId) REFERENCES snd.Pkgs (PkgId),
    CONSTRAINT FK_SND_PKGCATEGORYJUNCTION_CATEGORYID FOREIGN KEY (CategoryId) REFERENCES snd.PkgCategories (CategoryId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_PKGCATEGORYJUNCTION_CONTAINER ON snd.PkgCategoryJunction(Container);
@@ -139,7 +138,7 @@ CREATE TABLE snd.Projects (
 
    CONSTRAINT PK_SND_PROJECTS PRIMARY KEY (ProjectId, RevisionNum),
    CONSTRAINT FK_SND_PROJECTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_PROJECTS_CONTAINER ON snd.Projects(Container);
@@ -165,7 +164,7 @@ CREATE TABLE snd.ProjectItems (
    CONSTRAINT FK_SND_PROJECTITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_PROJECTITEMS_SUPERPKGID FOREIGN KEY (SuperPkgId) REFERENCES snd.SuperPkgs (SuperPkgId),
    CONSTRAINT FK_SND_PROJECTITEMS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_PROJECTITEMS_CONTAINER ON snd.ProjectItems(Container);
@@ -194,7 +193,7 @@ CREATE TABLE snd.Events (
    CONSTRAINT FK_SND_EVENTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_EVENTS_QCSTATE FOREIGN Key (QcState) REFERENCES core.DataStates (RowId),
    CONSTRAINT FK_SND_EVENTS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_EVENTS_CONTAINER ON snd.Events(Container);
@@ -221,7 +220,7 @@ CREATE TABLE snd.CodedEvents (
    CONSTRAINT FK_SND_CODEDEVENTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_CODEDEVENTS_EVENTID FOREIGN KEY (EventId) REFERENCES snd.Events (EventId),
    CONSTRAINT FK_SND_CODEDEVENTS_SUPERPKGID FOREIGN KEY (SuperPkgId) REFERENCES snd.SuperPkgs(SuperPkgId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_CODEDEVENTS_CONTAINER ON snd.CodedEvents(Container);
@@ -246,7 +245,7 @@ CREATE TABLE snd.EventNotes (
    CONSTRAINT PK_SND_EVENTNOTES PRIMARY KEY (EventNoteId),
    CONSTRAINT FK_SND_EVENTNOTES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_EVENTNOTES_EVENTNOTEID FOREIGN KEY (EventNoteId) REFERENCES snd.Events (EventId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_EVENTNOTES_CONTAINER ON snd.EventNotes(Container);
@@ -282,7 +281,7 @@ CREATE TABLE snd.LookupSets (
 
    CONSTRAINT PK_SND_LOOKUPSETS PRIMARY KEY (LookupSetId),
    CONSTRAINT FK_SND_LOOKUPSETS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_LOOKUPSETS_CONTAINER ON snd.LookupSets(Container);
@@ -306,7 +305,7 @@ CREATE TABLE snd.Lookups (
    CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupSetId, Value),
    CONSTRAINT FK_SND_LOOKUPS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_LOOKUPS_LOOKUPSETID FOREIGN KEY (LookupSetId) REFERENCES snd.LookupSets (LookupSetId)
-)
+);
 
 CREATE INDEX IDX_SND_LOOKUPS_CONTAINER ON snd.Lookups(Container);
 CREATE INDEX IDX_SND_LOOKUPS_LOOKUPSETID ON snd.Lookups(LookupSetId);
@@ -314,10 +313,10 @@ GO
 
 ALTER TABLE snd.SuperPkgs ADD SortOrder INTEGER;
 
-DROP TABLE snd.Lookups
+DROP TABLE snd.Lookups;
 GO
 
-DROP TABLE snd.LookupSets
+DROP TABLE snd.LookupSets;
 GO
 
 /*==============================================================*/
@@ -337,7 +336,7 @@ CREATE TABLE snd.LookupSets (
 
    CONSTRAINT PK_SND_LOOKUPSETS PRIMARY KEY (LookupSetId),
    CONSTRAINT FK_SND_LOOKUPSETS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
-)
+);
 GO
 
 CREATE INDEX IDX_SND_LOOKUPSETS_CONTAINER ON snd.LookupSets(Container);
@@ -361,7 +360,7 @@ CREATE TABLE snd.Lookups (
    CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupSetId, Value),
    CONSTRAINT FK_SND_LOOKUPS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
    CONSTRAINT FK_SND_LOOKUPS_LOOKUPSETID FOREIGN KEY (LookupSetId) REFERENCES snd.LookupSets (LookupSetId)
-)
+);
 
 CREATE INDEX IDX_SND_LOOKUPS_CONTAINER ON snd.Lookups(Container);
 CREATE INDEX IDX_SND_LOOKUPS_LOOKUPSETID ON snd.Lookups(LookupSetId);
@@ -447,13 +446,13 @@ ALTER TABLE snd.PkgCategoryJunction ADD Objectid uniqueidentifier NOT NULL DEFAU
 
 ALTER TABLE snd.ProjectItems ADD Objectid uniqueidentifier NOT NULL DEFAULT newid();
 
-ALTER TABLE snd.Lookups ADD LookupId INT IDENTITY(1,1)
-ALTER TABLE snd.Lookups DROP CONSTRAINT PK_SND_LOOKUPS
+ALTER TABLE snd.Lookups ADD LookupId INT IDENTITY(1,1);
+ALTER TABLE snd.Lookups DROP CONSTRAINT PK_SND_LOOKUPS;
 GO
 
-ALTER TABLE snd.Lookups ADD CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupId)
+ALTER TABLE snd.Lookups ADD CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupId);
 
-CREATE UNIQUE INDEX IDX_SND_LOOKUPS_LOOKUPSETID_VALUE ON snd.Lookups(LookupSetId, Value)
+CREATE UNIQUE INDEX IDX_SND_LOOKUPS_LOOKUPSETID_VALUE ON snd.Lookups(LookupSetId, Value);
 
 /* snd-17.30-18.10.sql */
 
@@ -463,7 +462,7 @@ EXEC core.fn_dropifexists 'ProjectItems', 'snd', 'CONSTRAINT', 'FK_SND_PROJECTIT
 EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'FK_SND_EVENTS_PARENTOBJECTID';
 GO
 
-EXEC core.fn_dropifexists 'Projects', 'snd', 'TABLE', NULL
+EXEC core.fn_dropifexists 'Projects', 'snd', 'TABLE', NULL;
 GO
 
 CREATE TABLE snd.Projects (
@@ -885,26 +884,26 @@ go
 -- move Events table cluster index to AnimalId, Date
 --
 -- need to drop foreign key constraints that reference the cluster index
-EXEC core.fn_dropifexists 'EventNotes', 'snd', 'CONSTRAINT', 'FK_SND_EVENTNOTES_EVENTID'
-EXEC core.fn_dropifexists 'EventData', 'snd', 'CONSTRAINT', 'FK_SND_EVENTDATA_EVENTID'
-EXEC core.fn_dropifexists 'EventsCache', 'snd', 'CONSTRAINT', 'FK_EventsCache_EventId'
+EXEC core.fn_dropifexists 'EventNotes', 'snd', 'CONSTRAINT', 'FK_SND_EVENTNOTES_EVENTID';
+EXEC core.fn_dropifexists 'EventData', 'snd', 'CONSTRAINT', 'FK_SND_EVENTDATA_EVENTID';
+EXEC core.fn_dropifexists 'EventsCache', 'snd', 'CONSTRAINT', 'FK_EventsCache_EventId';
 -- drop the snd.Events PK constraint (clustered index)
-EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'PK_SND_EVENTS'
+EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'PK_SND_EVENTS';
 
 -- Add new snd.Events table PK constraint (non-clustered)
 ALTER TABLE snd.Events ADD  CONSTRAINT PK_SND_EVENTS PRIMARY KEY NONCLUSTERED
     (
      EventId ASC
-        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON);
 GO
 
 -- Create new clustered index on snd.Events
-EXEC core.fn_dropifexists 'Events', 'snd', 'INDEX', 'IDX_SND_EVENTS_SUBJECTID_DATE'
+EXEC core.fn_dropifexists 'Events', 'snd', 'INDEX', 'IDX_SND_EVENTS_SUBJECTID_DATE';
 CREATE CLUSTERED INDEX IDX_SND_EVENTS_SUBJECTID_DATE ON snd.Events
     (
      SubjectId ASC,
      Date DESC
-        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON);
 GO
 
 
@@ -912,26 +911,26 @@ GO
 --
 -- EventNotes
 ALTER TABLE snd.EventNotes  WITH CHECK ADD  CONSTRAINT FK_SND_EVENTNOTES_EVENTID FOREIGN KEY(EventId)
-    REFERENCES snd.Events (EventId)
+    REFERENCES snd.Events (EventId);
 GO
 
-ALTER TABLE snd.EventNotes CHECK CONSTRAINT FK_SND_EVENTNOTES_EVENTID
+ALTER TABLE snd.EventNotes CHECK CONSTRAINT FK_SND_EVENTNOTES_EVENTID;
 GO
 
 -- EventData
 ALTER TABLE snd.EventData  WITH CHECK ADD  CONSTRAINT FK_SND_EVENTDATA_EVENTID FOREIGN KEY(EventId)
-    REFERENCES snd.Events (EventId)
+    REFERENCES snd.Events (EventId);
 GO
 
-ALTER TABLE snd.EventData CHECK CONSTRAINT FK_SND_EVENTDATA_EVENTID
+ALTER TABLE snd.EventData CHECK CONSTRAINT FK_SND_EVENTDATA_EVENTID;
 GO
 
 -- EventsCache
 ALTER TABLE snd.EventsCache  WITH CHECK ADD  CONSTRAINT FK_EVENTSCACHE_EVENTID FOREIGN KEY(EventId)
-    REFERENCES snd.Events (EventId)
+    REFERENCES snd.Events (EventId);
 GO
 
-ALTER TABLE snd.EventsCache CHECK CONSTRAINT FK_EventsCache_EventId
+ALTER TABLE snd.EventsCache CHECK CONSTRAINT FK_EventsCache_EventId;
 GO
 
 /* 21.xxx SQL scripts */
@@ -942,7 +941,7 @@ WHERE TypeURI = 'urn:lsid:labkey.com:PropertyValidator:length'
     SELECT PropertyId
     FROM exp.PropertyDescriptor
     WHERE PropertyURI LIKE '%:package-snd%Package%'
-  )
+  );
 
 GO
 
@@ -974,8 +973,7 @@ WHERE i.QcState IS NULL
 END
 GO
 
-CREATE UNIQUE INDEX IDX_LookupSets_SetName
-ON snd.LookupSets (SetName)
+CREATE UNIQUE INDEX IDX_LookupSets_SetName ON snd.LookupSets (SetName);
 
 ALTER TABLE snd.EventData ADD SortOrder INTEGER NULL;
 
