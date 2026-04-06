@@ -44,6 +44,9 @@ CREATE INDEX IDX_SND_PKGS_CONTAINER ON snd.Pkgs(Container);
 CREATE INDEX IDX_SND_PKGS_QCSTATE ON snd.Pkgs(QcState);
 GO
 
+CREATE INDEX IDX_SND_PKGS_LSID ON snd.Pkgs(Lsid);
+ALTER TABLE snd.Pkgs ADD Narrative NVARCHAR(MAX) NULL;
+
 /*==============================================================*/
 /* Table: SuperPkgs                                             */
 /*==============================================================*/
@@ -69,6 +72,11 @@ CREATE INDEX IDX_SND_SUPERPKGS_CONTAINER ON snd.SuperPkgs(Container);
 CREATE INDEX IDX_SND_SUPERPKGS_PKGID ON snd.SuperPkgs(PkgId);
 GO
 
+CREATE INDEX IDX_SND_SUPERPKGS_LSID ON snd.SuperPkgs(Lsid);
+ALTER TABLE snd.SuperPkgs ADD SortOrder INTEGER;
+
+ALTER TABLE snd.SuperPkgs
+ADD Required BIT NOT NULL DEFAULT 0;
 /*==============================================================*/
 /* Table: PkgCategories                                         */
 /*==============================================================*/
@@ -92,6 +100,9 @@ GO
 
 CREATE INDEX IDX_SND_PKGCATEGORIES_CONTAINER ON snd.PkgCategories(Container);
 GO
+
+CREATE INDEX IDX_SND_PKGCATEGORIES_LSID ON snd.PkgCategories(Lsid);
+ALTER TABLE snd.PkgCategories ADD Objectid uniqueidentifier NOT NULL DEFAULT newid();
 
 /*==============================================================*/
 /* Table: PkgCategoryJunction                                   */
@@ -117,6 +128,9 @@ CREATE INDEX IDX_SND_PKGCATEGORYJUNCTION_CONTAINER ON snd.PkgCategoryJunction(Co
 CREATE INDEX IDX_SND_PKGCATEGORYJUNCTION_PKGID ON snd.PkgCategoryJunction(PkgId);
 CREATE INDEX IDX_SND_PKGCATEGORYJUNCTION_CATEGORYID ON snd.PkgCategoryJunction(CategoryId);
 GO
+
+CREATE INDEX IDX_SND_PKGCATEGORYJUNCTION_LSID ON snd.PkgCategoryJunction(Lsid);
+ALTER TABLE snd.PkgCategoryJunction ADD Objectid uniqueidentifier NOT NULL DEFAULT newid();
 
 /*==============================================================*/
 /* Table: Projects                                              */
@@ -145,6 +159,40 @@ CREATE INDEX IDX_SND_PROJECTS_CONTAINER ON snd.Projects(Container);
 CREATE UNIQUE INDEX IDX_SND_PROJECTS_OBJECTID ON snd.Projects(ObjectId);
 GO
 
+CREATE INDEX IDX_SND_PROJECTS_LSID ON snd.Projects(Lsid);
+/* snd-17.30-18.10.sql */
+
+EXEC core.fn_dropifexists 'Projects', 'snd', 'CONSTRAINT', 'IDX_SND_PROJECTS_CONTAINER';
+EXEC core.fn_dropifexists 'Projects', 'snd', 'CONSTRAINT', 'IDX_SND_PROJECTS_OBJECTID';
+EXEC core.fn_dropifexists 'Projects', 'snd', 'TABLE', NULL;
+GO
+
+CREATE TABLE snd.Projects (
+   ProjectId            INTEGER              NOT NULL,
+   RevisionNum          INTEGER              NOT NULL,
+   ReferenceId          INTEGER              NOT NULL,
+   StartDate            date                 NOT NULL,
+   EndDate              date,
+   Description          NVARCHAR(4000)       NOT NULL,
+   Active				        BIT					         NOT NULL,
+   ObjectId             UNIQUEIDENTIFIER     NOT NULL DEFAULT newid(),
+   Container			      ENTITYID			       NOT NULL,
+   CreatedBy			      USERID,
+   Created				      DATETIME,
+   ModifiedBy			      USERID,
+   Modified				      DATETIME,
+   Lsid                 LSIDType,
+
+   CONSTRAINT PK_SND_PROJECTS PRIMARY KEY NONCLUSTERED (ObjectId),
+   CONSTRAINT FK_SND_PROJECTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
+
+)
+GO
+
+CREATE INDEX IDX_SND_PROJECTS_CONTAINER ON snd.Projects(Container);
+CREATE UNIQUE CLUSTERED INDEX IDX_SND_PROJECTS_PROJECTID_REVNUM ON snd.Projects(ProjectId, RevisionNum);
+GO
+
 /*==============================================================*/
 /* Table: ProjectItems                                          */
 /*==============================================================*/
@@ -171,6 +219,15 @@ CREATE INDEX IDX_SND_PROJECTITEMS_CONTAINER ON snd.ProjectItems(Container);
 CREATE INDEX IDX_SND_PROJECTITEMS_SUPERPKGID ON snd.ProjectItems(SuperPkgId);
 CREATE INDEX IDX_SND_PROJECTITEMS_PARENTOBJECTID ON snd.ProjectItems(ParentObjectId);
 GO
+
+CREATE INDEX IDX_SND_PROJECTITEMS_LSID ON snd.ProjectItems(Lsid);
+ALTER TABLE snd.ProjectItems ADD Objectid uniqueidentifier NOT NULL DEFAULT newid();
+
+EXEC core.fn_dropifexists 'ProjectItems', 'snd', 'CONSTRAINT', 'FK_SND_PROJECTITEMS_PARENTOBJECTID';
+EXEC core.fn_dropifexists 'ProjectItems', 'snd', 'CONSTRAINT', 'FK_SND_PROJECTITEMS_PARENTOBJECTID';
+DELETE FROM snd.ProjectItems;
+ALTER TABLE snd.ProjectItems
+ADD CONSTRAINT FK_SND_PROJECTITEMS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId);
 
 /*==============================================================*/
 /* Table: Events                                                */
@@ -201,6 +258,46 @@ CREATE INDEX IDX_SND_EVENTS_QCSTATE ON snd.Events(QcState);
 CREATE INDEX IDX_SND_EVENTS_PARENTOBJECTID ON snd.Events(ParentObjectId);
 GO
 
+CREATE INDEX IDX_SND_EVENTS_LSID ON snd.Events(Lsid);
+EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'FK_SND_EVENTS_PARENTOBJECTID';
+GO
+
+EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'FK_SND_EVENTS_PARENTOBJECTID';
+GO
+
+DELETE FROM snd.Events;
+GO
+
+ALTER TABLE snd.Events
+ADD CONSTRAINT FK_SND_EVENTS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId);
+GO
+
+EXEC sp_rename 'snd.Events.Id', 'ParticipantId', 'COLUMN';
+
+/* snd-18.10-18.20.sql */
+
+EXEC sp_rename 'snd.Events.ParticipantId', 'SubjectId', 'COLUMN';
+
+-- drop the snd.Events PK constraint (clustered index)
+EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'PK_SND_EVENTS';
+
+-- Add new snd.Events table PK constraint (non-clustered)
+ALTER TABLE snd.Events ADD  CONSTRAINT PK_SND_EVENTS PRIMARY KEY NONCLUSTERED
+    (
+     EventId ASC
+        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON);
+GO
+
+-- Create new clustered index on snd.Events
+EXEC core.fn_dropifexists 'Events', 'snd', 'INDEX', 'IDX_SND_EVENTS_SUBJECTID_DATE';
+CREATE CLUSTERED INDEX IDX_SND_EVENTS_SUBJECTID_DATE ON snd.Events
+    (
+     SubjectId ASC,
+     Date DESC
+        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON);
+GO
+
+
 /*==============================================================*/
 /* Table: CodedEvents                                           */
 /*==============================================================*/
@@ -228,6 +325,12 @@ CREATE INDEX IDX_SND_CODEDEVENTS_EVENTID ON snd.CodedEvents(EventId);
 CREATE INDEX IDX_SND_CODEDEVENTS_SUPERPKGID ON snd.CodedEvents(SuperPkgId);
 GO
 
+CREATE INDEX IDX_SND_CODEDEVENTS_LSID ON snd.CodedEvents(Lsid);
+DELETE FROM snd.CodedEvents;
+/* Recreate EventData table */
+EXEC core.fn_dropifexists 'CodedEvents','snd','TABLE';
+GO
+
 /*==============================================================*/
 /* Table: EventNotes                                            */
 /*==============================================================*/
@@ -252,17 +355,60 @@ CREATE INDEX IDX_SND_EVENTNOTES_CONTAINER ON snd.EventNotes(Container);
 CREATE INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes(EventNoteId);
 GO
 
-CREATE INDEX IDX_SND_PKGS_LSID ON snd.Pkgs(Lsid);
-CREATE INDEX IDX_SND_SUPERPKGS_LSID ON snd.SuperPkgs(Lsid);
-CREATE INDEX IDX_SND_PKGCATEGORIES_LSID ON snd.PkgCategories(Lsid);
-CREATE INDEX IDX_SND_PKGCATEGORYJUNCTION_LSID ON snd.PkgCategoryJunction(Lsid);
-CREATE INDEX IDX_SND_PROJECTS_LSID ON snd.Projects(Lsid);
-CREATE INDEX IDX_SND_PROJECTITEMS_LSID ON snd.ProjectItems(Lsid);
-CREATE INDEX IDX_SND_EVENTS_LSID ON snd.Events(Lsid);
-CREATE INDEX IDX_SND_CODEDEVENTS_LSID ON snd.CodedEvents(Lsid);
 CREATE INDEX IDX_SND_EVENTNOTES_LSID ON snd.EventNotes(Lsid);
 
-ALTER TABLE snd.Pkgs ADD Narrative NVARCHAR(MAX) NULL;
+/* Recreate EventNoteId not as identity column for etls */
+ALTER TABLE snd.EventNotes DROP PK_SND_EVENTNOTES;
+ALTER TABLE snd.EventNotes DROP CONSTRAINT FK_SND_EVENTNOTES_EVENTNOTEID;
+DROP INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes;
+GO
+
+ALTER TABLE snd.EventNotes DROP COLUMN EventNoteId;
+GO
+
+ALTER TABLE snd.EventNotes ADD EventNoteId INTEGER NOT NULL;
+GO
+
+ALTER TABLE snd.EventNotes ADD CONSTRAINT PK_SND_EVENTNOTES PRIMARY KEY (EventNoteId);
+ALTER TABLE snd.EventNotes ADD CONSTRAINT FK_SND_EVENTNOTES_EVENTNOTEID FOREIGN KEY (EventNoteId) REFERENCES snd.Events (EventId)
+CREATE INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes(EventNoteId);
+GO
+
+EXEC core.fn_dropifexists 'EventNotes', 'snd', 'CONSTRAINT', 'FK_SND_EVENTNOTES_EVENTNOTEID';
+GO
+
+ALTER TABLE snd.EventNotes ADD CONSTRAINT FK_SND_EVENTNOTES_EVENTID FOREIGN KEY (EventId) REFERENCES snd.Events (EventId)
+GO
+
+ALTER TABLE snd.EventNotes
+DROP CONSTRAINT PK_SND_EVENTNOTES;
+DROP INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes;
+GO
+
+ALTER TABLE snd.EventNotes
+DROP COLUMN EventNoteId;
+GO
+
+ALTER TABLE snd.EventNotes ADD EventNoteId INT IDENTITY(1, 1) NOT NULL;
+GO
+
+ALTER TABLE snd.EventNotes ADD CONSTRAINT PK_SND_EVENTNOTES PRIMARY KEY (EventNoteId);
+CREATE INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes(EventNoteId);
+
+
+-- move Events table cluster index to AnimalId, Date
+--
+-- need to drop foreign key constraints that reference the cluster index
+EXEC core.fn_dropifexists 'EventNotes', 'snd', 'CONSTRAINT', 'FK_SND_EVENTNOTES_EVENTID';
+-- restore constraints
+--
+-- EventNotes
+ALTER TABLE snd.EventNotes  WITH CHECK ADD  CONSTRAINT FK_SND_EVENTNOTES_EVENTID FOREIGN KEY(EventId)
+    REFERENCES snd.Events (EventId);
+GO
+
+ALTER TABLE snd.EventNotes CHECK CONSTRAINT FK_SND_EVENTNOTES_EVENTID;
+GO
 
 /*==============================================================*/
 /* Table: LookupSets                                            */
@@ -285,35 +431,6 @@ CREATE TABLE snd.LookupSets (
 GO
 
 CREATE INDEX IDX_SND_LOOKUPSETS_CONTAINER ON snd.LookupSets(Container);
-GO
-
-/*==============================================================*/
-/* Table: Lookups                                               */
-/*==============================================================*/
-CREATE TABLE snd.Lookups (
-   LookupSetId          INTEGER              NOT NULL,
-   Value                VARCHAR(896)         NOT NULL,
-   Displayable          BIT                  NOT NULL,
-   SortOrder            INTEGER,
-   Container			      ENTITYID			       NOT NULL,
-   CreatedBy			      USERID,
-   Created				      DATETIME,
-   ModifiedBy			      USERID,
-   Modified				      DATETIME,
-   Lsid                 LSIDType,
-
-   CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupSetId, Value),
-   CONSTRAINT FK_SND_LOOKUPS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
-   CONSTRAINT FK_SND_LOOKUPS_LOOKUPSETID FOREIGN KEY (LookupSetId) REFERENCES snd.LookupSets (LookupSetId)
-);
-
-CREATE INDEX IDX_SND_LOOKUPS_CONTAINER ON snd.Lookups(Container);
-CREATE INDEX IDX_SND_LOOKUPS_LOOKUPSETID ON snd.Lookups(LookupSetId);
-GO
-
-ALTER TABLE snd.SuperPkgs ADD SortOrder INTEGER;
-
-DROP TABLE snd.Lookups;
 GO
 
 DROP TABLE snd.LookupSets;
@@ -342,6 +459,39 @@ GO
 CREATE INDEX IDX_SND_LOOKUPSETS_CONTAINER ON snd.LookupSets(Container);
 GO
 
+ALTER TABLE snd.LookupSets ADD [ObjectId] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID();
+CREATE UNIQUE INDEX idx_snd_lookupSets_objectid ON snd.lookupSets (ObjectId);
+GO
+
+CREATE UNIQUE INDEX IDX_LookupSets_SetName ON snd.LookupSets (SetName);
+
+/*==============================================================*/
+/* Table: Lookups                                               */
+/*==============================================================*/
+CREATE TABLE snd.Lookups (
+   LookupSetId          INTEGER              NOT NULL,
+   Value                VARCHAR(896)         NOT NULL,
+   Displayable          BIT                  NOT NULL,
+   SortOrder            INTEGER,
+   Container			      ENTITYID			       NOT NULL,
+   CreatedBy			      USERID,
+   Created				      DATETIME,
+   ModifiedBy			      USERID,
+   Modified				      DATETIME,
+   Lsid                 LSIDType,
+
+   CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupSetId, Value),
+   CONSTRAINT FK_SND_LOOKUPS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
+   CONSTRAINT FK_SND_LOOKUPS_LOOKUPSETID FOREIGN KEY (LookupSetId) REFERENCES snd.LookupSets (LookupSetId)
+);
+
+CREATE INDEX IDX_SND_LOOKUPS_CONTAINER ON snd.Lookups(Container);
+CREATE INDEX IDX_SND_LOOKUPS_LOOKUPSETID ON snd.Lookups(LookupSetId);
+GO
+
+DROP TABLE snd.Lookups;
+GO
+
 /*==============================================================*/
 /* Table: Lookups                                               */
 /*==============================================================*/
@@ -364,6 +514,106 @@ CREATE TABLE snd.Lookups (
 
 CREATE INDEX IDX_SND_LOOKUPS_CONTAINER ON snd.Lookups(Container);
 CREATE INDEX IDX_SND_LOOKUPS_LOOKUPSETID ON snd.Lookups(LookupSetId);
+GO
+
+ALTER TABLE snd.Lookups ADD LookupId INT IDENTITY(1,1);
+ALTER TABLE snd.Lookups DROP CONSTRAINT PK_SND_LOOKUPS;
+GO
+
+ALTER TABLE snd.Lookups ADD CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupId);
+
+CREATE UNIQUE INDEX IDX_SND_LOOKUPS_LOOKUPSETID_VALUE ON snd.Lookups(LookupSetId, Value);
+
+ALTER TABLE snd.Lookups ADD   [ObjectId] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID();
+CREATE UNIQUE INDEX idx_snd_lookups_objectid ON snd.lookups (ObjectId);
+
+/*==============================================================*/
+/* Table: EventData                                             */
+/*==============================================================*/
+CREATE TABLE snd.EventData (
+   EventDataId				  INTEGER         NOT NULL,
+   EventId					    INTEGER         NOT NULL,
+   SuperPkgId				    INTEGER         NOT NULL,
+   ObjectURI				    LsidType		    NOT NULL,
+   Container			      ENTITYID		    NOT NULL,
+   CreatedBy			      USERID,
+   Created				      DATETIME,
+   ModifiedBy			      USERID,
+   Modified				      DATETIME,
+   Lsid						      LSIDType,
+
+   CONSTRAINT PK_SND_EVENTDATA PRIMARY KEY (EventDataId),
+   CONSTRAINT FK_SND_EVENTDATA_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
+   CONSTRAINT FK_SND_EVENTDATA_EVENTID FOREIGN KEY (EventId) REFERENCES snd.Events (EventId),
+   CONSTRAINT FK_SND_EVENTDATA_SUPERPKGID FOREIGN KEY (SuperPkgId) REFERENCES snd.SuperPkgs(SuperPkgId)
+)
+GO
+
+ALTER TABLE snd.EventData ADD ParentEventDataId INT;
+ALTER TABLE snd.EventData DROP COLUMN Modified;
+ALTER TABLE snd.EventData DROP COLUMN ModifiedBy;
+ALTER TABLE snd.EventData DROP COLUMN Created;
+ALTER TABLE snd.EventData DROP COLUMN CreatedBy;
+GO
+
+ALTER TABLE snd.EventData ADD ObjectId UNIQUEIDENTIFIER NOT NULL DEFAULT newid();
+GO
+
+EXEC core.fn_dropifexists 'EventData', 'snd', 'COLUMN', 'ObjectId';
+
+CREATE INDEX IDX_SND_EVENTDATA_SUPERPKGID ON snd.EventData(SuperPkgId);
+CREATE INDEX IDX_SND_EVENTDATA_EVENTID ON snd.EventData(EventId);
+
+EXEC core.fn_dropifexists 'EventData', 'snd', 'CONSTRAINT', 'FK_SND_EVENTDATA_EVENTID';
+-- EventData
+ALTER TABLE snd.EventData  WITH CHECK ADD  CONSTRAINT FK_SND_EVENTDATA_EVENTID FOREIGN KEY(EventId)
+    REFERENCES snd.Events (EventId);
+GO
+
+ALTER TABLE snd.EventData CHECK CONSTRAINT FK_SND_EVENTDATA_EVENTID;
+GO
+
+ALTER TABLE snd.EventData ADD SortOrder INTEGER NULL;
+
+/*==============================================================*/
+/* Table: EventsCache                                           */
+/*==============================================================*/
+CREATE TABLE snd.EventsCache (
+  EventId              INTEGER              NOT NULL,
+  HtmlNarrative        NVARCHAR(MAX),
+
+  CONSTRAINT PK_SND_EVENTS_CACHE PRIMARY KEY (EventId)
+)
+GO
+
+ALTER TABLE snd.EventsCache
+  ADD CONSTRAINT FK_EventsCache_EventId FOREIGN KEY (EventId) REFERENCES snd.Events (EventId);
+GO
+
+ALTER TABLE snd.EventsCache ADD Container entityid;
+ALTER TABLE snd.EventsCache ADD CONSTRAINT FK_SND_EVENTSCACHE_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
+CREATE INDEX IDX_SND_EVENTSCACHE_CONTAINER ON snd.EventsCache(Container);
+GO
+
+EXEC core.fn_dropifexists 'EventsCache', 'snd', 'CONSTRAINT', 'FK_EventsCache_EventId';
+-- EventsCache
+ALTER TABLE snd.EventsCache  WITH CHECK ADD  CONSTRAINT FK_EVENTSCACHE_EVENTID FOREIGN KEY(EventId)
+    REFERENCES snd.Events (EventId);
+GO
+
+ALTER TABLE snd.EventsCache CHECK CONSTRAINT FK_EventsCache_EventId;
+GO
+
+/* 21.xxx SQL scripts */
+
+UPDATE exp.PropertyValidator SET TypeURI = 'urn:lsid:labkey.com:PropertyValidator:textlength'
+WHERE TypeURI = 'urn:lsid:labkey.com:PropertyValidator:length'
+  AND PropertyId IN (
+    SELECT PropertyId
+    FROM exp.PropertyDescriptor
+    WHERE PropertyURI LIKE '%:package-snd%Package%'
+  );
+
 GO
 
 CREATE FUNCTION snd.fGetSuperPkg ( @TopLevelPkgId INT )
@@ -438,73 +688,6 @@ RETURN
     FROM    CTE1 c
 		
 );
-GO
-
-ALTER TABLE snd.PkgCategories ADD Objectid uniqueidentifier NOT NULL DEFAULT newid();
-
-ALTER TABLE snd.PkgCategoryJunction ADD Objectid uniqueidentifier NOT NULL DEFAULT newid();
-
-ALTER TABLE snd.ProjectItems ADD Objectid uniqueidentifier NOT NULL DEFAULT newid();
-
-ALTER TABLE snd.Lookups ADD LookupId INT IDENTITY(1,1);
-ALTER TABLE snd.Lookups DROP CONSTRAINT PK_SND_LOOKUPS;
-GO
-
-ALTER TABLE snd.Lookups ADD CONSTRAINT PK_SND_LOOKUPS PRIMARY KEY (LookupId);
-
-CREATE UNIQUE INDEX IDX_SND_LOOKUPS_LOOKUPSETID_VALUE ON snd.Lookups(LookupSetId, Value);
-
-/* snd-17.30-18.10.sql */
-
-EXEC core.fn_dropifexists 'Projects', 'snd', 'CONSTRAINT', 'IDX_SND_PROJECTS_CONTAINER';
-EXEC core.fn_dropifexists 'Projects', 'snd', 'CONSTRAINT', 'IDX_SND_PROJECTS_OBJECTID';
-EXEC core.fn_dropifexists 'ProjectItems', 'snd', 'CONSTRAINT', 'FK_SND_PROJECTITEMS_PARENTOBJECTID';
-EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'FK_SND_EVENTS_PARENTOBJECTID';
-GO
-
-EXEC core.fn_dropifexists 'Projects', 'snd', 'TABLE', NULL;
-GO
-
-CREATE TABLE snd.Projects (
-   ProjectId            INTEGER              NOT NULL,
-   RevisionNum          INTEGER              NOT NULL,
-   ReferenceId          INTEGER              NOT NULL,
-   StartDate            date                 NOT NULL,
-   EndDate              date,
-   Description          NVARCHAR(4000)       NOT NULL,
-   Active				        BIT					         NOT NULL,
-   ObjectId             UNIQUEIDENTIFIER     NOT NULL DEFAULT newid(),
-   Container			      ENTITYID			       NOT NULL,
-   CreatedBy			      USERID,
-   Created				      DATETIME,
-   ModifiedBy			      USERID,
-   Modified				      DATETIME,
-   Lsid                 LSIDType,
-
-   CONSTRAINT PK_SND_PROJECTS PRIMARY KEY NONCLUSTERED (ObjectId),
-   CONSTRAINT FK_SND_PROJECTS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId)
-
-)
-GO
-
-CREATE INDEX IDX_SND_PROJECTS_CONTAINER ON snd.Projects(Container);
-CREATE UNIQUE CLUSTERED INDEX IDX_SND_PROJECTS_PROJECTID_REVNUM ON snd.Projects(ProjectId, RevisionNum);
-GO
-
-EXEC core.fn_dropifexists 'ProjectItems', 'snd', 'CONSTRAINT', 'FK_SND_PROJECTITEMS_PARENTOBJECTID';
-EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'FK_SND_EVENTS_PARENTOBJECTID';
-GO
-
-DELETE FROM snd.ProjectItems;
-DELETE FROM snd.CodedEvents;
-DELETE FROM snd.Events;
-GO
-
-ALTER TABLE snd.ProjectItems
-ADD CONSTRAINT FK_SND_PROJECTITEMS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId);
-
-ALTER TABLE snd.Events
-ADD CONSTRAINT FK_SND_EVENTS_PARENTOBJECTID FOREIGN KEY (ParentObjectId) REFERENCES snd.Projects (ObjectId);
 GO
 
 EXEC core.fn_dropifexists 'fGetProjectItems','snd', 'FUNCTION';
@@ -664,117 +847,6 @@ WITH    CTE1 ( ProjectId, RevisionNum, ProjectItemId, ParentObjectId, ParentSupe
 );
 GO
 
-/* Recreate EventData table */
-EXEC core.fn_dropifexists 'CodedEvents','snd','TABLE';
-GO
-
-/*==============================================================*/
-/* Table: EventData                                             */
-/*==============================================================*/
-CREATE TABLE snd.EventData (
-   EventDataId				  INTEGER         NOT NULL,
-   EventId					    INTEGER         NOT NULL,
-   SuperPkgId				    INTEGER         NOT NULL,
-   ObjectURI				    LsidType		    NOT NULL,
-   Container			      ENTITYID		    NOT NULL,
-   CreatedBy			      USERID,
-   Created				      DATETIME,
-   ModifiedBy			      USERID,
-   Modified				      DATETIME,
-   Lsid						      LSIDType,
-
-   CONSTRAINT PK_SND_EVENTDATA PRIMARY KEY (EventDataId),
-   CONSTRAINT FK_SND_EVENTDATA_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId),
-   CONSTRAINT FK_SND_EVENTDATA_EVENTID FOREIGN KEY (EventId) REFERENCES snd.Events (EventId),
-   CONSTRAINT FK_SND_EVENTDATA_SUPERPKGID FOREIGN KEY (SuperPkgId) REFERENCES snd.SuperPkgs(SuperPkgId)
-)
-GO
-
-/* Recreate EventNoteId not as identity column for etls */
-ALTER TABLE snd.EventNotes DROP PK_SND_EVENTNOTES;
-ALTER TABLE snd.EventNotes DROP CONSTRAINT FK_SND_EVENTNOTES_EVENTNOTEID;
-DROP INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes;
-GO
-
-ALTER TABLE snd.EventNotes DROP COLUMN EventNoteId;
-GO
-
-ALTER TABLE snd.EventNotes ADD EventNoteId INTEGER NOT NULL;
-GO
-
-ALTER TABLE snd.EventNotes ADD CONSTRAINT PK_SND_EVENTNOTES PRIMARY KEY (EventNoteId);
-ALTER TABLE snd.EventNotes ADD CONSTRAINT FK_SND_EVENTNOTES_EVENTNOTEID FOREIGN KEY (EventNoteId) REFERENCES snd.Events (EventId)
-CREATE INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes(EventNoteId);
-GO
-
-EXEC sp_rename 'snd.Events.Id', 'ParticipantId', 'COLUMN';
-
-EXEC core.fn_dropifexists 'EventNotes', 'snd', 'CONSTRAINT', 'FK_SND_EVENTNOTES_EVENTNOTEID';
-GO
-
-ALTER TABLE snd.EventNotes ADD CONSTRAINT FK_SND_EVENTNOTES_EVENTID FOREIGN KEY (EventId) REFERENCES snd.Events (EventId)
-GO
-
-ALTER TABLE snd.Lookups ADD   [ObjectId] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID();
-CREATE UNIQUE INDEX idx_snd_lookups_objectid ON snd.lookups (ObjectId);
-
-ALTER TABLE snd.LookupSets ADD [ObjectId] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID();
-CREATE UNIQUE INDEX idx_snd_lookupSets_objectid ON snd.lookupSets (ObjectId);
-GO
-
-ALTER TABLE snd.EventData ADD ParentEventDataId INT;
-ALTER TABLE snd.EventData DROP COLUMN Modified;
-ALTER TABLE snd.EventData DROP COLUMN ModifiedBy;
-ALTER TABLE snd.EventData DROP COLUMN Created;
-ALTER TABLE snd.EventData DROP COLUMN CreatedBy;
-GO
-
-/* snd-18.10-18.20.sql */
-
-sp_rename 'snd.Events.ParticipantId', 'SubjectId', 'COLUMN';
-
-/*==============================================================*/
-/* Table: EventsCache                                           */
-/*==============================================================*/
-CREATE TABLE snd.EventsCache (
-  EventId              INTEGER              NOT NULL,
-  HtmlNarrative        NVARCHAR(MAX),
-
-  CONSTRAINT PK_SND_EVENTS_CACHE PRIMARY KEY (EventId)
-)
-GO
-
-ALTER TABLE snd.EventsCache
-  ADD CONSTRAINT FK_EventsCache_EventId FOREIGN KEY (EventId) REFERENCES snd.Events (EventId);
-GO
-
-ALTER TABLE snd.EventData ADD ObjectId UNIQUEIDENTIFIER NOT NULL DEFAULT newid();
-GO
-
-ALTER TABLE snd.EventsCache ADD Container entityid;
-ALTER TABLE snd.EventsCache ADD CONSTRAINT FK_SND_EVENTSCACHE_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
-CREATE INDEX IDX_SND_EVENTSCACHE_CONTAINER ON snd.EventsCache(Container);
-GO
-
-ALTER TABLE snd.EventNotes
-DROP CONSTRAINT PK_SND_EVENTNOTES;
-DROP INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes;
-GO
-
-ALTER TABLE snd.EventNotes
-DROP COLUMN EventNoteId;
-GO
-
-ALTER TABLE snd.EventNotes ADD EventNoteId INT IDENTITY(1, 1) NOT NULL;
-GO
-
-ALTER TABLE snd.EventNotes ADD CONSTRAINT PK_SND_EVENTNOTES PRIMARY KEY (EventNoteId);
-CREATE INDEX IDX_SND_EVENTNOTES_EVENTNOTEID ON snd.EventNotes(EventNoteId);
-
-EXEC core.fn_dropifexists 'EventData', 'snd', 'COLUMN', 'ObjectId';
-
-ALTER TABLE snd.SuperPkgs
-ADD Required BIT NOT NULL DEFAULT 0;
 EXEC core.fn_dropifexists 'fGetSuperPkg', 'snd', 'FUNCTION', INT;
 GO
 
@@ -856,9 +928,6 @@ RETURN
 );
 GO
 
-CREATE INDEX IDX_SND_EVENTDATA_SUPERPKGID ON snd.EventData(SuperPkgId);
-CREATE INDEX IDX_SND_EVENTDATA_EVENTID ON snd.EventData(EventId);
-
 /*
     Changes to improve snd.Events CRUD performance and add default QcState
 */
@@ -880,71 +949,6 @@ BEGIN
     WHERE i.QcState IS NULL
 END
 go
-
--- move Events table cluster index to AnimalId, Date
---
--- need to drop foreign key constraints that reference the cluster index
-EXEC core.fn_dropifexists 'EventNotes', 'snd', 'CONSTRAINT', 'FK_SND_EVENTNOTES_EVENTID';
-EXEC core.fn_dropifexists 'EventData', 'snd', 'CONSTRAINT', 'FK_SND_EVENTDATA_EVENTID';
-EXEC core.fn_dropifexists 'EventsCache', 'snd', 'CONSTRAINT', 'FK_EventsCache_EventId';
--- drop the snd.Events PK constraint (clustered index)
-EXEC core.fn_dropifexists 'Events', 'snd', 'CONSTRAINT', 'PK_SND_EVENTS';
-
--- Add new snd.Events table PK constraint (non-clustered)
-ALTER TABLE snd.Events ADD  CONSTRAINT PK_SND_EVENTS PRIMARY KEY NONCLUSTERED
-    (
-     EventId ASC
-        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON);
-GO
-
--- Create new clustered index on snd.Events
-EXEC core.fn_dropifexists 'Events', 'snd', 'INDEX', 'IDX_SND_EVENTS_SUBJECTID_DATE';
-CREATE CLUSTERED INDEX IDX_SND_EVENTS_SUBJECTID_DATE ON snd.Events
-    (
-     SubjectId ASC,
-     Date DESC
-        )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON);
-GO
-
-
--- restore constraints
---
--- EventNotes
-ALTER TABLE snd.EventNotes  WITH CHECK ADD  CONSTRAINT FK_SND_EVENTNOTES_EVENTID FOREIGN KEY(EventId)
-    REFERENCES snd.Events (EventId);
-GO
-
-ALTER TABLE snd.EventNotes CHECK CONSTRAINT FK_SND_EVENTNOTES_EVENTID;
-GO
-
--- EventData
-ALTER TABLE snd.EventData  WITH CHECK ADD  CONSTRAINT FK_SND_EVENTDATA_EVENTID FOREIGN KEY(EventId)
-    REFERENCES snd.Events (EventId);
-GO
-
-ALTER TABLE snd.EventData CHECK CONSTRAINT FK_SND_EVENTDATA_EVENTID;
-GO
-
--- EventsCache
-ALTER TABLE snd.EventsCache  WITH CHECK ADD  CONSTRAINT FK_EVENTSCACHE_EVENTID FOREIGN KEY(EventId)
-    REFERENCES snd.Events (EventId);
-GO
-
-ALTER TABLE snd.EventsCache CHECK CONSTRAINT FK_EventsCache_EventId;
-GO
-
-/* 21.xxx SQL scripts */
-
-UPDATE exp.PropertyValidator SET TypeURI = 'urn:lsid:labkey.com:PropertyValidator:textlength'
-WHERE TypeURI = 'urn:lsid:labkey.com:PropertyValidator:length'
-  AND PropertyId IN (
-    SELECT PropertyId
-    FROM exp.PropertyDescriptor
-    WHERE PropertyURI LIKE '%:package-snd%Package%'
-  );
-
-GO
-
 ALTER TRIGGER snd.ti_after_Events ON snd.Events FOR INSERT AS
 BEGIN
     SET NOCOUNT ON;
@@ -972,10 +976,6 @@ SET QcState = (SELECT TOP(1) q.rowId FROM core.DataStates AS q WHERE q.Label = '
 WHERE i.QcState IS NULL
 END
 GO
-
-CREATE UNIQUE INDEX IDX_LookupSets_SetName ON snd.LookupSets (SetName);
-
-ALTER TABLE snd.EventData ADD SortOrder INTEGER NULL;
 
 EXEC core.fn_dropifexists 'fGetAllSuperPkgs', 'snd', 'function';
 go
