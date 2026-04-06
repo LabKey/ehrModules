@@ -339,20 +339,6 @@ GO
 CREATE INDEX IDX_SND_EVENTSCACHE_CONTAINER ON snd.EventsCache(Container);
 GO
 
-/* 21.xxx: Update PropertyValidator TypeURI for length validators on SND package properties */
-
-UPDATE exp.PropertyValidator SET TypeURI = 'urn:lsid:labkey.com:PropertyValidator:textlength'
-WHERE TypeURI = 'urn:lsid:labkey.com:PropertyValidator:length'
-  AND PropertyId IN (
-    SELECT PropertyId
-    FROM exp.PropertyDescriptor
-    WHERE PropertyURI LIKE '%:package-snd%Package%'
-  );
-GO
-
-EXEC core.fn_dropifexists 'fGetSuperPkg', 'snd', 'FUNCTION';
-GO
-
 CREATE FUNCTION snd.fGetSuperPkg ( @TopLevelPkgId INT )
 RETURNS TABLE
 AS
@@ -428,9 +414,6 @@ RETURN
     FROM    CTE1 c
 
 );
-GO
-
-EXEC core.fn_dropifexists 'fGetProjectItems','snd', 'FUNCTION';
 GO
 
 CREATE FUNCTION [snd].[fGetProjectItems]
@@ -510,9 +493,6 @@ WITH    CTE1 ( ProjectId, RevisionNum, ProjectItemId, ParentObjectId, ParentSupe
 );
 GO
 
-EXEC core.fn_dropifexists 'fGetAllSuperPkgs', 'snd', 'function';
-GO
-
 CREATE FUNCTION snd.fGetAllSuperPkgs
 ()
 RETURNS @expandedSuperPackages TABLE
@@ -589,12 +569,6 @@ DEALLOCATE @loopCursor;
 
        RETURN;
 END;
-GO
-
-IF (OBJECT_ID(N'snd.ti_after_Events') IS NOT NULL)
-   BEGIN
-       DROP TRIGGER snd.ti_after_Events;
-   END;
 GO
 
 CREATE TRIGGER snd.ti_after_Events ON snd.Events FOR INSERT AS
