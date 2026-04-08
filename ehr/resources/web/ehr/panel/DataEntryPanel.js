@@ -102,13 +102,16 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             }
         }
 
-        var btns = this.getToolbarItems();
-        if (btns){
-            Ext4.Array.forEach(btns, function(toolbar){
-                toolbar.items.each(function(item){
-                    processItem(item);
+        var ehrContext = LABKEY.getModuleContext('ehr');
+        if (ehrContext && !ehrContext.isSubmitEnabledOnValidation) {
+            var btns = this.getToolbarItems();
+            if (btns) {
+                Ext4.Array.forEach(btns, function (toolbar) {
+                    toolbar.items.each(function (item) {
+                        processItem(item);
+                    }, this);
                 }, this);
-            }, this);
+            }
         }
     },
 

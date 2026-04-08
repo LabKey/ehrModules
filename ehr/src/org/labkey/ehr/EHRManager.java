@@ -134,6 +134,8 @@ public class EHRManager
 
     public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
 
+    public static final String EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION = "ehrSubmitEnabledDuringValidation";
+
     // Column name constants to reduce hardcoding
     private static final class ColumnNames
     {
