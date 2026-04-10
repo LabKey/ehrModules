@@ -94,6 +94,11 @@ EHR.Server.Triggers.init = function (event, errors) {
 };
 exports.init = EHR.Server.Triggers.init;
 
+// Opt out of manage columns feature for all EHR triggers
+EHR.Server.Triggers.manageColumns = function() {
+    return false;
+}
+exports.manageColumns = EHR.Server.Triggers.manageColumns;
 
 /**
  * This should override the default beforeInsert() function on scripts inheriting this code.  Will be called once for each row being inserted.  It performs the following:
