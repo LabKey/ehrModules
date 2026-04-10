@@ -95,10 +95,10 @@ EHR.Server.Triggers.init = function (event, errors) {
 exports.init = EHR.Server.Triggers.init;
 
 // Opt out of manage columns feature for all EHR triggers
-EHR.Server.Triggers.manageColumns = function() {
+EHR.Server.Triggers.managedColumns = function() {
     return false;
 }
-exports.manageColumns = EHR.Server.Triggers.manageColumns;
+exports.managedColumns = EHR.Server.Triggers.managedColumns;
 
 /**
  * This should override the default beforeInsert() function on scripts inheriting this code.  Will be called once for each row being inserted.  It performs the following:
@@ -1021,7 +1021,7 @@ LABKEY.ExtAdapter.each(extraScripts, function(script){
  * @param scope
  */
 EHR.Server.initScript = function(scope){
-    var props = ['EHR', 'LABKEY', 'Ext', 'console', 'init', 'beforeInsert', 'afterInsert', 'beforeUpdate', 'afterUpdate', 'beforeDelete', 'afterDelete', 'complete'];
+    var props = ['EHR', 'LABKEY', 'Ext', 'console', 'init', 'managedColumns', 'beforeInsert', 'afterInsert', 'beforeUpdate', 'afterUpdate', 'beforeDelete', 'afterDelete', 'complete'];
     for (var i=0;i<props.length;i++)
     {
         var prop = props[i];
