@@ -225,6 +225,8 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     validateAll: function(){
+        if(this.fireEvent('beforevalidation', this)===false)
+            return;
         this.serverStores.each(function(serverStore){
             serverStore.validateRecords(serverStore.getRange(), true);
         }, this);
