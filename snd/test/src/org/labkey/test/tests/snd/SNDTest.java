@@ -61,7 +61,6 @@ import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Maps;
 import org.labkey.test.util.OptionalFeatureHelper;
 import org.labkey.test.util.PortalHelper;
-import org.labkey.test.util.SqlserverOnlyTest;
 import org.labkey.test.util.StudyHelper;
 import org.labkey.test.util.core.webdav.WebDavUploadHelper;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -89,7 +88,7 @@ import static org.labkey.test.WebTestHelper.buildURL;
 
 @Category ({Git.class})
 @BaseWebDriverTest.ClassTimeout(minutes = 15)
-public class SNDTest extends BaseWebDriverTest implements SqlserverOnlyTest
+public class SNDTest extends BaseWebDriverTest
 {
     private static final String PROJECTNAME = "SNDTest Project";
     private static final String TEST1SUBFOLDER = "Test1";

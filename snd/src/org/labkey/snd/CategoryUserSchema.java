@@ -38,7 +38,9 @@ public class CategoryUserSchema extends UserSchema
     @Override
     public Set<String> getTableNames()
     {
-        var sql = new SQLFragment("SELECT Description FROM snd.PkgCategories WHERE Active=1 AND Container=").appendValue(getContainer());
+        var sql = new SQLFragment("SELECT Description FROM snd.PkgCategories WHERE Active = ? AND Container = ?")
+            .add(true)
+            .add(getContainer());
         List<String> list = new SqlSelector(getDbSchema(), sql).getArrayList(String.class);
 
         // check for duplicates
@@ -55,8 +57,10 @@ public class CategoryUserSchema extends UserSchema
     @Override
     public @Nullable TableInfo createTable(String name, ContainerFilter cf)
     {
-        var sql = new SQLFragment("SELECT CategoryId, Description FROM snd.PkgCategories WHERE Active=1 AND Container=").appendValue(getContainer())
-                .append(" AND lower(description) = lower(").appendValue(name).append(")");
+        var sql = new SQLFragment("SELECT CategoryId, Description FROM snd.PkgCategories WHERE Active = ? AND Container = ?")
+            .add(true)
+            .add(getContainer())
+            .append(" AND lower(description) = lower(").appendValue(name).append(")");
         Map<String,Object>[] rs = new SqlSelector(getDbSchema(), sql).getMapArray();
         if (rs.length != 1)
             return null;
