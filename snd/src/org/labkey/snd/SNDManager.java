@@ -1554,7 +1554,8 @@ public class SNDManager
      */
 
     //TODO: Use QUS to update columns - pass Project.objectId
-    private void updateProjectField(Container c, User u, int id, int rev, String field, String value)
+    // Note: EndDate is the only field that's updated with this
+    private void updateProjectField(Container c, User u, int id, int rev, String field, Object value)
     {
         UserSchema schema = getSndUserSchema(c, u);
 
@@ -1578,7 +1579,7 @@ public class SNDManager
             List<Map<String, Object>> updatedProjectItems = new ArrayList<>();
 
             updateProjectField(c, u, project.getProjectId(), project.getRevisionNum(), "EndDate",
-                    project.getEndDateRevised() == null ? null : DateUtil.toISO(project.getEndDateRevised()));
+                    project.getEndDateRevised() == null ? null : project.getEndDateRevised());
 
             if (project.isCopyRevisedPkgs())
             {
