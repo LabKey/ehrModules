@@ -1819,9 +1819,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
-                    " ROUND(CONVERT(timestampdiff('SQL_TSI_DAY', d.birth, d.lastDayAtCenter), DOUBLE) / 365.25, 2)\n" +
+                    " ROUND(CONVERT(age_in_days(d.birth, d.lastDayAtCenter), DOUBLE) / 365.25, 2)\n" +
                     "ELSE\n" +
-                    "  ROUND(CONVERT(timestampdiff('SQL_TSI_DAY', d.birth, CAST(c." + dateColName + " as DATE)), DOUBLE) / 365.25, 2)\n" +
+                    "  ROUND(CONVERT(age_in_days(d.birth, c." + dateColName + "), DOUBLE) / 365.25, 2)\n" +
                     "END AS float) as AgeAtTimeYears,\n" +
                     "\n" +
                     "CAST(\n" +
@@ -1840,9 +1840,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "WHEN d.birth is null or c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
-                    "  CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY',d.birth, d.lastDayAtCenter), INTEGER)\n" +
+                    "  age_in_days(d.birth, d.lastDayAtCenter)\n" +
                     "ELSE\n" +
-                    "  CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY',d.birth, CAST(c." + dateColName + " AS DATE)), INTEGER)\n" +
+                    "  age_in_days(d.birth, c." + dateColName + ")\n" +
                     "END AS float) as AgeAtTimeDays,\n" +
                     "\n" +
                     //
