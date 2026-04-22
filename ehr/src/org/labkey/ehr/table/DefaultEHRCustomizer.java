@@ -1796,75 +1796,47 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             @Override
             public TableInfo getLookupTableInfo()
             {
-                String name = queryName + "_ageAtTime";
+                String lookupQueryName = queryName + "_ageAtTime";
+                String dateSql = "c." + FieldKey.fromString(dateColName).toSQLString();
+                String pkSql = "c." + pkCol.getFieldKey().toSQLString();
                 UserSchema targetSchema = ds.getUserSchema().getDefaultSchema().getUserSchema(targetSchemaName);
-                QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, name);
+                QueryDefinition qd = QueryService.get().createQueryDef(u, targetSchemaContainer, targetSchema, lookupQueryName);
+                // Compute the "as-of" date once: clamp to lastDayAtCenter when the record is after the animal left the center.
+                // All downstream age expressions reference x.effDate, so the clamp lives in one place.
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
-                qd.setSql("SELECT\n" +
-                    "c." + pkCol.getFieldKey().toSQLString() + ",\n" +
-                    "\n" +
-                    "CAST(\n" +
-                    "CASE\n" +
-                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
-                    "  THEN null\n" +
-                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
-                    " ROUND(CONVERT(age_in_months(d.birth, d.lastDayAtCenter), DOUBLE) / 12, 1)\n" +
-                    "ELSE\n" +
-                    "  ROUND(CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " as DATE)), DOUBLE) / 12, 1)\n" +
-                    "END AS float) as AgeAtTime,\n" +
-                    "\n" +
-
-                    "CAST(\n" +
-                    "CASE\n" +
-                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
-                    "  THEN null\n" +
-                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
-                    " ROUND(CONVERT(age_in_days(d.birth, d.lastDayAtCenter), DOUBLE) / 365.25, 2)\n" +
-                    "ELSE\n" +
-                    "  ROUND(CONVERT(age_in_days(d.birth, c." + dateColName + "), DOUBLE) / 365.25, 2)\n" +
-                    "END AS float) as AgeAtTimeYears,\n" +
-                    "\n" +
-                    "CAST(\n" +
-                    "CASE\n" +
-                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
-                    "  THEN null\n" +
-                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
-                    " floor(age(d.birth, d.lastDayAtCenter))\n" +
-                    "ELSE\n" +
-                    "  floor(age(d.birth, CAST(c." + dateColName + " as DATE)))\n" +
-                    "END AS float) as AgeAtTimeYearsRounded,\n" +
-                    "\n" +
-                    //Added 'Age at time Days' by kollil on 02/15/2019
-                    "CAST(\n" +
-                    "CASE\n" +
-                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
-                    "  THEN null\n" +
-                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
-                    "  age_in_days(d.birth, d.lastDayAtCenter)\n" +
-                    "ELSE\n" +
-                    "  age_in_days(d.birth, c." + dateColName + ")\n" +
-                    "END AS float) as AgeAtTimeDays,\n" +
-                    "\n" +
-                    //
-                    "CAST(\n" +
-                    "CASE\n" +
-                    "WHEN d.birth is null or c." + dateColName + " is null\n" +
-                    "  THEN null\n" +
-                    "WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < c." + dateColName + ") THEN\n" +
-                    "  CONVERT(age_in_months(d.birth, d.lastDayAtCenter), INTEGER)\n" +
-                    "ELSE\n" +
-                    "  CONVERT(age_in_months(d.birth, CAST(c." + dateColName + " AS DATE)), INTEGER)\n" +
-                    "END AS float) as AgeAtTimeMonths,\n" +
-                        //NOTE: written as subselect so we ensure a single row returned in case data in ehr_lookups.ageclass has rows that allow dupes
-                        "(SELECT ac.ageclass FROM ehr_lookups.ageclass ac\n" +
-                        "  WHERE " +
-                        "  (CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE) / 12) >= ac.\"min\" AND\n" +
-                        "  ((CONVERT(age_in_months(d.birth, COALESCE(d.lastDayAtCenter, now())), DOUBLE) / 12) < ac.\"max\" OR ac.\"max\" is null) AND\n" +
-                        "  d.species = ac.species AND\n" +
-                        "  (d.gender = ac.gender OR ac.gender IS NULL)\n" +
-                        ") AS AgeClassAtTime \n" +
-                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c " +
-                    "LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getFieldKey().toSQLString() + ")"
+                String pkAlias = pkCol.getFieldKey().toSQLString();
+                qd.setSql(
+                    "SELECT\n" +
+                    "  x." + pkAlias + ",\n" +
+                    "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
+                    "       ELSE ROUND(CONVERT(age_in_months(x.birth, x.effDate), DOUBLE) / 12, 1) END AS float) AS AgeAtTime,\n" +
+                    "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
+                    "       ELSE ROUND(CONVERT(age_in_days(x.birth, x.effDate), DOUBLE) / 365.25, 2) END AS float) AS AgeAtTimeYears,\n" +
+                    "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
+                    "       ELSE floor(age(x.birth, x.effDate)) END AS INTEGER) AS AgeAtTimeYearsRounded,\n" +
+                    "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
+                    "       ELSE age_in_days(x.birth, x.effDate) END AS INTEGER) AS AgeAtTimeDays,\n" +
+                    "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
+                    "       ELSE CONVERT(age_in_months(x.birth, x.effDate), INTEGER) END AS INTEGER) AS AgeAtTimeMonths,\n" +
+                    //NOTE: written as subselect so we ensure a single row returned in case data in ehr_lookups.ageclass has rows that allow dupes
+                    "  (SELECT ac.ageclass FROM ehr_lookups.ageclass ac\n" +
+                    "    WHERE (CONVERT(age_in_months(x.birth, x.effDate), DOUBLE) / 12) >= ac.\"min\"\n" +
+                    "      AND ((CONVERT(age_in_months(x.birth, x.effDate), DOUBLE) / 12) < ac.\"max\" OR ac.\"max\" IS NULL)\n" +
+                    "      AND x.species = ac.species\n" +
+                    "      AND (x.gender = ac.gender OR ac.gender IS NULL)\n" +
+                    "  ) AS AgeClassAtTime\n" +
+                    "FROM (\n" +
+                    "  SELECT\n" +
+                    "    " + pkSql + " AS " + pkAlias + ",\n" +
+                    "    d.birth AS birth,\n" +
+                    "    d.species AS species,\n" +
+                    "    d.gender AS gender,\n" +
+                    "    CASE WHEN (d.lastDayAtCenter IS NOT NULL AND d.lastDayAtCenter < " + dateSql + ")\n" +
+                    "         THEN d.lastDayAtCenter\n" +
+                    "         ELSE CAST(" + dateSql + " AS DATE) END AS effDate\n" +
+                    "  FROM \"" + schemaName + "\".\"" + queryName + "\" c\n" +
+                    "  LEFT JOIN \"" + ehrPath + "\".study.demographics d ON (d.Id = c." + idCol.getFieldKey().toSQLString() + ")\n" +
+                    ") x"
                 );
                 qd.setIsTemporary(true);
 
@@ -1877,12 +1849,17 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     {
                         _log.warn(e.getMessage(), e);
                     }
+                    return null;
                 }
 
                 if (ti != null)
                 {
-                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setHidden(true);
-                    ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setKeyField(true);
+                    ColumnInfo pk = ti.getColumn(pkCol.getName());
+                    if (pk instanceof BaseColumnInfo basePk)
+                    {
+                        basePk.setHidden(true);
+                        basePk.setKeyField(true);
+                    }
                 }
                 else
                 {
@@ -1891,7 +1868,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     if (demographics != null)
                     {
                         _log.warn("Demographics table columns: ");
-                        _log.warn(targetSchema.getTable("demographics").getColumnNameSet());
+                        _log.warn(demographics.getColumnNameSet());
                     }
                 }
 
