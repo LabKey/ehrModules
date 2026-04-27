@@ -336,16 +336,23 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
+                itemId: 'validationIndicator',
+                hidden: true,
+                border: false,
+                plain: true,
+                style: 'background-color: transparent; padding: 12px 0 0 0;',
+                items: [{
+                    xtype: 'container',
+                    html: '<span><i class="fa fa-spinner fa-pulse"></i> Validating...</span>',
+                    style: 'font: bold 13px tahoma,arial,verdana,sans-serif; line-height: 16px; color: #C33;'
+                }]
+            },{
+                xtype: 'toolbar',
+                dock: 'bottom',
                 ui: 'footer',
                 style: 'background-color: transparent;',
                 padding: '20px 0 0 0',
-                items: this.getButtons().concat([{
-                    xtype: 'container',
-                    itemId: 'validationIndicator',
-                    hidden: true,
-                    html: '<span><i class="fa fa-spinner fa-pulse"></i> Validating...</span>',
-                    style: 'font: bold 13px tahoma,arial,verdana,sans-serif; line-height: 16px; color: #C33; margin-left: 12px;'
-                }])
+                items: this.getButtons()
             }]
         });
 
