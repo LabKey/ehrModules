@@ -1813,11 +1813,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                     "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
                     "       ELSE ROUND(CONVERT(age_in_days(x.birth, x.effDate), DOUBLE) / 365.25, 2) END AS float) AS AgeAtTimeYears,\n" +
                     "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
-                    "       ELSE floor(age(x.birth, x.effDate)) END AS INTEGER) AS AgeAtTimeYearsRounded,\n" +
+                    "       ELSE floor(age(x.birth, x.effDate)) END AS float) AS AgeAtTimeYearsRounded,\n" +
                     "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
-                    "       ELSE age_in_days(x.birth, x.effDate) END AS INTEGER) AS AgeAtTimeDays,\n" +
+                    "       ELSE age_in_days(x.birth, x.effDate) END AS float) AS AgeAtTimeDays,\n" +
                     "  CAST(CASE WHEN x.birth IS NULL OR x.effDate IS NULL THEN NULL\n" +
-                    "       ELSE CONVERT(age_in_months(x.birth, x.effDate), INTEGER) END AS INTEGER) AS AgeAtTimeMonths,\n" +
+                    "       ELSE CONVERT(age_in_months(x.birth, x.effDate), INTEGER) END AS float) AS AgeAtTimeMonths,\n" +
                     //NOTE: written as subselect so we ensure a single row returned in case data in ehr_lookups.ageclass has rows that allow dupes
                     "  (SELECT ac.ageclass FROM ehr_lookups.ageclass ac\n" +
                     "    WHERE (CONVERT(age_in_months(x.birth, x.effDate), DOUBLE) / 12) >= ac.\"min\"\n" +
