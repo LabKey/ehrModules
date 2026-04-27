@@ -116,7 +116,8 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     onValidationStart: function(){
-        if (!this.hasStoreCollectionLoaded){
+        // Suppress the indicator during initial form load/background reconciliation.
+        if (!this.hasStoreCollectionLoaded || !this.storeCollection || !this.storeCollection.hasLoaded){
             return;
         }
 
@@ -338,7 +339,13 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 ui: 'footer',
                 style: 'background-color: transparent;',
                 padding: '20px 0 0 0',
-                items: this.getButtons()
+                items: this.getButtons().concat([{
+                    xtype: 'container',
+                    itemId: 'validationIndicator',
+                    hidden: true,
+                    html: '<span><i class="fa fa-spinner fa-pulse"></i> Validating...</span>',
+                    style: 'font: bold 13px tahoma,arial,verdana,sans-serif; line-height: 16px; color: #C33; margin-left: 12px;'
+                }])
             }]
         });
 
@@ -641,14 +648,6 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 }
             }
         }
-
-        buttons.push({
-            xtype: 'container',
-            itemId: 'validationIndicator',
-            hidden: !this.validationInProgress,
-            html: '<span><i class="fa fa-spinner fa-pulse"></i> Validating...</span>',
-            style: 'padding-left: 8px; line-height: 24px;'
-        });
 
         return buttons;
     },
