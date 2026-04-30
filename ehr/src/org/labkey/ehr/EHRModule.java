@@ -58,6 +58,8 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
+import org.labkey.api.settings.AppProps;
+import org.labkey.api.settings.OptionalFeatureService;
 import org.labkey.api.util.ContextListener;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.util.StartupListener;
@@ -289,6 +291,11 @@ public class EHRModule extends ExtendedSimpleModule
 
         // Register the Security Escalation Audit Log
         AuditLogService.get().registerAuditType(new EHRSecurityEscalatorAuditProvider());
+
+        OptionalFeatureService.get().addExperimentalFeatureFlag(EHRManager.EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION,
+                "Enable 'Submit' buttons during validation",
+                "User can submit form while validation is in progress",
+                false);
     }
 
     @Override
@@ -326,6 +333,9 @@ public class EHRModule extends ExtendedSimpleModule
         Container c = context.getContainer();
         Map<String, String> map = getDefaultPageContextJson(c);
         Map<String, Object> ret = new HashMap<>(map);
+
+        // Expose the experimental 'submit enabled on validation' flag to client-side JavaScript
+        ret.put("isSubmitEnabledOnValidation", AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION));
 
         if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
