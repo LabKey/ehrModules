@@ -12,6 +12,7 @@ Ext4.define('EHR.data.StoreCollection', {
     serverStores: null,
     hasLoaded: false, //will be set true after initial load
     clientDataChangeBuffer: 150,
+    validationRequestsInFlight: 0,
     ignoredClientEvents: {},
 
     constructor: function(){
@@ -20,7 +21,7 @@ Ext4.define('EHR.data.StoreCollection', {
         this.serverStores = Ext4.create('Ext.util.MixedCollection', false, this.getKey);
 
         this.callParent(arguments);
-        this.addEvents('commitcomplete', 'commitexception', 'validation', 'initialload', 'load', 'clientdatachanged', 'serverdatachanged');
+        this.addEvents('commitcomplete', 'commitexception', 'beforevalidation', 'validationstart', 'validation', 'validationcomplete', 'initialload', 'load', 'clientdatachanged', 'serverdatachanged');
 
         this.on('clientdatachanged', this.onClientDataChanged, this, {buffer: this.clientDataChangeBuffer});
     },
@@ -218,21 +219,45 @@ Ext4.define('EHR.data.StoreCollection', {
         }
         else
         {
-            //this really isnt the right event to fire, but it will force a recalulation of buttons on the panel
+            //this really isn't the right event to fire, but it will force a recalculation of buttons on the panel
             this.fireEvent('validation', this);
         }
     },
 
     validateAll: function(){
+        if(this.fireEvent('beforevalidation', this)===false)
+            return;
         this.serverStores.each(function(serverStore){
             serverStore.validateRecords(serverStore.getRange(), true);
         }, this);
     },
 
     validateRecords: function(recordMap){
+        if(this.fireEvent('beforevalidation', this)===false)
+            return;
         for (var serverStoreId in recordMap){
             var serverStore = this.serverStores.get(serverStoreId);
             serverStore.validateRecords(Ext4.Object.getValues(recordMap[serverStoreId]), true);
+        }
+    },
+
+    onValidationRequestStart: function(){
+        this.validationRequestsInFlight++;
+
+        if (this.validationRequestsInFlight === 1){
+            this.fireEvent('validationstart', this);
+        }
+    },
+
+    onValidationRequestComplete: function(){
+        if (!this.validationRequestsInFlight){
+            return;
+        }
+
+        this.validationRequestsInFlight--;
+
+        if (this.validationRequestsInFlight === 0){
+            this.fireEvent('validationcomplete', this);
         }
     },
 
@@ -472,11 +497,31 @@ Ext4.define('EHR.data.StoreCollection', {
         if (EHR.debug)
             console.log(commands);
 
+        var success = this.getOnCommitSuccess(recordsArr, validateOnly, retainErrors);
+        var failure = this.getOnCommitFailure(recordsArr, validateOnly);
         var cfg = {
             url : LABKEY.ActionURL.buildURL('query', 'saveRows', this.containerPath),
             method : 'POST',
-            success: this.getOnCommitSuccess(recordsArr, validateOnly, retainErrors),
-            failure: this.getOnCommitFailure(recordsArr, validateOnly),
+            success: function(response, options){
+                try {
+                    success.call(this, response, options);
+                }
+                finally {
+                    if (validateOnly){
+                        this.onValidationRequestComplete();
+                    }
+                }
+            },
+            failure: function(response, options){
+                try {
+                    failure.call(this, response, options);
+                }
+                finally {
+                    if (validateOnly){
+                        this.onValidationRequestComplete();
+                    }
+                }
+            },
             scope: this,
             timeout: 5000000,  //a little extreme?
             transacted: true,
@@ -498,9 +543,20 @@ Ext4.define('EHR.data.StoreCollection', {
         if (validateOnly){
             cfg.jsonData.validateOnly = true;
             cfg.jsonData.extraContext.isValidateOnly = true;
+            this.onValidationRequestStart();
         }
 
-        var request = LABKEY.Ajax.request(cfg);
+        var request;
+        try {
+            request = LABKEY.Ajax.request(cfg);
+        }
+        catch (e){
+            if (validateOnly){
+                this.onValidationRequestComplete();
+            }
+
+            throw e;
+        }
 
         Ext4.Array.forEach(recordsArr, function(command){
             Ext4.Array.forEach(command, function(rec){

@@ -135,7 +135,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 26.002;
+        return 26.003;
     }
 
     @Override
@@ -296,6 +296,11 @@ public class EHRModule extends ExtendedSimpleModule
                 "Use React EHR participant history",
                 "Links on animal Ids will go to the new React participant history.",
                 false);
+
+        OptionalFeatureService.get().addExperimentalFeatureFlag(EHRManager.EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION,
+                "Enable 'Submit' buttons during validation",
+                "User can submit form while validation is in progress",
+                false);
     }
 
     @Override
@@ -336,6 +341,9 @@ public class EHRModule extends ExtendedSimpleModule
 
         // Expose the experimental React participant reports flag to client-side JavaScript
         ret.put("isReactAnimalHistoryEnabled", AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS));
+
+        // Expose the experimental 'submit enabled on validation' flag to client-side JavaScript
+        ret.put("isSubmitEnabledOnValidation", AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION));
 
         if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
