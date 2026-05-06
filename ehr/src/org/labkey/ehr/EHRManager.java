@@ -136,6 +136,8 @@ public class EHRManager
 
     public static final String EXPERIMENTAL_REACT_PARTICIPANT_REPORTS = "ehrReactParticipantReports";
 
+    public static final String EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION = "ehrSubmitEnabledDuringValidation";
+
     // Column name constants to reduce hardcoding
     private static final class ColumnNames
     {

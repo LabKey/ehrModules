@@ -12,6 +12,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     storeCollection: null,
     hideErrorPanel: false,
     useSectionBorder: true,
+    validationInProgress: false,
 
     layout: 'anchor',
     border: false,
@@ -33,7 +34,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         this.storeCollection.on('initialload', this.onStoreCollectionInitialLoad, this);
         this.storeCollection.on('commitcomplete', this.onStoreCollectionCommitComplete, this);
         this.storeCollection.on('validation', this.onStoreCollectionValidation, this);
+        this.storeCollection.on('validationstart', this.onValidationStart, this);
+        this.storeCollection.on('validationcomplete', this.onValidationComplete, this);
         this.storeCollection.on('beforecommit', this.onStoreCollectionBeforeCommit, this);
+        this.storeCollection.on('beforevalidation', this.onBeforeValidation, this);
         this.storeCollection.on('commitexception', this.onStoreCollectionCommitException, this);
         //this.storeCollection.on('serverdatachanged', this.onStoreCollectionServerDataChanged, this);
 
@@ -83,12 +87,66 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
     },
 
+    onBeforeValidation: function(sc){
+        function processItem(item) {
+            if(item.disableOn) {
+                item.setDisabled(true);
+                if (item.setTooltip)
+                    item.setTooltip('Disabled waiting on validation. Select "More Actions" -> "Re-Validate" if this is not clearing.');
+            }
+
+            if (item.menu) {
+                item.menu.items.each(function (menuItem) {
+                    processItem(menuItem);
+                }, this);
+            }
+        }
+
+        var ehrContext = LABKEY.getModuleContext('ehr');
+        if (ehrContext && !ehrContext.isSubmitEnabledOnValidation) {
+            var btns = this.getToolbarItems();
+            if (btns) {
+                Ext4.Array.forEach(btns, function (toolbar) {
+                    toolbar.items.each(function (item) {
+                        processItem(item);
+                    }, this);
+                }, this);
+            }
+        }
+    },
+
+    onValidationStart: function(){
+        // Suppress the indicator during initial form load/background reconciliation.
+        if (!this.hasStoreCollectionLoaded || !this.storeCollection || !this.storeCollection.hasLoaded){
+            return;
+        }
+
+        this.validationInProgress = true;
+        this.setValidationIndicatorVisible(true);
+    },
+
+    onValidationComplete: function(){
+        this.validationInProgress = false;
+        this.setValidationIndicatorVisible(false);
+
+        var errorPanel = this.getErrorPanel();
+        if (errorPanel){
+            errorPanel.updateErrorMessages();
+        }
+
+        this.onStoreCollectionValidation(this.storeCollection);
+    },
+
     onStoreCollectionValidation: function(sc){
         if (!this.hasStoreCollectionLoaded){
             return;
         }
 
         this.updateDirtyStateMessage();
+
+        if (this.storeCollection && this.storeCollection.validationRequestsInFlight > 0){
+            return;
+        }
 
         var maxSeverity = sc.getMaxErrorSeverity();
 
@@ -276,6 +334,19 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             },
             items: this.getItemConfig(),
             dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'bottom',
+                itemId: 'validationIndicator',
+                hidden: true,
+                border: false,
+                plain: true,
+                style: 'background-color: transparent; padding: 12px 0 0 0;',
+                items: [{
+                    xtype: 'container',
+                    html: '<span><i class="fa fa-spinner fa-pulse"></i> Validating...</span>',
+                    style: 'font: bold 13px tahoma,arial,verdana,sans-serif; line-height: 16px; color: #C33;'
+                }]
+            },{
                 xtype: 'toolbar',
                 dock: 'bottom',
                 ui: 'footer',
@@ -507,6 +578,29 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             this.dirtyStateArea = this.down('#dirtyStateIcon');
 
         return this.dirtyStateArea;
+    },
+
+    getErrorPanel: function(){
+        if (!this.errorPanel || this.errorPanel.isDestroyed){
+            this.errorPanel = this.down('#errorPanel');
+        }
+
+        return this.errorPanel;
+    },
+
+    getValidationIndicator: function(){
+        if (!this.validationIndicator || this.validationIndicator.isDestroyed){
+            this.validationIndicator = this.down('#validationIndicator');
+        }
+
+        return this.validationIndicator;
+    },
+
+    setValidationIndicatorVisible: function(visible){
+        var indicator = this.getValidationIndicator();
+        if (indicator){
+            indicator.setVisible(visible);
+        }
     },
 
     getButtons: function(){
