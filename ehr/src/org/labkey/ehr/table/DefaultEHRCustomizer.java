@@ -115,7 +115,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
             Container c = us.getContainer();
             if (!c.getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class)))
             {
-                _log.error("Attempting to use DefaultEHRCustomizer on table (" + us.getName() + "." + table.getName() + ") even though the module is not enabled: " + c.getPath());
+                _log.error("Attempting to use DefaultEHRCustomizer on table ({}.{}) even though the module is not enabled: {}", us.getName(), table.getName(), c.getPath());
                 return;
             }
         }
@@ -755,13 +755,13 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (ds == null)
         {
             // NOTE: this seems to happen during study import on TeamCity.  It does not seem to happen during normal operation
-            _log.info("A dataset was requested that does not exist: " + label + " in container: " + ehrContainer.getPath());
+            _log.info("A dataset was requested that does not exist: {} in container: {}", label, ehrContainer.getPath());
             StringBuilder sb = new StringBuilder();
             for (Dataset d : s.getDatasets())
             {
                 sb.append(d.getName() + ", ");
             }
-            _log.info("datasets present: " + sb);
+            _log.info("datasets present: {}", sb);
 
             return null;
         }
@@ -1138,7 +1138,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
         if (ds.getColumn("age") != null)
         {
-            _log.warn("Table already has an age column.  Customize might have been called twice?  " + ds.getName());
+            _log.warn("Table already has an age column.  Customize might have been called twice?  {}", ds.getName());
             return;
         }
 
@@ -1591,10 +1591,10 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (!errors.isEmpty() || ti == null)
                 {
-                    _log.warn("Error creating housing at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
+                    _log.warn("Error creating housing at time lookup table for: {}.{} in container: {}", schemaName, queryName, targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
-                        _log.error("Lookup table QueryException: " + e.getMessage(), e);
+                        _log.error("Lookup table QueryException: {}", e.getMessage(), e);
                     }
                 }
                 if (ti == null)
@@ -1606,7 +1606,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 if (ti instanceof AbstractTableInfo)
                     roomAtTime.setFk(new QueryForeignKey(getUserSchema((AbstractTableInfo) ti, "ehr_lookups"), null, "rooms", "room", "room"));
                 else
-                    _log.error("Table is not AbstractTableInfo: " + ti.getPublicName());
+                    _log.error("Table is not AbstractTableInfo: {}", ti.getPublicName());
 
                 ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setHidden(true);
                 ((BaseColumnInfo)ti.getColumn(pkCol.getName())).setKeyField(true);
@@ -1640,7 +1640,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
     private ColumnInfo getPkCol(TableInfo ti)
     {
         List<ColumnInfo> pks = ti.getPkColumns();
-        return (pks.size() != 1) ? null : pks.get(0);
+        return (pks.size() != 1) ? null : pks.getFirst();
     }
 
     private boolean hasAnimalLookup(AbstractTableInfo ti)
@@ -1713,7 +1713,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (!errors.isEmpty())
                 {
-                    _log.warn("Error creating survivorship lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
+                    _log.warn("Error creating survivorship lookup table for: {}.{} in container: {}", schemaName, queryName, targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
                         _log.warn(e.getMessage(), e);
@@ -1722,7 +1722,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
 
                 if (ti == null)
                 {
-                    _log.warn("Error creating survivorship lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath() + ", see server log for more details.  Table was null");
+                    _log.warn("Error creating survivorship lookup table for: {}.{} in container: {}, see server log for more details.  Table was null", schemaName, queryName, targetSchema.getContainer().getPath());
                 }
                 else
                 {
@@ -1844,7 +1844,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (!errors.isEmpty())
                 {
-                    _log.warn("Error creating age at time lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
+                    _log.warn("Error creating age at time lookup table for: {}.{} in container: {}", schemaName, queryName, targetSchema.getContainer().getPath());
                     for (QueryException e : errors)
                     {
                         _log.warn(e.getMessage(), e);

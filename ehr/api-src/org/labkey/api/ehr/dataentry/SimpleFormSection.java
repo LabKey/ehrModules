@@ -102,7 +102,7 @@ public class SimpleFormSection extends AbstractFormSection
         List<FieldKey> keys = EHRService.get().getDefaultFieldKeys(ti);
         if (_showLocation)
         {
-            keys.add(0, FieldKey.fromString("Id/curLocation/location"));
+            keys.addFirst(FieldKey.fromString("Id/curLocation/location"));
         }
 
         return keys;
@@ -121,7 +121,7 @@ public class SimpleFormSection extends AbstractFormSection
             {
                 if (!cols.containsKey(key))
                 {
-                    _log.error("Unable to find field: " +  key.toString() + " on table " + ti.getPublicSchemaName() + "." + ti.getPublicName());
+                    _log.error("Unable to find field: {} on table {}.{}", key.toString(), ti.getPublicSchemaName(), ti.getPublicName());
                     continue;
                 }
 

@@ -48,7 +48,7 @@ public class BloodDrawFormSection extends SimpleGridPanel
         defaultButtons.add("REPEAT_SELECTED");
 
         if (!_isRequest)
-            defaultButtons.add(0, "ADDBLOODDRAWS");
+            defaultButtons.addFirst("ADDBLOODDRAWS");
 
         defaultButtons.add("BULK_ADD_BLOOD");
 

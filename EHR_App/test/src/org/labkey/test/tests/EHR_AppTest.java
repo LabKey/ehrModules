@@ -23,6 +23,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.labkey.test.components.html.Input.Input;
 
@@ -113,12 +114,6 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
     {
         initProject("EHR App");
         goToEHRFolder();
-    }
-
-    @Override
-    public BrowserType bestBrowser()
-    {
-        return BrowserType.CHROME;
     }
 
     @Override
@@ -591,8 +586,7 @@ public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyT
         List<String> statusValues = table.getColumnDataAsText("calculated_status");
         for (String status : statusValues)
         {
-            assertFalse("Demographics should not contain status '" + excludedStatus + "' but found it",
-                    status.equals(excludedStatus));
+            assertNotEquals("Demographics should not contain status '" + excludedStatus + "' but found it", status, excludedStatus);
         }
     }
 }

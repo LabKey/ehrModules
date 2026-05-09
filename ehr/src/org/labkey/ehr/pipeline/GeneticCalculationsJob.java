@@ -111,7 +111,7 @@ public class GeneticCalculationsJob implements Job
 
         try
         {
-            _log.info("Scheduling GeneticCalculationsJob to run at " + hour + ":00");
+            _log.info("Scheduling GeneticCalculationsJob to run at {}:00", hour);
             StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
             _jobKey = trigger.getKey();
         }
@@ -288,11 +288,6 @@ public class GeneticCalculationsJob implements Job
 
         SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("Select max(t.modified) FROM ").append(ti.getFromSQL("t")));
         Date lastModified = ss.getObject(Date.class);
-        if (lastModified == null || lastModified.getTime() > lastRun)
-        {
-            return true;
-        }
-
-        return false;
+        return lastModified == null || lastModified.getTime() > lastRun;
     }
 }

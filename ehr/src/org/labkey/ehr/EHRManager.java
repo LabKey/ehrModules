@@ -251,7 +251,7 @@ public class EHRManager
             if (emailAddress == null)
             {
                 if (logOnError)
-                    _log.warn("Attempted to access EHR email module property from container: " + (c == null ? null : c.getPath()) + ", but it was null.  Some code may not work as expected.", new Exception());
+                    _log.warn("Attempted to access EHR email module property from container: {}, but it was null.  Some code may not work as expected.", c == null ? null : c.getPath(), new Exception());
                 return null;
             }
 
@@ -549,7 +549,7 @@ public class EHRManager
                     {
                         if (dp == null)
                         {
-                            _log.error("domain has a null domain property: " + domain.getName());
+                            _log.error("domain has a null domain property: {}", domain.getName());
                             continue;
                         }
 
@@ -947,7 +947,7 @@ public class EHRManager
                             }
                             else
                             {
-                                _log.warn("unable to find index: " + tableName + "." + idxName);
+                                _log.warn("unable to find index: {}.{}", tableName, idxName);
                                 String indexName = getIndexName(realTable.getSqlDialect(), tableName, toDisable.columnNames);
                                 if (doesIndexExist(realTable.getSchema(), tableName, indexName))
                                 {
@@ -959,7 +959,7 @@ public class EHRManager
                                 }
                                 else
                                 {
-                                    _log.warn("unable to find index: " + tableName + "." + indexName);
+                                    _log.warn("unable to find index: {}.{}", tableName, indexName);
                                 }
                             }
                         }
@@ -977,7 +977,7 @@ public class EHRManager
                     Dataset ds = study.getDatasetByLabel(label);
                     if (ds != null)
                     {
-                        _log.info("increasing size of " + ColumnNames.REMARK + " column for dataset: " + label);
+                        _log.info("increasing size of " + ColumnNames.REMARK + " column for dataset: {}", label);
                         SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() +
                             " ALTER COLUMN " + ColumnNames.REMARK + " NVARCHAR(max)");
                         SqlExecutor se = new SqlExecutor(DbScope.getLabKeyScope());
@@ -1014,14 +1014,14 @@ public class EHRManager
         PropertyDescriptor pd = OntologyManager.getPropertyDescriptor(propertyURI, sharedContainer);
         if (pd == null)
         {
-            _log.error("PropertyDescriptor [" + propertyURI + "] is null for container: " + c.getPath());
+            _log.error("PropertyDescriptor [{}] is null for container: {}", propertyURI, c.getPath());
             String sql = " SELECT * FROM " + OntologyManager.getTinfoPropertyDescriptor() + " WHERE PropertyURI LIKE '%#" + (propertyURI.split("#")[1]) + "'";
             PropertyDescriptor[] pdArray = new SqlSelector(OntologyManager.getExpSchema(), sql).getArray(PropertyDescriptor.class);
             if (pdArray.length > 0)
             {
                 for (PropertyDescriptor p : pdArray)
                 {
-                    _log.error("found match in container: " + p.getContainer().getPath() + " [" + p.getPropertyURI() + "]");
+                    _log.error("found match in container: {} [{}]", p.getContainer().getPath(), p.getPropertyURI());
                 }
             }
             else
@@ -1454,9 +1454,9 @@ public class EHRManager
         {
             //only 1 ID, but not using correct propertyURI
             String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid = ?";
-            long updated = executor.execute(updateSql, propertyId, d.getTypeId(), oldIds.get(0));
+            long updated = executor.execute(updateSql, propertyId, d.getTypeId(), oldIds.getFirst());
 
-            PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(oldIds.get(0));
+            PropertyDescriptor toDelete = OntologyManager.getPropertyDescriptor(oldIds.getFirst());
             if (toDelete != null)
             {
                 PropertyService.get().deleteValidatorsAndFormats(toDelete.getContainer(), toDelete.getPropertyId());

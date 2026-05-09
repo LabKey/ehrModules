@@ -180,7 +180,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 }
                 else
                 {
-                    LOG.error("Domain template '" + domainGroup + "' not found for module '" + moduleName + "'");
+                    LOG.error("Domain template '{}' not found for module '{}'", domainGroup, moduleName);
                 }
             }
         }
@@ -204,18 +204,18 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             Container container = EHRService.get().getEHRStudyContainer(ContainerManager.getRoot());
             if (container == null)
             {
-                LOG.warn("No EHR study container. Unable to perform upgrade steps for " + _module.getName());
+                LOG.warn("No EHR study container. Unable to perform upgrade steps for {}", _module.getName());
                 return;
             }
             if (!container.getActiveModules().contains(_module))
             {
-                LOG.warn("EHR container does not have module " + _module.getName() + " enabled. Skipping upgrade work.");
+                LOG.warn("EHR container does not have module {} enabled. Skipping upgrade work.", _module.getName());
             }
 
             User user = EHRService.get().getEHRUser(ContainerManager.getRoot());
             if (user == null || !user.isActive())
             {
-                LOG.warn("No EHR admin user. Unable to perform upgrade steps for " + _module.getName());
+                LOG.warn("No EHR admin user. Unable to perform upgrade steps for {}", _module.getName());
                 return;
             }
 
@@ -232,7 +232,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                         }
                         else
                         {
-                            LOG.warn("Unable to find container for path " + tsvImport._containerPath + ". Importing into EHR study container.");
+                            LOG.warn("Unable to find container for path {}. Importing into EHR study container.", tsvImport._containerPath);
                             importFile(tsvImport, container, user);
                         }
                     }
@@ -260,12 +260,12 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                     Pair<Long, String> result = DataIntegrationService.get().truncateTargets(container, user, etlInfo.getKey());
                     if (result.second != null)
                     {
-                        LOG.error("Failed to truncate ETL " + etlInfo.getKey() + ", continuing without queuing a run. Details: " + result.second);
+                        LOG.error("Failed to truncate ETL {}, continuing without queuing a run. Details: {}", etlInfo.getKey(), result.second);
                         continue;
                     }
                     if (!DataIntegrationService.get().resetTransformState(container, user, etlInfo.getKey()))
                     {
-                        LOG.info("No saved state for " + etlInfo.getKey() + " found for reset, starting ETL.");
+                        LOG.info("No saved state for {} found for reset, starting ETL.", etlInfo.getKey());
                     }
                 }
             }
@@ -279,7 +279,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
                 }
                 catch(PipelineJobException | ConfigurationException e)
                 {
-                    LOG.error("Failed to launch ETL " + etlInfo.getKey(), e);
+                    LOG.error("Failed to launch ETL {}", etlInfo.getKey(), e);
                 }
             }
         }
@@ -311,7 +311,7 @@ public class SharedEHRUpgradeCode implements UpgradeCode, StartupListener
             throw new IllegalArgumentException("No query update service for " + tsvImport._schemaName + "." + tsvImport._queryName);
         }
 
-        LOG.info("Importing " + tsvImport._tsvPath + " to " + tsvImport._schemaName + "." + tsvImport._queryName);
+        LOG.info("Importing {} to {}.{}", tsvImport._tsvPath, tsvImport._schemaName, tsvImport._queryName);
 
         // Delete the current rows
         updateService.truncateRows(user, container, null, null);

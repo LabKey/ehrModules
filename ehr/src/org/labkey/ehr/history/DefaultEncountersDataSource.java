@@ -70,7 +70,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 3)
-            _log.error("Loaded snomed tags in: " + duration + " seconds");
+            _log.error("Loaded snomed tags in: {} seconds", duration);
 
         return super.getRows(c, u, filter, redacted);
     }
@@ -167,12 +167,12 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             if (fc instanceof CompareType.CompareClause cc)
             {
                 Object val = (cc.getParamVals() != null && cc.getParamVals().length > 0) ? cc.getParamVals()[0] : null;
-                FieldKey fk = FieldKey.fromParts(FieldKey.fromString("recordid"), cc.getFieldKeys().get(0));
+                FieldKey fk = FieldKey.fromParts(FieldKey.fromString("recordid"), cc.getFieldKeys().getFirst());
                 newFilter.addCondition(fk, val, cc.getCompareType());
             }
             else
             {
-                _log.error("Unknown filter clause type: " + fc.getClass().getName());
+                _log.error("Unknown filter clause type: {}", fc.getClass().getName());
             }
         }
 

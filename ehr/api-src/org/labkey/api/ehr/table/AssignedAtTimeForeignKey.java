@@ -68,7 +68,7 @@ public class AssignedAtTimeForeignKey extends LookupForeignKey
         TableInfo ti = qd.getTable(errors, true);
         if (!errors.isEmpty())
         {
-            _log.error("Error creating lookup table for: " + schemaName + "." + queryName + " in container: " + targetSchema.getContainer().getPath());
+            _log.error("Error creating lookup table for: {}.{} in container: {}", schemaName, queryName, targetSchema.getContainer().getPath());
             for (QueryException error : errors)
             {
                 _log.error(error.getMessage(), error);

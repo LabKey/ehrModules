@@ -23,8 +23,6 @@ import org.labkey.api.security.User;
 import org.labkey.api.util.logging.LogHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -104,14 +102,7 @@ public class ClinicalHistoryManager
 
     public void sortRowsByDate(List<HistoryRow> rows)
     {
-        Collections.sort(rows, new Comparator<>()
-        {
-            @Override
-            public int compare(HistoryRow o1, HistoryRow o2)
-            {
-                return (-1 * (o1.getSortDateString().compareTo(o2.getSortDateString())));
-            }
-        });
+        rows.sort((o1, o2) -> (-1 * (o1.getSortDateString().compareTo(o2.getSortDateString()))));
     }
 
     protected List<HistoryDataSource> getDataSources(Container c, User u)
@@ -122,7 +113,7 @@ public class ClinicalHistoryManager
             if (source.isAvailable(c, u))
             {
                 if (sources.containsKey(source.getName()))
-                    _log.warn("There is an existing source with the name: " + source.getName());
+                    _log.warn("There is an existing source with the name: {}", source.getName());
 
                 sources.put(source.getName(), source);
             }

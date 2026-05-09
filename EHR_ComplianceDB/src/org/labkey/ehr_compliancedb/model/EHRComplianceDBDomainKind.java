@@ -1,5 +1,6 @@
 package org.labkey.ehr_compliancedb.model;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.gwt.client.model.GWTPropertyDescriptor;
@@ -42,7 +43,7 @@ public class EHRComplianceDBDomainKind extends ExtendedTableDomainKind
     }
 
     @Override
-    public Set<String> getReservedPropertyNames(Domain domain, User user)
+    public @NotNull Set<String> getReservedPropertyNames(Domain domain, User user)
     {
         return super.getReservedPropertyNames(domain, user);
     }

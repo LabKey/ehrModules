@@ -400,7 +400,7 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         else
         {
             log("ABI7500 already exists, no action needed");
-            Map<String, Object> row = resp.getRows().get(0);
+            Map<String, Object> row = resp.getRows().getFirst();
             DETECTOR_NAME = (String)row.get("detector");
         }
     }
@@ -1049,12 +1049,5 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
         List<String> modules = new ArrayList<>();
         modules.add("Viral_Load_Assay");
         return modules;
-    }
-
-    @Override
-    public void checkViews()
-    {
-        //the module contains an R report tied to a specific assay name, so view check fails when an assay of that name isnt present
-        //when module-based assays can supply reports this should be corrected
     }
 }

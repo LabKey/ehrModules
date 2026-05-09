@@ -243,7 +243,7 @@ public class EHRTestHelper
     public void toggleBulkEditField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagContainingText("label", label + ":").withClass("x4-form-item-label"));
-        _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).get(0).click();
+        _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).getFirst().click();
         _test.waitForElement(l.enabled());
     }
 
@@ -251,7 +251,7 @@ public class EHRTestHelper
     public void toggleBulkEditExactField(String label)
     {
         Locator.XPathLocator l = Ext4Helper.Locators.window("Bulk Edit").append(Locator.tagWithText("label", label + ":").withClass("x4-form-item-label"));
-        _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).get(0).click();
+        _test.shortWait().until(ExpectedConditions.numberOfElementsToBe(l, 1)).getFirst().click();
         _test.waitForElement(l.enabled());
     }
 
@@ -368,12 +368,12 @@ public class EHRTestHelper
         {
             try
             {
-                badReports.get(0).getLeft().select(); // select category tab
-                badReports.get(0).getRight().select(); // select report tab
+                badReports.getFirst().getLeft().select(); // select category tab
+                badReports.getFirst().getRight().select(); // select report tab
             }
             finally
             {
-                errors.add(0, "Error(s) in animal history report(s)");
+                errors.addFirst("Error(s) in animal history report(s)");
                 fail(String.join("\n", errors).replaceAll("\n+", "\n"));
             }
         }

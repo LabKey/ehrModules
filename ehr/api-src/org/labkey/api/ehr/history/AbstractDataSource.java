@@ -228,7 +228,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
         Boolean publicData = results.hasColumn(FieldKey.fromString("qcstate/PublicData")) ? results.getBoolean(FieldKey.fromString("qcstate/PublicData")) : true;
         if (!results.hasColumn(FieldKey.fromString("qcstate/PublicData")))
         {
-            _log.info("DataSource does not contain QCState: " + getName());
+            _log.info("DataSource does not contain QCState: {}", getName());
         }
 
         HistoryRowImpl ret = new HistoryRowImpl(this, categoryText, categoryGroup, categoryColor, subjectId, date, html, qcStateLabel, publicData, taskId, taskRowId, formType, objectId);

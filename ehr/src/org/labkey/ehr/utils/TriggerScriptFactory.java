@@ -36,7 +36,7 @@ public class TriggerScriptFactory extends ScriptTriggerFactory
 {
     @Override
     @NotNull
-    protected Collection<Trigger> createTriggerScript(Container c, TableInfo table) throws ScriptException
+    protected Collection<Trigger> createTriggerScript(@NotNull Container c, TableInfo table) throws ScriptException
     {
         // Check if other triggers exist
         Collection<Trigger> ret = super.createTriggerScript(c, table);

@@ -124,13 +124,13 @@ public class DefaultLabworkDataSource extends AbstractDataSource
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 6)
-            _log.error("Loaded lab results for: " + subjectId + " in " + duration + " seconds");
+            _log.error("Loaded lab results for: {} in {} seconds", subjectId, duration);
 
         start = new Date();
         _flags = getFlags(c, u, subjectId, minDate, maxDate);
         duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 4)
-            _log.error("Loaded clinpath flags for: " + subjectId + " in " + duration + " seconds");
+            _log.error("Loaded clinpath flags for: {} in {} seconds", subjectId, duration);
 
         return super.getRows(c, u, subjectId, minDate, maxDate, redacted);
     }

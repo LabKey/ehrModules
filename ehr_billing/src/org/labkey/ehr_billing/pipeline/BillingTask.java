@@ -140,8 +140,8 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             throw new PipelineJobException("Billing Container not found.");
 
         getJob().getLogger().info("Beginning process to save billing run data");
-        getJob().getLogger().info("Start date: " + getSupport().getStartDate().toString());
-        getJob().getLogger().info("End date: " + getSupport().getEndDate().toString());
+        getJob().getLogger().info("Start date: {}", getSupport().getStartDate().toString());
+        getJob().getLogger().info("End date: {}", getSupport().getEndDate().toString());
 
         User user = getJob().getUser();
         Container container = getJob().getContainer();
@@ -291,7 +291,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 TableSelector ts = new TableSelector(invoice, filter, null);
                 if (!ts.exists())
                 {
-                    getJob().getLogger().info("Creating invoice record for invoice number " + invoiceNumber);
+                    getJob().getLogger().info("Creating invoice record for invoice number {}", invoiceNumber);
                     Map<String, Object> toCreate = new CaseInsensitiveHashMap<>();
                     toCreate.put("invoiceNumber", invoiceNumber);
                     toCreate.put("accountNumber", row.get("debitedAccount"));
@@ -363,7 +363,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 {
                     if (toInsert.get(field) == null)
                     {
-                        getJob().getLogger().warn("Missing value for field: " + field + " for transactionNumber: " + toInsert.get("transactionNumber"));
+                        getJob().getLogger().warn("Missing value for field: {} for transactionNumber: {}", field, toInsert.get("transactionNumber"));
                     }
                 }
 
@@ -391,7 +391,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         {
             TableInfo ti = process.getMiscChargesTableInfo() != null ? process.getMiscChargesTableInfo() : EHR_BillingSchema.getInstance().getMiscCharges();
             String invoiceId = getOrCreateInvoiceRunRecord();
-            getJob().getLogger().info("Updating " + rows.size() + " records in " + ti.getName() + " table");
+            getJob().getLogger().info("Updating {} records in {} table", rows.size(), ti.getName());
 
             int updates = 0;
             for (Map<String, Object> row : rows)
@@ -404,14 +404,14 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 Table.update(getJob().getUser(), ti, toUpdate, objectId);
             }
 
-            getJob().getLogger().info("Finished updating " + updates + " records in " + ti.getName() + " table.");
+            getJob().getLogger().info("Finished updating {} records in {} table.", updates, ti.getName());
         }
         catch (RuntimeSQLException e)
         {
             throw new PipelineJobException(e);
         }
 
-        getJob().getLogger().info("Finished updating records for Invoice Run Id " + _invoiceId);
+        getJob().getLogger().info("Finished updating records for Invoice Run Id {}", _invoiceId);
     }
 
     private Collection<Map<String, Object>> getRowList(BillingPipelineJobProcess process, Container container)
@@ -442,7 +442,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
             if (!colKeys.containsKey(col))
             {
-                getJob().getLogger().warn("Unable to find column with key: " + col + " for table: " + ti.getPublicName());
+                getJob().getLogger().warn("Unable to find column with key: {} for table: {}", col, ti.getPublicName());
             }
         }
 
@@ -453,7 +453,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
     private void runProcessing(BillingPipelineJobProcess process, Container billingRunContainer) throws PipelineJobException
     {
-        getJob().getLogger().info("Caching " + process.getLabel());
+        getJob().getLogger().info("Caching {}", process.getLabel());
 
         if (process.isProcedureCharges())
         {
@@ -472,7 +472,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
                 String procedureQuery = (String) row.get("queryName");
                 int chargeId = (Integer) row.get("chargeId");
 
-                getJob().getLogger().info("Processing '" + row.get("description") + "'");
+                getJob().getLogger().info("Processing '{}'", row.get("description"));
 
                 // for each procedure query, get query results
                 UserSchema schema = QueryService.get().getUserSchema(getJob().getUser(), billingRunContainer, procedureSchema);
@@ -528,11 +528,11 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
         else if (process.getQueryName() != null && !process.getQueryToInvoiceItemColMap().isEmpty())
         {
             Collection<Map<String, Object>> rows = getRowList(process, billingRunContainer);
-            getJob().getLogger().info(rows.size() + " rows found");
+            getJob().getLogger().info("{} rows found", rows.size());
 
             writeToInvoicedItems(process, rows, getSupport());
         }
-        getJob().getLogger().info("Finished Caching " + process.getLabel());
+        getJob().getLogger().info("Finished Caching {}", process.getLabel());
     }
 
     private ChargeInfo getChargeInfo(int chargeId, ArrayList<ChargeInfo> chargeInfoArrayList, Object date)
@@ -675,7 +675,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
             Iterator<Map<String, Object>> iterator = invoiceTotalCost.iterator();
             Map<String, BigDecimal> existingInvoiceAmounts = getExistingInvoiceAmounts();
 
-            getJob().getLogger().info(invoiceTotalCost.getSize() + " rows to be updated");
+            getJob().getLogger().info("{} rows to be updated", invoiceTotalCost.getSize());
 
             while (iterator.hasNext())
             {
