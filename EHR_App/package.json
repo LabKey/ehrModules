@@ -21,11 +21,11 @@
     "lint-branch-fix": "node lint.diff.mjs --currentBranch --fix"
   },
   "dependencies": {
-    "@labkey/components": "6.72.1",
-    "@labkey/ehr": "0.0.5"
+    "@labkey/components": "7.35.2",
+    "@labkey/ehr": "0.0.6"
   },
   "devDependencies": {
-    "@labkey/build": "8.7.0",
+    "@labkey/build": "9.1.3",
     "@labkey/eslint-config": "1.1.1",
     "@types/jest": "30.0.0",
     "@types/react": "18.3.26",
@@ -34,10 +34,10 @@
     "@typescript-eslint/parser": "8.48.0",
     "eslint": "9.39.1",
     "execa": "9.6.0",
-    "jest": "30.2.0",
-    "jest-cli": "30.2.0",
-    "jest-environment-jsdom": "30.2.0",
+    "jest": "30.4.2",
+    "jest-cli": "30.4.2",
+    "jest-environment-jsdom": "30.4.1",
     "jest-teamcity-reporter": "0.9.0",
-    "ts-jest": "29.4.5"
+    "ts-jest": "29.4.9"
   }
 }
