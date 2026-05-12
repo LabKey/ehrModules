@@ -379,7 +379,7 @@ public class EHRController extends SpringActionController
             String queryName = ti.getName();
 
             if (pks.size() == 1)
-                keyField = pks.get(0);
+                keyField = pks.getFirst();
 
             ActionURL url = getViewContext().getActionURL().clone();
 
@@ -1526,7 +1526,7 @@ public class EHRController extends SpringActionController
                 }
                 else
                 {
-                    _log.warn("File listed in manifest file but data file not found: " + cols[0] + ". Using manifest file: " + _lookupsManifestModule.getName());
+                    _log.warn("File listed in manifest file but data file not found: {}. Using manifest file: {}", cols[0], _lookupsManifestModule.getName());
                 }
             }
 
@@ -1681,7 +1681,7 @@ public class EHRController extends SpringActionController
                     {
                         _additionalReportsResource = _additionalReportsModule.getModuleResource(_additionalReportsPath);
                         if (_additionalReportsResource == null || !_additionalReportsResource.exists())
-                            _log.info("No additional reports found in " + mp.getEffectiveValue(getContainer()) + " module.");
+                            _log.info("No additional reports found in {} module.", mp.getEffectiveValue(getContainer()));
                     }
                 }
             }

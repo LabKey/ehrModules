@@ -104,7 +104,7 @@ public class RecordDeleteRunner implements Job
         if (!isEnabled(c))
             return;
 
-        _log.info("Starting EHR Record Delete Runner for folder: " + c.getPath());
+        _log.info("Starting EHR Record Delete Runner for folder: {}", c.getPath());
 
         User u = EHRService.get().getEHRUser(c);
         if (u == null)
@@ -149,7 +149,7 @@ public class RecordDeleteRunner implements Job
                     keys.add(row);
                 }
 
-                _log.info("deleting " + keys.size() + " records from table: " + ti.getName() + " in container: " + ti.getUserSchema().getContainer().getPath());
+                _log.info("deleting {} records from table: {} in container: {}", keys.size(), ti.getName(), ti.getUserSchema().getContainer().getPath());
                 ti.getUpdateService().deleteRows(ti.getUserSchema().getUser(), ti.getUserSchema().getContainer(), keys, null, new HashMap<>());
             }
         }

@@ -120,7 +120,7 @@ public class EHRBillingHelper
         for (InvoicedItem item : items)
         {
             sr = new SelectRowsCommand("ehr_billing", "invoicedItems");
-            sr.addFilter(new Filter("invoiceId",invoiceIdResponse.getRows().get(0).get("objectId").toString()));
+            sr.addFilter(new Filter("invoiceId",invoiceIdResponse.getRows().getFirst().get("objectId").toString()));
 
             if (item.getAnimalId() != null)
                 sr.addFilter(new Filter("Id", item.getAnimalId()));
@@ -132,7 +132,7 @@ public class EHRBillingHelper
                 chargeId.addFilter(new Filter("name", item.getChargeID()));
                 SelectRowsResponse chargeableItemResponse = chargeId.execute(cn, _projectName + "/" + _billingFolder);
 
-                sr.addFilter(new Filter("chargeId", chargeableItemResponse.getRows().get(0).get("rowId").toString()));
+                sr.addFilter(new Filter("chargeId", chargeableItemResponse.getRows().getFirst().get("rowId").toString()));
             }
 
             SelectRowsResponse resp = sr.execute(cn, _projectName + "/" + _billingFolder);

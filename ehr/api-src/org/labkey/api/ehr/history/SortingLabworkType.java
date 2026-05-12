@@ -133,6 +133,6 @@ public class SortingLabworkType extends DefaultLabworkType
             return 9999;
 
         loadTests(false);
-        return _tests.containsKey(testId) ? _tests.get(testId) : 9999;
+        return _tests.getOrDefault(testId, 9999);
     }
 }

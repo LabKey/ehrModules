@@ -54,7 +54,7 @@ public class DefaultDataEntryFormFactory implements DataEntryFormFactory
         }
         catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
         {
-            _log.error("Unable to create form: " + _clazz.getName(), e);
+            _log.error("Unable to create form: {}", _clazz.getName(), e);
             return null;
         }
     }

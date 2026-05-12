@@ -492,9 +492,7 @@ public class AbstractWNPRCImportMethod extends DefaultVLImportMethod
                 if (map.get("well") != null) {
                     map.put("well", ((String) map.get("well")).toUpperCase());
                 }
-                if (map.get("sampleType") == null) {
-                    map.put("sampleType", "vRNA");
-                }
+                map.putIfAbsent("sampleType", "vRNA");
 
                 if (!mergeTemplateRow(keyProperty, templateRows, map, context)) {
                     continue;

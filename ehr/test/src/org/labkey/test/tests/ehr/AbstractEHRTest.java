@@ -440,7 +440,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton("Populate " + tableLabel, 0);
         if (!completeEl.isEmpty())
-            longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
+            longWait().until(ExpectedConditions.stalenessOf(completeEl.getFirst()));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error populating " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();
@@ -454,7 +454,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         List<WebElement> completeEl = completeDiv.findElements(getDriver());
         clickButton(("All".equals(tableLabel) ? "Delete " : "Delete Data From ") + tableLabel, 0);
         if (!completeEl.isEmpty())
-            longWait().until(ExpectedConditions.stalenessOf(completeEl.get(0)));
+            longWait().until(ExpectedConditions.stalenessOf(completeEl.getFirst()));
         waitForElement(completeDiv, POPULATE_TIMEOUT_MS);
         Assert.assertFalse("Error deleting " + tableLabel, elementContains(Locator.id("msgbox"), "ERROR"));
         resumeJsErrorChecker();

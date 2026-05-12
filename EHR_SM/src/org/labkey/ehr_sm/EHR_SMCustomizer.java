@@ -50,7 +50,6 @@ public class EHR_SMCustomizer extends AbstractTableCustomizer
             if (tableInfo instanceof AbstractTableInfo && props.containsKey(tableInfo.getName()))
             {
                 customizeSamples((AbstractTableInfo) tableInfo);
-                return;
             }
         }
     }
@@ -111,7 +110,7 @@ public class EHR_SMCustomizer extends AbstractTableCustomizer
 
             ColumnInfo receivedCol = ti.getColumn(receivedDateCol);
             if (null == receivedCol)
-                _log.warn("Sample type " + ti.getName() + " does not have column " + receivedDateCol + " for age at sample calculation.");
+                _log.warn("Sample type {} does not have column {} for age at sample calculation.", ti.getName(), receivedDateCol);
 
             TableInfo demographics = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ContainerService.get().getForPath(ehrContainerName), "study").getTable("demographics");
 

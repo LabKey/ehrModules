@@ -199,7 +199,7 @@ public class EHR_BillingController extends SpringActionController
             String keyField = null;
 
             if (pks.size() == 1)
-                keyField = pks.get(0);
+                keyField = pks.getFirst();
 
             ColumnInfo objectid = ti.getColumn("objectid");
 

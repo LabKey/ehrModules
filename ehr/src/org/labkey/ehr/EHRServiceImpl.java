@@ -90,7 +90,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -307,7 +306,7 @@ public class EHRServiceImpl extends EHRService
         }
         catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
         {
-            _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
+            _log.error("Unable to create instance of class '{}'", customizerClass.getName(), e);
         }
 
         return null;
@@ -524,7 +523,7 @@ public class EHRServiceImpl extends EHRService
                 if (ModuleHtmlView.exists(pair.first, pair.second))
                     return pair;
                 else
-                    _log.error("Unable to find registered EHR action: " + pair.first.getName() + " / " + pair.second);
+                    _log.error("Unable to find registered EHR action: {} / {}", pair.first.getName(), pair.second);
             }
         }
 
@@ -740,7 +739,7 @@ public class EHRServiceImpl extends EHRService
         SecurableResource sr = EHRSecurityManager.get().getSecurableResource(c, u, schemaName, queryName);
         if (sr == null)
         {
-            _log.warn("Unable to find SecurableResource for table: " + schemaName + "." + queryName);
+            _log.warn("Unable to find SecurableResource for table: {}.{}", schemaName, queryName);
             return false;
         }
 
@@ -840,7 +839,7 @@ public class EHRServiceImpl extends EHRService
 
     private void addDatePartCol(AbstractTableInfo ti, ColumnInfo dateCol, String label, String description, Integer datePart)
     {
-        String colName = dateCol.getName() + label.replaceAll(" ", "");
+        String colName = dateCol.getName() + label.replace(" ", "");
         if (ti.getColumn(colName, false) == null)
         {
             String colSql = dateCol.getValueSql(ExprColumn.STR_TABLE_ALIAS).getSQL();

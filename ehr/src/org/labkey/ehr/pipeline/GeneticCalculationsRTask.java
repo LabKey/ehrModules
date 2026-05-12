@@ -135,7 +135,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         args.add("-f");
         args.add(tsvFile.toNioPathForRead().toFile().getPath());
 
-        getJob().getLogger().info("Using working directory of: " + support.getAnalysisDirectory().getPath());
+        getJob().getLogger().info("Using working directory of: {}", support.getAnalysisDirectory().getPath());
         ProcessBuilder pb = new ProcessBuilder(args);
         job.runSubProcess(pb, support.getAnalysisDirectory());
 
@@ -164,7 +164,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
                 if (RScriptEngineFactory.isRScriptEngine(def.getExtensions()))
                 {
                     path = new File(def.getExePath()).getParent();
-                    getJob().getLogger().info("Using RSciptEngine path: " + path);
+                    getJob().getLogger().info("Using RSciptEngine path: {}", path);
                     return path;
                 }
             }
@@ -174,7 +174,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         String packagePath = PipelineJobService.get().getConfigProperties().getSoftwarePackagePath("R");
         if (StringUtils.trimToNull(packagePath) != null)
         {
-            getJob().getLogger().info("Using path from pipeline config: " + packagePath);
+            getJob().getLogger().info("Using path from pipeline config: {}", packagePath);
             return packagePath;
         }
 
@@ -182,7 +182,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         Map<String, String> env = System.getenv();
         if (env.containsKey("RHOME"))
         {
-            getJob().getLogger().info("Using path from RHOME: " + env.get("RHOME"));
+            getJob().getLogger().info("Using path from RHOME: {}", env.get("RHOME"));
             return env.get("RHOME");
         }
 

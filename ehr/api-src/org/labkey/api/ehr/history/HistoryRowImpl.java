@@ -124,12 +124,12 @@ public class HistoryRowImpl implements HistoryRow
         }
         catch (ArrayIndexOutOfBoundsException e)
         {
-            _log.error("Invalid date: " + _date + " for table: " + _primaryGroup + " and animal " + _subjectId, e);
+            _log.error("Invalid date: {} for table: {} and animal {}", _date, _primaryGroup, _subjectId, e);
             return "";
         }
         catch (Exception e)
         {
-            _log.error("Error creating sortDateString for animal: " + _subjectId + ", " + _primaryGroup + " with date: " + _date, e);
+            _log.error("Error creating sortDateString for animal: {}, {} with date: {}", _subjectId, _primaryGroup, _date, e);
             return "";
         }
     }

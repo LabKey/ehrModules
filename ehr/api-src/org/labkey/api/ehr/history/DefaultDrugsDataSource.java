@@ -146,7 +146,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
                 }
             }
 
-            HistoryRowImpl rec = records.get(0);
+            HistoryRowImpl rec = records.getFirst();
             HistoryRowImpl newRow = new HistoryRowImpl(this, rec.getCategoryText(), rec.getPrimaryGroup(), rec.getCategoryColor(), rec.getSubjectId(), rec.getDate(), sb.toString(), rec.getQcStateLabel(), rec.getPublicData(), rec.getTaskId(), rec.getTaskRowId(), rec.getFormType(), rec.getObjectId());
             newRow.setShowTime(true);
             newRows.add(newRow);

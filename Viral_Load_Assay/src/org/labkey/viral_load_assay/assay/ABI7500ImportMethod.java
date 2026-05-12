@@ -385,8 +385,7 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
 
                     if (TYPE.Standard.equals(category))
                     {
-                        if (map.get("sampleVol") == null)
-                            map.put("sampleVol", 1);
+                        map.putIfAbsent("sampleVol", 1);
 
                         if (!(map.get(QUANTITY_FIELD) instanceof Double))
                         {
@@ -396,13 +395,8 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                     }
                     else if (TYPE.NEG_CTL.equals(category))
                     {
-                        if (map.get("sampleVol") == null)
-                            map.put("sampleVol", 1);
+                        map.putIfAbsent("sampleVol", 1);
 
-                        if (map.get("cp") != null)
-                        {
-                            map.put("qcflag", "NTC had a value for CT");
-                        }
                     }
 
                     for (String field :  new String[]{"sampleVol", "volPerRxn", "eluateVol"})

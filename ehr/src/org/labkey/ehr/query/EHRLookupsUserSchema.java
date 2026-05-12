@@ -239,7 +239,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         {
             List<String> pkCols = ti.getPkColumnNames();
             if (pkCols.size() == 1)
-                return pkCols.get(0);
+                return pkCols.getFirst();
         }
 
         return null;
