@@ -21,11 +21,11 @@
     "lint-branch-fix": "node lint.diff.mjs --currentBranch --fix"
   },
   "dependencies": {
-    "@labkey/components": "7.35.2-fb-packageUpdateMay11.0",
-    "@labkey/ehr": "0.0.6-fb-packageUpdateMay11.0"
+    "@labkey/components": "7.35.2",
+    "@labkey/ehr": "0.0.6"
   },
   "devDependencies": {
-    "@labkey/build": "9.1.3-fb-packageUpdateMay11.0",
+    "@labkey/build": "9.1.3",
     "@labkey/eslint-config": "1.1.1",
     "@types/jest": "30.0.0",
     "@types/react": "18.3.26",
