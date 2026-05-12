@@ -113,7 +113,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     {
         List<AnimalRecord> ret = getAnimals(c, Collections.singletonList(id));
 
-        return !ret.isEmpty() ? ret.get(0) : null;
+        return !ret.isEmpty() ? ret.getFirst() : null;
     }
 
     /**
@@ -166,11 +166,11 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             {
                 if (existing.getProps().isEmpty() && !record.getProps().isEmpty())
                 {
-                    _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has properties, but new record does not");
+                    _log.error("mismatch for cached record for animal: {}.  cached record has properties, but new record does not", record.getId());
                 }
                 else if (!existing.getProps().isEmpty() && record.getProps().isEmpty())
                 {
-                    _log.error("mismatch for cached record for animal: " + record.getId() + ".  cached record has no properties, but new record does");
+                    _log.error("mismatch for cached record for animal: {}.  cached record has no properties, but new record does", record.getId());
                 }
                 else if (existing.getProps().isEmpty() && record.getProps().isEmpty())
                 {
@@ -192,7 +192,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     MapDifference<String, Object> diff = Maps.difference(props1, props2);
                     if (!diff.areEqual())
                     {
-                        _log.error("mismatch for cached record for animal: " + record.getId());
+                        _log.error("mismatch for cached record for animal: {}", record.getId());
                         Map<String, MapDifference.ValueDifference<Object>> diffEntries = diff.entriesDiffering();
                         if (diffEntries.isEmpty())
                         {
@@ -201,7 +201,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
                         for (String prop : diffEntries.keySet())
                         {
-                            _log.error("property: " + prop);
+                            _log.error("property: {}", prop);
                             _log.error("original: ");
                             _log.error(diffEntries.get(prop).leftValue());
                             _log.error("new value: ");
@@ -327,7 +327,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
             if (!needsUpdate.isEmpty())
             {
-                _log.info("updating demographics providers: [" + StringUtils.join(providerNames, ";") + "] for " + ids.size() + " ids.  " + (ids.size() > 10 ? "" : "[" + StringUtils.join(ids, ",") + "]"));
+                _log.info("updating demographics providers: [{}] for {} ids.  {}", StringUtils.join(providerNames, ";"), ids.size(), ids.size() > 10 ? "" : "[" + StringUtils.join(ids, ",") + "]");
             }
 
 
@@ -423,25 +423,25 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
             if (!uncachedIds.isEmpty() && !async)
             {
-                _log.warn("Animal record not found in cache for: " + uncachedIds + ". Not a problem if these are newly inserted animals. Discovered during update of provider: " + p.getName());
+                _log.warn("Animal record not found in cache for: {}. Not a problem if these are newly inserted animals. Discovered during update of provider: {}", uncachedIds, p.getName());
             }
 
             idsToUpdate.removeAll(uniqueIds);
             if (!idsToUpdate.isEmpty())
             {
-                _log.info("reporting change for " + idsToUpdate.size() + " additional ids after change in provider: " + p.getName() + (idsToUpdate.size() < 100 ? ".  " + StringUtils.join(idsToUpdate, ";") : ""));
+                _log.info("reporting change for {} additional ids after change in provider: {}{}", idsToUpdate.size(), p.getName(), idsToUpdate.size() < 100 ? ".  " + StringUtils.join(idsToUpdate, ";") : "");
                 updateForProvider(defaultSchema, p, idsToUpdate, false, async);
             }
         }
 
         timer.stop();
-        _log.info("updated demographics provider: " + p.getName() + " for " + ids.size() + " ids.  " + (ids.size() > 100 ? "" : "[" + StringUtils.join(ids, ",") + "]") + " took " + timer.getDuration());
+        _log.info("updated demographics provider: {} for {} ids.  {} took {}", p.getName(), ids.size(), ids.size() > 100 ? "" : "[" + StringUtils.join(ids, ",") + "]", timer.getDuration());
     }
 
     // Create and cache IDs in the background
     private void asyncCache(final Container c, final List<String> ids)
     {
-        _log.info("Perform async cache for " + ids.size() + " animals");
+        _log.info("Perform async cache for {} animals", ids.size());
 
         // Copy the list as it may be backed by a JavaScript array (via a trigger script) that ends up holding
         // onto a lot of additional scope and memory
@@ -485,7 +485,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 ids_string.append(id);
                 ids_string.append(",");
             }
-            _log.debug("DEMOGRAPHICS_DEBUG: Demographics records being created for animal(s): " + ids_string);
+            _log.debug("DEMOGRAPHICS_DEBUG: Demographics records being created for animal(s): {}", ids_string);
         }
 
         User u = EHRService.get().getEHRUser(c);
@@ -503,7 +503,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         while (start < allIds.size())
         {
             List<String> sublist = allIds.subList(start, Math.min(allIds.size(), start + DemographicsProvider.MAXIMUM_BATCH_SIZE));
-            _log.debug("Creating demographics records for " + sublist.size() + " animals (" + start + " of " + allIds.size() + " already complete)");
+            _log.debug("Creating demographics records for {} animals ({} of {} already complete)", sublist.size(), start, allIds.size());
             start = start + DemographicsProvider.MAXIMUM_BATCH_SIZE;
 
             DefaultSchema defaultSchema = DefaultSchema.get(u, c);
@@ -546,7 +546,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         double duration = ((new Date()).getTime() - startTime.getTime()) / 1000.0;
         if (duration > (2.0 * allIds.size()))
         {
-            _log.warn("recached " + allIds.size() + " records in " + duration + " seconds");
+            _log.warn("recached {} records in {} seconds", allIds.size(), duration);
         }
         return records;
     }
@@ -573,7 +573,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
         if (!ids.isEmpty())
         {
-            _log.info("Forcing recache of " + ids.size() + " animals");
+            _log.info("Forcing recache of {} animals", ids.size());
             createRecords(c, ids, validateOnCreate);
             _log.info("Cache load complete");
         }
@@ -629,7 +629,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                         QueryService.get().setEnvironment(QueryService.Environment.USER, u);
                         QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, s.getContainer());
 
-                        _log.info("Recaching EHR demographics for all living animals in " + s.getContainer().getPath());
+                        _log.info("Recaching EHR demographics for all living animals in {}", s.getContainer().getPath());
 
                         EHRDemographicsServiceImpl.get().cacheAnimals(s.getContainer(), u, validateOnCreate, true);
                         totalCached++;

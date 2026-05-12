@@ -185,7 +185,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         DbSchema ehrSchema = EHRSchema.getInstance().getSchema();
         TableInfo kinshipTable = ehrSchema.getTable("kinship");
 
-        log.info("Inspecting file length: " + output.getPath());
+        log.info("Inspecting file length: {}", output.getPath());
 
         try
         {
@@ -217,7 +217,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 }
                 else
                 {
-                    maxVal = ret.get(0) == null ? 0 : ret.get(0).intValue();
+                    maxVal = ret.getFirst() == null ? 0 : ret.getFirst().intValue();
                 }
 
                 SqlExecutor ex = new SqlExecutor(kinshipTable.getSchema());
@@ -306,7 +306,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
                     if (lineNum % 250000 == 0)
                     {
-                        log.info("imported " + String.format("%,d", lineNum) + " rows");
+                        log.info("imported {} rows", String.format("%,d", lineNum));
                         if (job != null)
                         {
                             job.updateStatusForTask();
@@ -320,7 +320,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
                 stmt.executeBatch();
                 transaction.commit();
-                log.info("Inserted " + String.format("%,d", lineNum) + " rows into ehr.kinship");
+                log.info("Inserted {} rows into ehr.kinship", String.format("%,d", lineNum));
             }
         }
         catch (RuntimeSQLException | SQLException | IOException e)
@@ -442,11 +442,11 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                     PipelineJob job = getJob();
                     if (!species.equals(results.getString("species")))
                     {
-                        job.getLogger().info("Relation across species, kinship coefficent not calculated. Id: " + id + ", Id2: " + id2 + ", Relation: " + relation);
+                        job.getLogger().info("Relation across species, kinship coefficent not calculated. Id: {}, Id2: {}, Relation: {}", id, id2, relation);
                     }
                     else
                     {
-                        job.getLogger().info("Kinship validation failed. Missing coefficient for Id: " + id + ", Id2: " + id2 + ". Relation: " + relation);
+                        job.getLogger().info("Kinship validation failed. Missing coefficient for Id: {}, Id2: {}. Relation: {}", id, id2, relation);
                     }
                 }
             }
@@ -481,9 +481,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                     if (coefficient < getMinCoefficient(kinRelation.getRelation(), kinRelation.getRelationDetailed()))
                     {
                         PipelineJob job = getJob();
-                        job.getLogger().info("Kinship validation failed. Does not meet minimum coefficient for Id: " + id +
-                                ", Id2: " + kin + ". Relation: " + (kinRelation.getRelationDetailed() != null ? kinRelation.getRelationDetailed() : kinRelation.getRelation()) +
-                                ", coefficient: " + coefficient);
+                        job.getLogger().info("Kinship validation failed. Does not meet minimum coefficient for Id: {}, Id2: {}. Relation: {}, coefficient: {}", id, kin, kinRelation.getRelationDetailed() != null ? kinRelation.getRelationDetailed() : kinRelation.getRelation(), coefficient);
                     }
 
                 }
@@ -640,7 +638,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         {
             try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
             {
-                log.info("Inspecting file length: " + output.getPath());
+                log.info("Inspecting file length: {}", output.getPath());
                 try (LineNumberReader lnr = new LineNumberReader(Readers.getReader(output.openInputStream())))
                 {
                     while (lnr.readLine() != null)
@@ -685,7 +683,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 String subjectId = StringUtils.trimToNull(fields[0]);
                 if (subjectId == null)
                 {
-                    log.error("Missing subjectId on row " + lineNum);
+                    log.error("Missing subjectId on row {}", lineNum);
                     continue;
                 }
 
@@ -712,7 +710,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
                 transaction.commit();
             }
-            log.info("Inserted " + String.format("%,d", lineNum) + " rows into inbreeding coefficients table");
+            log.info("Inserted {} rows into inbreeding coefficients table", String.format("%,d", lineNum));
 
         }
         catch (DuplicateKeyException | SQLException | IOException | QueryUpdateServiceException e)

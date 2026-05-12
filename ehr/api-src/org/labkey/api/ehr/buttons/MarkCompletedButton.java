@@ -91,7 +91,7 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
         String pkColName = null;
         if (ti.getPkColumnNames() != null && ti.getPkColumnNames().size() == 1)
         {
-            pkColName = ti.getPkColumnNames().get(0);
+            pkColName = ti.getPkColumnNames().getFirst();
         }
 
         return "EHR.window.MarkCompletedWindow.buttonHandler(dataRegionName, " + PageFlowUtil.jsString(_schemaName) + ", " + PageFlowUtil.jsString(_queryName) + ", " + PageFlowUtil.jsString(xtype) + ", " + PageFlowUtil.jsString(pkColName) + ");";

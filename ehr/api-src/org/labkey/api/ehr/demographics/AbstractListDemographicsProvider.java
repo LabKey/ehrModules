@@ -57,7 +57,7 @@ abstract public class AbstractListDemographicsProvider extends AbstractDemograph
     {
         if (map.containsKey(_propName) && !(map.get(_propName) instanceof List))
         {
-            _log.warn("Demographics record already has a value for " + _propName + " that is not a list");
+            _log.warn("Demographics record already has a value for {} that is not a list", _propName);
             map.put(_propName, null);
         }
 

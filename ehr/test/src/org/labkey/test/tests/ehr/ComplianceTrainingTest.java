@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @BaseWebDriverTest.ClassTimeout(minutes = 5)
 public abstract class ComplianceTrainingTest extends BaseWebDriverTest implements AdvancedSqlTest
@@ -158,7 +160,7 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
 
         SelectRowsResponse resp = src.execute(_apiHelper.getConnection(), getProjectName());
         assertEquals(1, resp.getRowCount().intValue());
-        assertEquals(requirementType2, resp.getRows().get(0).get("type"));
+        assertEquals(requirementType2, resp.getRows().getFirst().get("type"));
 
         log("checking triggers for employees table");
 
@@ -219,10 +221,10 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
 
         resp = src.execute(_apiHelper.getConnection(), getProjectName());
         assertEquals(1, resp.getRowCount().intValue());
-        assertEquals(employeeLocation3, resp.getRows().get(0).get("location"));
-        assertEquals(employeeCategory2, resp.getRows().get(0).get("category"));
-        assertEquals(employeeTitle2, resp.getRows().get(0).get("title"));
-        assertEquals(employeeType2, resp.getRows().get(0).get("type"));
+        assertEquals(employeeLocation3, resp.getRows().getFirst().get("location"));
+        assertEquals(employeeCategory2, resp.getRows().getFirst().get("category"));
+        assertEquals(employeeTitle2, resp.getRows().getFirst().get("title"));
+        assertEquals(employeeType2, resp.getRows().getFirst().get("type"));
 
         _apiHelper.updateRow("ehr_compliancedb", "employees", Maps.of("employeeid", employee1, "location", "garbage value"), true);
 
@@ -300,16 +302,16 @@ public abstract class ComplianceTrainingTest extends BaseWebDriverTest implement
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "employees", "employeeid", new String[]{"employeeid"}, new Object[][]{{employee2}}, new Object[][]{{employee1}});
         _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
 
-        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.of("employeeid", employee1), "employeeid"));
-        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee1), "employeeid"));
+        assertFalse(_apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.of("employeeid", employee1), "employeeid"));
+        assertFalse(_apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee1), "employeeid"));
 
-        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.of("employeeid", employee2), "employeeid"));
-        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee2), "employeeid"));
+        assertTrue(_apiHelper.doesRowExist("ehr_compliancedb", "requirementsperemployee", Maps.of("employeeid", employee2), "employeeid"));
+        assertTrue(_apiHelper.doesRowExist("ehr_compliancedb", "employeerequirementexemptions", Maps.of("employeeid", employee2), "employeeid"));
 
         cmd = _apiHelper.prepareUpdateCommand("ehr_compliancedb", "requirements", "requirementname", new String[]{"requirementname"}, new Object[][]{{requirementName2}}, new Object[][]{{requirementName1}});
         _apiHelper.doSaveRows(PasswordUtil.getUsername(), cmd, new JSONObject());
-        assertEquals(false, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName1), "requirementname"));
-        assertEquals(true, _apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName2), "requirementname"));
+        assertFalse(_apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName1), "requirementname"));
+        assertTrue(_apiHelper.doesRowExist("ehr_compliancedb", "requirementspercategory", Maps.of("requirementname", requirementName2), "requirementname"));
     }
 
     @Test

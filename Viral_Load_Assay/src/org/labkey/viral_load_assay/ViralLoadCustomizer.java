@@ -60,7 +60,7 @@ public class ViralLoadCustomizer implements TableCustomizer
         List<ExpProtocol> protocols = AssayService.get().getAssayProtocols(target, ap);
         if (protocols.size() == 1)
         {
-            AssayProtocolSchema schema = ap.createProtocolSchema(ti.getUserSchema().getUser(), target, protocols.get(0), null);
+            AssayProtocolSchema schema = ap.createProtocolSchema(ti.getUserSchema().getUser(), target, protocols.getFirst(), null);
             if (schema == null)
             {
                 return;

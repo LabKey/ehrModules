@@ -17,7 +17,6 @@
 package org.labkey.ehr_sm;
 
 import org.jetbrains.annotations.NotNull;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.module.CodeOnlyModule;
 import org.labkey.api.module.ModuleContext;
@@ -56,10 +55,4 @@ public class EHR_SMModule extends CodeOnlyModule
         ContainerManager.addContainerListener(new EHR_SMContainerListener());
     }
 
-    @Override
-    @NotNull
-    public Collection<String> getSummary(Container c)
-    {
-        return Collections.emptyList();
-    }
 }

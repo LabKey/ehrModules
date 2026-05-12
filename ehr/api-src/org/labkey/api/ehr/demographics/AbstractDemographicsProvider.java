@@ -75,13 +75,13 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
     public Map<String, Map<String, Object>> getProperties(DefaultSchema defaultSchema, Collection<String> ids)
     {
         // if in debug, consider enabling debug logging on EHRDemographicsServiceImpl as well
-        _log.debug("Running DemographicsProvider named: " + this.getName());
+        _log.debug("Running DemographicsProvider named: {}", this.getName());
         boolean debugEnabled = _log.isDebugEnabled();
         String debugTimeFormat = "m 'min' s 'sec' S 'ms'";
 
         if (ids.size() > DemographicsProvider.MAXIMUM_BATCH_SIZE)
         {
-            _log.error("unexpected amount of IDs in demographics provider: " + getName() + ".  was: " + ids.size(), new Exception());
+            _log.error("unexpected amount of IDs in demographics provider: {}.  was: {}", getName(), ids.size(), new Exception());
         }
 
         final Map<String, Map<String, Object>> ret = new HashMap<>();
@@ -100,7 +100,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
             tiName = ti.getName();
             if (tiName == null)
                 tiName = "";
-            _log.debug("TableInfo (for table '" + tiName + "') creation time: " + DurationFormatUtils.formatDuration(tableInfoDuration.toMillis(), debugTimeFormat, true));
+            _log.debug("TableInfo (for table '{}') creation time: {}", tiName, DurationFormatUtils.formatDuration(tableInfoDuration.toMillis(), debugTimeFormat, true));
         }
 
         SimpleFilter filter = getFilter(ids);
@@ -125,7 +125,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         if (debugEnabled)
         {
             Duration rowProcessingDuration = Duration.between(startRowProcessing, LocalDateTime.now());
-            _log.debug("Row processing time (for table '" + tiName + "'): " + DurationFormatUtils.formatDuration(rowProcessingDuration.toMillis(), debugTimeFormat, true));
+            _log.debug("Row processing time (for table '{}'): {}", tiName, DurationFormatUtils.formatDuration(rowProcessingDuration.toMillis(), debugTimeFormat, true));
         }
 
         return ret;
@@ -252,7 +252,7 @@ abstract public class AbstractDemographicsProvider extends EHROwnable implements
         }
         catch (IllegalArgumentException iae)
         {
-            _log.error("Error formatting duration with startDate '" + startDate + "' and endDate '" + endDate + "'.", iae);
+            _log.error("Error formatting duration with startDate '{}' and endDate '{}'.", startDate, endDate, iae);
             return "Error";
         }
 

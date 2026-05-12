@@ -266,7 +266,7 @@ abstract public class AbstractFormSection implements FormSection
             TableInfo ti = ctx.getTable(pair.first, pair.second);
             if (ti == null)
             {
-                _log.error("Unable to create table: " + pair.first + "." + pair.second);
+                _log.error("Unable to create table: {}.{}", pair.first, pair.second);
                 continue;
             }
 

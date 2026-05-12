@@ -16,6 +16,7 @@
 package org.labkey.viral_load_assay.assay;
 
 import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.laboratory.NavItem;
@@ -119,7 +120,7 @@ public class ViralLoadAssayDataProvider extends AbstractAssayDataProvider
     }
 
     @Override
-    public Set<ClientDependency> getClientDependencies()
+    public @NotNull Set<ClientDependency> getClientDependencies()
     {
         LinkedHashSet<ClientDependency> resources = new LinkedHashSet<>();
         resources.add(ClientDependency.fromPath("Viral_Load_Assay/vl_utils.js"));

@@ -239,7 +239,7 @@ public class TriggerScriptHelper
         TableInfo ti = dataset.getTableInfo(user);
         SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET participantid = ? WHERE caseid = ? and participantid = ?", newId, caseId, oldId);
         int modified = new SqlExecutor(ti.getSchema()).execute(sql);
-        _log.info("updated Id on " + modified + " problems due to Id change on case: " + caseId);
+        _log.info("updated Id on {} problems due to Id change on case: {}", modified, caseId);
     }
 
     public void deleteProblemsFromCase(String caseId)
@@ -258,7 +258,7 @@ public class TriggerScriptHelper
         TableInfo ti = dataset.getTableInfo(user);
         SQLFragment sql = new SQLFragment("DELETE FROM studydataset." + dataset.getDomain().getStorageTableName() + " WHERE caseid = ?", caseId);
         int modified = new SqlExecutor(ti.getSchema()).execute(sql);
-        _log.info("deleted " + modified + " master problems due to case deletion: " + caseId);
+        _log.info("deleted {} master problems due to case deletion: {}", modified, caseId);
     }
 
     public void closeActiveProblemsForCase(String id, Date enddate, String caseId)
@@ -337,10 +337,7 @@ public class TriggerScriptHelper
     {
         Map<String, EHRQCState> qcStates = EHRSecurityManager.get().getQCStateInfo(getContainer());
 
-        if (qcStates.containsKey(label))
-            return qcStates.get(label);
-        else
-            return null;
+        return qcStates.getOrDefault(label, null);
     }
 
     public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue)
@@ -661,7 +658,7 @@ public class TriggerScriptHelper
         {
             if (deathDate.before(date))
             {
-                _log.error("attempting to create a housing record that starts after the death date: " + _dateTimeFormat.format(date), new Exception());
+                _log.error("attempting to create a housing record that starts after the death date: {}", _dateTimeFormat.format(date), new Exception());
                 return;
             }
             else if (enddate == null || enddate.after(deathDate))
@@ -769,7 +766,7 @@ public class TriggerScriptHelper
         TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("Id"), id), null);
         if (ts.exists())
         {
-            _log.info("Id already exists, no need to create demographics record: " + id);
+            _log.info("Id already exists, no need to create demographics record: {}", id);
             return;
         }
 
@@ -858,11 +855,11 @@ public class TriggerScriptHelper
                 newRows.add(row);
                 keyRows.add(keyRow);
                 ids.add(id);
-                _log.debug("Attempting to update demographics for " + id + ": " + row);
+                _log.debug("Attempting to update demographics for {}: {}", id, row);
             }
             else
             {
-                _log.error("Unable to find demographics record for id: " + id);
+                _log.error("Unable to find demographics record for id: {}", id);
             }
         }
 
@@ -1030,7 +1027,7 @@ public class TriggerScriptHelper
         catch (ConversionException e)
         {
             //ignore.  could consider trying to resolve this against displayValue
-            _log.warn("unable to convert project to integer: [" + projectId + "]", new Exception());
+            _log.warn("unable to convert project to integer: [{}]", projectId, new Exception());
         }
 
         return false;
@@ -1197,7 +1194,7 @@ public class TriggerScriptHelper
                 errorMsgBuilder.append("Blood volume of ")
                                .append(rowQuantity)
                                .append(" (")
-                               .append(overages.descendingSet().iterator().next())
+                               .append(overages.descendingSet().getFirst())
                                .append(" over ")
                                .append(interval)
                                .append(" days) exceeds the allowable volume of ")
@@ -1212,7 +1209,7 @@ public class TriggerScriptHelper
                 errorMsgBuilder.append("Limit notice! Blood volume of ")
                                .append(rowQuantity)
                                .append(" (")
-                               .append(closeToThreshold.descendingSet().iterator().next())
+                               .append(closeToThreshold.descendingSet().getFirst())
                                .append(" over ")
                                .append(interval)
                                .append(" days) is within ")
@@ -1468,7 +1465,7 @@ public class TriggerScriptHelper
     public void sendRequestStateEmail(final String label, final List<String> requestIds)
     {
         JobRunner.getDefault().execute(() -> {
-            _log.info("processing " + label.toLowerCase() + " request email for " + requestIds.size() + " records");
+            _log.info("processing {} request email for {} records", label.toLowerCase(), requestIds.size());
 
             final TableInfo requestTable = getTableInfo("ehr", "requests");
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
@@ -1508,7 +1505,7 @@ public class TriggerScriptHelper
     {
         if (requestId != null && qcStateId != null)
         {
-            _log.info("Updating request status for " + requestId);
+            _log.info("Updating request status for {}", requestId);
             Map<String, Object> toUpdate = new CaseInsensitiveHashMap<>();
             toUpdate.put("qcstate", qcStateId);
             toUpdate.put("requestid", requestId);
@@ -1566,7 +1563,7 @@ public class TriggerScriptHelper
     public void processModifiedRequests(final List<String> requestIds)
     {
 
-        _log.info("processing request status for " + requestIds.size() + " records");
+        _log.info("processing request status for {} records", requestIds.size());
         for (String requestId : requestIds)
         {
             SQLFragment sql = getRequestStudyDataSQL(getContainer(), getUser(), requestId);
@@ -1716,7 +1713,7 @@ public class TriggerScriptHelper
                 }
                 catch (ConversionException e)
                 {
-                    _log.warn("Improper date: " + obj, e);
+                    _log.warn("Improper date: {}", obj, e);
                 }
             }
         }
@@ -1747,7 +1744,7 @@ public class TriggerScriptHelper
         {
             if (!idsInDemographics.contains(id))
             {
-                _log.info("ID not in demographics table, cannot update status: " + id);
+                _log.info("ID not in demographics table, cannot update status: {}", id);
                 continue;
             }
 
@@ -2263,7 +2260,7 @@ public class TriggerScriptHelper
             //test permission first
             if (!EHRService.get().hasPermission("study", "clinpathRuns", getContainer(), getUser(), InsertPermission.class, EHRService.QCSTATES.RequestPending.getQCState(getContainer())))
             {
-                _log.warn("User does not have permission to insert requests into Clinpath Runs follow blood draw: " + getUser().getEmail());
+                _log.warn("User does not have permission to insert requests into Clinpath Runs follow blood draw: {}", getUser().getEmail());
                 return;
             }
 
@@ -2295,13 +2292,13 @@ public class TriggerScriptHelper
 
                 if (row.get("formtype") == null)
                 {
-                    _log.error("Unable to determine formtype for automatic lab request for service: " + row.get("service"));
+                    _log.error("Unable to determine formtype for automatic lab request for service: {}", row.get("service"));
                     continue;
                 }
 
                 if (rowMap.get("labwork_service") == null)
                 {
-                    _log.error("Unable to determine formtype for automatic lab request for service: " + row.get("service"));
+                    _log.error("Unable to determine formtype for automatic lab request for service: {}", row.get("service"));
                     continue;
                 }
 
@@ -2425,7 +2422,7 @@ public class TriggerScriptHelper
             {
                 new SqlExecutor(ti.getSchema()).execute(new SQLFragment("DELETE FROM ehr.snomed_tags WHERE objectid = ?", pk));
             }
-            _log.info("deleted " + pks.size() + " snomed tags for record: " + objectid);
+            _log.info("deleted {} snomed tags for record: {}", pks.size(), objectid);
         }
     }
 
@@ -2448,13 +2445,13 @@ public class TriggerScriptHelper
             String[] codeList = StringUtils.split(codes, ";");
             int sort = 1;
 
-            _log.info("adding " + codeList.length + " SNOMED tags for: " + objectid);
+            _log.info("adding {} SNOMED tags for: {}", codeList.length, objectid);
             for (String code : codeList)
             {
                 String[] tokens = code.split("<>");
                 if (tokens.length != 2)
                 {
-                    _log.error("Improper SNOMED code string: " + codes);
+                    _log.error("Improper SNOMED code string: {}", codes);
                     continue;
                 }
 
@@ -2560,7 +2557,7 @@ public class TriggerScriptHelper
             Date date = _dateTimeFormat.parse(row.get("date").toString());
             if (!dateOnly && date.getHours() == 0 && date.getMinutes() == 0)
             {
-                _log.warn("Attempting to terminate " + dataset + " records with a rounded date.  This might indicate upstream code is rounding the date: " + _dateTimeFormat.format(date));
+                _log.warn("Attempting to terminate {} records with a rounded date.  This might indicate upstream code is rounding the date: {}", dataset, _dateTimeFormat.format(date));
             }
 
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), row.get("Id"));
@@ -2599,7 +2596,7 @@ public class TriggerScriptHelper
 
         if (!toUpdate.isEmpty())
         {
-            _log.info("closing " + dataset + " records: " + toUpdate.size());
+            _log.info("closing {} records: {}", dataset, toUpdate.size());
             Map<String, Object> context = getExtraContext();
             context.put("skipAnnounceChangedParticipants", true);
             context.put("skipClosingRecords", true);
@@ -2653,7 +2650,7 @@ public class TriggerScriptHelper
         TableInfo flagCategoriesTable = getTableInfo("ehr_lookups", "flag_categories");
         TableSelector ts2 =  new TableSelector(flagCategoriesTable, Collections.singleton("enforceUnique"), new SimpleFilter(FieldKey.fromString("category"), category), null);
         List<Boolean> ret = ts2.getArrayList(Boolean.class);
-        boolean enforceUnique = ret != null && ret.size() == 1 ? ret.get(0) : false;
+        boolean enforceUnique = ret != null && ret.size() == 1 ? ret.getFirst() : false;
 
         if (enforceUnique)
         {
@@ -2668,19 +2665,14 @@ public class TriggerScriptHelper
             QueryUpdateService qus = flagsTable.getUpdateService();
 
             TableSelector ts = new TableSelector(flagsTable, PageFlowUtil.set("lsid", "Id", "enddate"), filter, null);
-            ts.forEach(new Selector.ForEachBlock<>()
-            {
-                @Override
-                public void exec(ResultSet rs) throws SQLException
-                {
-                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
-                    row.put("enddate", enddate);
-                    rows.add(row);
+            ts.forEach(rs -> {
+                Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                row.put("enddate", enddate);
+                rows.add(row);
 
-                    Map<String, Object> keys = new CaseInsensitiveHashMap<>();
-                    keys.put("lsid", rs.getString("lsid"));
-                    oldKeys.add(keys);
-                }
+                Map<String, Object> keys = new CaseInsensitiveHashMap<>();
+                keys.put("lsid", rs.getString("lsid"));
+                oldKeys.add(keys);
             });
 
             try
@@ -2714,7 +2706,7 @@ public class TriggerScriptHelper
         {
             SqlSelector ss = new SqlSelector(EHRSchema.getInstance().getSchema(), "SELECT COALESCE(max(code), 0) as expr FROM ehr_lookups.flag_values");
             List<Integer> ret = ss.getArrayList(Integer.class);
-            _nextFlagCode = ret.isEmpty() ? 0 : ret.get(0);
+            _nextFlagCode = ret.isEmpty() ? 0 : ret.getFirst();
         }
 
         _nextFlagCode++;

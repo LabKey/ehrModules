@@ -380,7 +380,7 @@ public class BillingNotification extends AbstractNotification
                             values = new HashMap<>();
 
 
-                        Integer count = values.containsKey(fd.getFieldName()) ? values.get(fd.getFieldName()) : 0;
+                        Integer count = values.getOrDefault(fd.getFieldName(), 0);
                         count++;
                         values.put(fd.getFieldName(), count);
 

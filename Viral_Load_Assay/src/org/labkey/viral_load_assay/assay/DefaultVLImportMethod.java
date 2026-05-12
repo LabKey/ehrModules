@@ -49,12 +49,6 @@ class DefaultVLImportMethod extends DefaultAssayImportMethod
         return meta;
     }
 
-    @Override
-    public boolean supportsRunTemplates()
-    {
-        return false;
-    }
-
     protected enum Category {
         STD(){
             @Override
