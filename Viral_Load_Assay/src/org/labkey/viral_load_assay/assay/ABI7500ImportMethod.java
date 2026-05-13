@@ -383,22 +383,6 @@ public class ABI7500ImportMethod extends DefaultVLImportMethod
                         continue;
                     }
 
-                    if (TYPE.Standard.equals(category))
-                    {
-                        map.putIfAbsent("sampleVol", 1);
-
-                        if (!(map.get(QUANTITY_FIELD) instanceof Double))
-                        {
-                            errors.addError("Row " + rowIdx + ": Quantity for standard was not a number: " + map.get(QUANTITY_FIELD));
-                            continue;
-                        }
-                    }
-                    else if (TYPE.NEG_CTL.equals(category))
-                    {
-                        map.putIfAbsent("sampleVol", 1);
-
-                    }
-
                     for (String field :  new String[]{"sampleVol", "volPerRxn", "eluateVol"})
                     {
                         if (map.get(field) == null)
