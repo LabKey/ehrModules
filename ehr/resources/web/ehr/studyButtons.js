@@ -266,6 +266,34 @@ EHR.DatasetButtons = new function () {
             }, this);
         },
 
+        discardEmptyTasks: function (dataRegionName) {
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+            var checked = dataRegion.getChecked();
+            if (!checked || !checked.length) {
+                Ext4.Msg.alert('Error', 'No records selected');
+                return;
+            }
+
+            Ext4.Msg.confirm('Delete Empty Tasks',
+                'Permanently delete the selected task(s)? This will fail if any selected task has related data in a study dataset. Note: Task related data in other schemas is not checked.',
+                function (val) {
+                    if (val !== 'yes') return;
+                    Ext4.Msg.wait('Deleting...');
+                    LABKEY.Ajax.request({
+                        url: LABKEY.ActionURL.buildURL('ehr', 'discardEmptyTasks', null, {taskIds: checked}),
+                        method: 'POST',
+                        success: function (response) {
+                            Ext4.Msg.hide();
+                            var json = LABKEY.Utils.decode(response.responseText) || {};
+                            Ext4.Msg.alert('Success', 'Deleted ' + (json.deletedCount || 0) + ' task(s).');
+                            dataRegion.refresh();
+                        },
+                        failure: LDK.Utils.getErrorCallback(),
+                        scope: this
+                    });
+                }, this);
+        },
+
         limitKinshipSelection: function (dataRegionName) {
             var dataRegion = LABKEY.DataRegions[dataRegionName];
 

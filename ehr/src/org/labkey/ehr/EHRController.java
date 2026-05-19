@@ -49,6 +49,7 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.ehr.demographics.AnimalRecord;
 import org.labkey.api.ehr.history.HistoryRow;
+import org.labkey.api.ehr.security.EHRDataAdminPermission;
 import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.gwt.client.AuditBehaviorType;
@@ -60,6 +61,7 @@ import org.labkey.api.query.AbstractQueryImportAction;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryAction;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QueryParseException;
@@ -328,6 +330,137 @@ public class EHRController extends SpringActionController
             resultProperties.put("success", true);
 
             return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    public static class DiscardEmptyTasksForm
+    {
+        private String[] taskIds;
+
+        public String[] getTaskIds()
+        {
+            return taskIds;
+        }
+
+        public void setTaskIds(String[] taskIds)
+        {
+            this.taskIds = taskIds;
+        }
+    }
+
+    @RequiresPermission(EHRDataAdminPermission.class)
+    public static class DiscardEmptyTasksAction extends MutatingApiAction<DiscardEmptyTasksForm>
+    {
+        private List<String> _selectedTaskIds;
+        private TableInfo _tasksTable;
+
+        @Override
+        public void validateForm(DiscardEmptyTasksForm form, Errors errors)
+        {
+            super.validateForm(form, errors);
+
+            if (form.getTaskIds() == null || form.getTaskIds().length == 0)
+            {
+                errors.reject(ERROR_MSG, "No tasks selected.");
+                return;
+            }
+            _selectedTaskIds = Arrays.asList(form.getTaskIds());
+
+            UserSchema ehrSchema = QueryService.get().getUserSchema(getUser(), getContainer(), EHRSchema.EHR_SCHEMANAME);
+            if (ehrSchema == null)
+            {
+                errors.reject(ERROR_MSG, "EHR schema is not available in this container.");
+                return;
+            }
+
+            _tasksTable = ehrSchema.getTable(EHRSchema.TABLE_TASKS);
+            if (_tasksTable == null)
+            {
+                errors.reject(ERROR_MSG, "ehr.tasks table is not available in this container.");
+                return;
+            }
+
+            Set<String> nonEmpty = new LinkedHashSet<>();
+            UserSchema studySchema = QueryService.get().getUserSchema(getUser(), getContainer(), "study");
+            if (studySchema != null)
+            {
+                TableInfo studyData = studySchema.getTable("StudyData");
+                if (studyData != null && studyData.getColumn("taskid") != null)
+                {
+                    SimpleFilter filter = new SimpleFilter(FieldKey.fromString("taskid"), _selectedTaskIds, CompareType.IN);
+                    String[] ids = new TableSelector(studyData, Collections.singleton("taskid"), filter, null).getArray(String.class);
+                    if (ids != null)
+                    {
+                        for (String id : ids)
+                        {
+                            if (id != null)
+                                nonEmpty.add(id);
+                        }
+                    }
+                }
+            }
+
+            if (!nonEmpty.isEmpty())
+            {
+                errors.reject(ERROR_MSG, "Cannot delete: " + nonEmpty.size() + " of the selected task(s) have associated dataset records. Task ID(s): " + String.join(", ", nonEmpty));
+            }
+        }
+
+        @Override
+        public ApiResponse execute(DiscardEmptyTasksForm form, BindException errors)
+        {
+            int deleted;
+            try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
+            {
+                deleted = deleteRowsByTaskIds(_tasksTable, _selectedTaskIds);
+                transaction.commit();
+            }
+            catch (SQLException e)
+            {
+                throw new RuntimeSQLException(e);
+            }
+
+            Map<String, Object> resultProperties = new HashMap<>();
+            resultProperties.put("success", true);
+            resultProperties.put("deletedCount", deleted);
+            return new ApiSimpleResponse(resultProperties);
+        }
+
+        private int deleteRowsByTaskIds(TableInfo ti, List<String> taskIds) throws SQLException
+        {
+            QueryUpdateService qus = ti.getUpdateService();
+            if (qus == null)
+                return 0;
+
+            int total = 0;
+            final int chunkSize = 1000;
+            for (int start = 0; start < taskIds.size(); start += chunkSize)
+            {
+                List<String> chunk = taskIds.subList(start, Math.min(start + chunkSize, taskIds.size()));
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("taskid"), chunk, CompareType.IN);
+                String[] pkColumns = ti.getPkColumnNames().toArray(new String[0]);
+                Set<String> selectCols = new LinkedHashSet<>(Arrays.asList(pkColumns));
+                selectCols.add("taskid");
+
+                Map<String, Object>[] rows = new TableSelector(ti, selectCols, filter, null).getMapArray();
+                if (rows == null || rows.length == 0)
+                    continue;
+
+                List<Map<String, Object>> keys = new ArrayList<>(rows.length);
+                for (Map<String, Object> row : rows)
+                    keys.add(new HashMap<>(row));
+
+                try
+                {
+                    qus.deleteRows(getUser(), getContainer(), keys, null, new HashMap<>());
+                }
+                catch (InvalidKeyException | QueryUpdateServiceException | BatchValidationException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                total += rows.length;
+            }
+            return total;
         }
     }
 
