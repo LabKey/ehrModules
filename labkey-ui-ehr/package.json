@@ -1,6 +1,6 @@
 {
   "name": "@labkey/ehr",
-  "version": "0.0.7-fb-packagesMay15.0",
+  "version": "0.0.7",
   "description": "Components, models, actions, and utility functions for LabKey EHR applications and pages",
   "sideEffects": false,
   "files": [
@@ -54,11 +54,11 @@
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
   "dependencies": {
-    "@labkey/components": "7.38.1-fb-packagesMay15.0"
+    "@labkey/components": "7.39.1"
   },
   "devDependencies": {
-    "@labkey/build": "9.1.4-fb-packagesMay15.0",
-    "@labkey/eslint-config": "1.2.1-fb-packagesMay15.0",
+    "@labkey/build": "9.1.4",
+    "@labkey/eslint-config": "1.2.1",
     "@types/jest": "30.0.0",
     "@types/react": "18.3.26",
     "@types/react-dom": "18.3.7",
