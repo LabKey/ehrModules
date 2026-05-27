@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,6 @@ import org.labkey.api.view.ViewContext;
 import java.io.IOException;
 import java.io.StringReader;
 
-/**
- * Created with IntelliJ IDEA.
- * User: bimber
- * Date: 9/15/12
- * Time: 7:29 AM
- */
 public class LC480ImportMethod extends AbstractWNPRCImportMethod
 {
     public static final String NAME = "LC480";

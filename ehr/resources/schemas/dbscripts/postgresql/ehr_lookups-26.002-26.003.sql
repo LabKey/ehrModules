@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 -- Dropping ix_ehr_lookups_request_priority_container [container] because it overlaps with uq_request_priority [container, priority]
 DROP INDEX ehr_lookups.ix_ehr_lookups_request_priority_container;
 -- Dropping ix_ehr_lookups_usda_levels_container [container] because it overlaps with uq_usda_levels [container, usda_level]
