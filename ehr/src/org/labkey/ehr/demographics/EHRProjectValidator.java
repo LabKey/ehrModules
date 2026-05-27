@@ -30,10 +30,6 @@ import java.util.Date;
 
 /**
  * A core project validator providing validation for assigned projects for animal
- *
- * Author: ankurj
- * Date: 7/6/2018
- *
  */
 public class EHRProjectValidator extends AbstractProjectValidator
 {
