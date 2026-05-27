@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 package org.labkey.ehr.table;
+
 import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-/**
- * Created by rond on 12/28/2016.
- */
-
 
 public class TestAgeYearsAndMonths
 {

@@ -17,9 +17,6 @@ package org.labkey.ehr_compliancedb.api;
 
 import org.labkey.api.data.Container;
 
-/**
- * Created by jon on 3/22/16.
- */
 public abstract class EHR_ComplianceService {
     static private EHR_ComplianceService _service = null;
 

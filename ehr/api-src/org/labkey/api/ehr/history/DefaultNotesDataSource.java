@@ -15,10 +15,6 @@
  */
 package org.labkey.api.ehr.history;
 
-/**
- * Created by Marty on 11/28/2016.
- */
-
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.module.Module;

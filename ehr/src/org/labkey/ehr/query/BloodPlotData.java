@@ -18,9 +18,6 @@ package org.labkey.ehr.query;
 import org.json.JSONObject;
 import java.util.Date;
 
-/**
- * Created by Marty on 4/13/2016.
- */
 public class BloodPlotData
 {
     private String _id;

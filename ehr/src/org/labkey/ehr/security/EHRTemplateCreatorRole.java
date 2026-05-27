@@ -17,9 +17,6 @@ package org.labkey.ehr.security;
 
 import org.labkey.api.ehr.security.EHRTemplateCreatorPermission;
 
-/**
- * Created by Josh on 2/25/2016.
- */
 public class EHRTemplateCreatorRole extends AbstractEHRRole
 {
     public EHRTemplateCreatorRole()

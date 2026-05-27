@@ -22,9 +22,6 @@ import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.ehr_compliancedb.api.EHR_ComplianceService;
 
-/**
- * Created by jon on 3/22/16.
- */
 public class EHR_ComplianceServiceImpl extends EHR_ComplianceService {
     static public String EmployeeContainerPropertyName = "EmployeeContainer";
 

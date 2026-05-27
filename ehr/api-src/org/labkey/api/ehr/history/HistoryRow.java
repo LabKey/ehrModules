@@ -19,8 +19,6 @@ import org.json.JSONObject;
 
 /**
  * An individual item within a Clinical History, as created by a {@link HistoryDataSource}
- * User: bimber
- * Date: 3/3/13
  */
 public interface HistoryRow
 {

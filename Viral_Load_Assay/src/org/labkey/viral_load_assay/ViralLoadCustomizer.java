@@ -31,9 +31,6 @@ import org.labkey.api.assay.AssayService;
 
 import java.util.List;
 
-/**
- * Created by bimber on 4/12/2017.
- */
 public class ViralLoadCustomizer implements TableCustomizer
 {
     @Override

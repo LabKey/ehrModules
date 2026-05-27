@@ -29,9 +29,6 @@ import javax.script.ScriptException;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * Created by Marty on 4/24/2017.
- */
 public class TriggerScriptFactory extends ScriptTriggerFactory
 {
     @Override
