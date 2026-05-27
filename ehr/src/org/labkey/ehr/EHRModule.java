@@ -25,6 +25,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRDemographicsService;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.buttons.DiscardEmptyTasksButton;
 import org.labkey.api.ehr.buttons.EHRShowEditUIButton;
 import org.labkey.api.ehr.buttons.MarkCompletedButton;
 import org.labkey.api.ehr.demographics.ActiveAssignmentsDemographicsProvider;
@@ -249,6 +250,7 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new CompareWeightsButton(this), "study", "weight");
         EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "my_tasks");
         EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "tasks");
+        EHRService.get().registerMoreActionsButton(new DiscardEmptyTasksButton(this), "ehr", "tasks");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "treatment_order", "Set End Date"), "study", "treatment_order");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "problem", "End Problem(s)", true), "study", "problem");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "feeding"), "study", "feeding");

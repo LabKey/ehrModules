@@ -477,7 +477,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         repopulate("All");
     }
 
-    private void setFormatStrings()
+    protected void setFormatStrings()
     {
         navigateToFolder(getProjectName(), getFolderName());
         goToProjectSettings();
