@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 PARAMETERS (RequirementName VARCHAR DEFAULT 'SOP REVIEW-ANNUAL')
 
 SELECT t1.employeeid, t3.lastname, t3.firstname, t1.requirementname, t1.date

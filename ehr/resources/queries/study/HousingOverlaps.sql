@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2011-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
   * This query is designed to find housing records that overlap.  In this query, the overlap to calculated based on both date and time
   * A record that ends at the same time that a second record begins is not considered an overlap.

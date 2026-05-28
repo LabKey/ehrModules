@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 LabKey Corporation
+ * Copyright (c) 2016-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ import org.json.JSONObject;
 
 /**
  * An individual item within a Clinical History, as created by a {@link HistoryDataSource}
- * User: bimber
- * Date: 3/3/13
  */
 public interface HistoryRow
 {

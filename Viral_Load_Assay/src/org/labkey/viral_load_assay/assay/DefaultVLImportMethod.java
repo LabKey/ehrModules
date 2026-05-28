@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: bimber
- * Date: 9/26/12
- * Time: 3:52 PM
- */
 class DefaultVLImportMethod extends DefaultAssayImportMethod
 {
     public DefaultVLImportMethod(String providerName)

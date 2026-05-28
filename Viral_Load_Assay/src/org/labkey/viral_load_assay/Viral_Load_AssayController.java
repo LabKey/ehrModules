@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,6 @@ package org.labkey.viral_load_assay;
 
 import org.labkey.api.action.SpringActionController;
 
-/**
- * Created with IntelliJ IDEA.
- * User: bimber
- * Date: 9/1/12
- * Time: 8:45 PM
- */
 public class Viral_Load_AssayController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(Viral_Load_AssayController.class);

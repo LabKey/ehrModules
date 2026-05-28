@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 LabKey Corporation
+ * Copyright (c) 2016-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,6 @@ package org.labkey.ehr.query;
 import org.json.JSONObject;
 import java.util.Date;
 
-/**
- * Created by Marty on 4/13/2016.
- */
 public class BloodPlotData
 {
     private String _id;

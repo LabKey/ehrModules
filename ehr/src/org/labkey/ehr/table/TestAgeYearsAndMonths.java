@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 LabKey Corporation
+ * Copyright (c) 2017-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 package org.labkey.ehr.table;
+
 import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-/**
- * Created by rond on 12/28/2016.
- */
-
 
 public class TestAgeYearsAndMonths
 {

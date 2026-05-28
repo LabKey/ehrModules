@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 LabKey Corporation
+ * Copyright (c) 2017-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,6 @@ import javax.script.ScriptException;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * Created by Marty on 4/24/2017.
- */
 public class TriggerScriptFactory extends ScriptTriggerFactory
 {
     @Override

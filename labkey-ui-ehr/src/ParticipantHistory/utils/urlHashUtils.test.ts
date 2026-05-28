@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 import { FILTER_TYPE_ALIVE_AT_CENTER, FILTER_TYPE_ALL, FILTER_TYPE_ID_SEARCH, FILTER_TYPE_URL_PARAMS } from '../models';
 import { getFiltersFromUrl, updateUrlHash } from './urlHashUtils';
 

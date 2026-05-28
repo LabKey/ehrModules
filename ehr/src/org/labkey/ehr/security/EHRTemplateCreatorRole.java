@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 LabKey Corporation
+ * Copyright (c) 2016-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@ package org.labkey.ehr.security;
 
 import org.labkey.api.ehr.security.EHRTemplateCreatorPermission;
 
-/**
- * Created by Josh on 2/25/2016.
- */
 public class EHRTemplateCreatorRole extends AbstractEHRRole
 {
     public EHRTemplateCreatorRole()
