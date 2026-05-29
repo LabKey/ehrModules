@@ -34,12 +34,12 @@ import org.labkey.api.reports.report.r.RScriptEngineFactory;
 import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.util.FileType;
+import org.labkey.api.util.LabKeyProcessBuilder;
 import org.labkey.ehr.EHRModule;
 import org.labkey.vfs.FileLike;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         @Override
         public List<String> getProtocolActionNames()
         {
-            return Arrays.asList("Calculating Kinship");
+            return List.of("Calculating Kinship");
         }
 
         @Override
@@ -136,7 +136,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         args.add(tsvFile.toNioPathForRead().toFile().getPath());
 
         getJob().getLogger().info("Using working directory of: {}", support.getAnalysisDirectory().getPath());
-        ProcessBuilder pb = new ProcessBuilder(args);
+        LabKeyProcessBuilder pb = new LabKeyProcessBuilder(args);
         job.runSubProcess(pb, support.getAnalysisDirectory());
 
         FileLike output = support.getAnalysisDirectory().resolveChild(outputFileName);
