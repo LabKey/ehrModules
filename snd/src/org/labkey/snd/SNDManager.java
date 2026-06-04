@@ -2208,6 +2208,24 @@ public class SNDManager
     }
 
     /**
+     * Returns the EventId for an existing event that was saved with the given ObjectId, or null if not found.
+     * Used by saveEvent for idempotent retries: when a client-generated ObjectId is provided and already
+     * exists in the DB, the event was already committed and should not be inserted again.
+     */
+    public Integer getEventIdByObjectId(Container c, User u, String objectId)
+    {
+        UserSchema schema = getSndUserSchema(c, u);
+
+        SQLFragment sql = new SQLFragment("SELECT EventId FROM ");
+        sql.append(schema.getTable(SNDSchema.EVENTS_TABLE_NAME), "ev");
+        sql.append(" WHERE ObjectId = ?");
+        sql.add(objectId);
+        SqlSelector selector = new SqlSelector(schema.getDbSchema(), sql);
+
+        return selector.getObject(Integer.class);
+    }
+
+    /**
      * Get a project ObjectId given a projectId and revision in the format projectId|rev (ex. 61|1).
      */
     private String getProjectObjectId(Container c, User u, Event event)

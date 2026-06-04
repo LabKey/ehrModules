@@ -349,6 +349,24 @@ public class SNDServiceImpl implements SNDService
     {
         try (DbScope.Transaction tx = SNDSchema.getInstance().getSchema().getScope().ensureTransaction(lock))
         {
+            // Idempotency check: if a client-generated objectId is present, look up whether
+            // this event was already committed (e.g. device lost the response after the server
+            // wrote the row). If found, override the auto-generated eventId with the existing one
+            // so the request falls through to the update path instead of creating a duplicate.
+            // Note: the Event constructor always auto-assigns an eventId via SNDSequencer even
+            // when the caller passes null, so checking event.getEventId() == null would never
+            // be true here and the idempotency check would never run. We guard only on objectId.
+            // For update requests the client omits objectId, so the controller supplies a random
+            // GUID that will never match an existing row — making this lookup a safe no-op.
+            if (event.getObjectId() != null)
+            {
+                Integer existingEventId = SNDManager.get().getEventIdByObjectId(c, u, event.getObjectId());
+                if (existingEventId != null)
+                {
+                    event.setEventId(existingEventId);
+                }
+            }
+
             if (event.getEventId() != null && SNDManager.get().eventExists(c, u, event.getEventId()))
             {
                 if ((event.getEventData() == null || event.getEventData().isEmpty()) &&
