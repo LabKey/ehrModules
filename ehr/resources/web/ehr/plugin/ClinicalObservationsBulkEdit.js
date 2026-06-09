@@ -38,7 +38,9 @@ Ext4.define('EHR.plugin.ClinicalObservationsBulkEdit', {
             name: observationField.name,
             fieldLabel: observationField.fieldLabel,
             labelWidth: observationField.labelWidth,
-            width: observationField.width
+            width: observationField.width,
+            // honor metadata that marks the field as never-enableable (see BulkEditPanel.getFieldConfigs)
+            originalDisabled: observationField.originalDisabled
         };
 
         categoryField.on('change', function(field, newValue){
@@ -54,9 +56,15 @@ Ext4.define('EHR.plugin.ClinicalObservationsBulkEdit', {
 
     reconfigureObservationField: function(category){
         var store = this.observationTypesStore;
-        if (store.isLoading() || !store.getCount()){
+        // hasLoadedOnce (set in EHR.DataEntryUtils.getObservationTypesStore) distinguishes a pending
+        // initial load from one that already returned no rows; for the latter we fall through to the
+        // textfield default rather than waiting on a load event that will never fire
+        if (!store.hasLoadedOnce){
             store.on('load', function(){
-                this.reconfigureObservationField(category);
+                // the dialog may have been closed before the store finished loading
+                if (this.panel && !this.panel.isDestroyed){
+                    this.reconfigureObservationField(category);
+                }
             }, this, {single: true});
             return;
         }
@@ -67,14 +75,22 @@ Ext4.define('EHR.plugin.ClinicalObservationsBulkEdit', {
             return;
         }
 
+        //note: we proceed even if the category cannot be found, to support records saved under a no-longer-supported category
+        var rec = category ? store.findRecord('value', category) : null;
+        var rawEditorConfig = (rec && rec.get('editorconfig')) || null;
+
+        // the category combo fires change on every keystroke, so skip the rebuild when the resolved
+        // editor is unchanged; this avoids churn and preserves any value the user already entered
+        if (this.appliedEditorConfig !== undefined && this.appliedEditorConfig === rawEditorConfig){
+            return;
+        }
+
         var container = observationField.ownerCt;
         var index = container.items.indexOf(observationField);
         //preserve the user's enable/disable toggle state across category changes
         var wasDisabled = observationField.isDisabled();
 
-        //note: we proceed even if the category cannot be found, to support records saved under a no-longer-supported category
-        var rec = category ? store.findRecord('value', category) : null;
-        var editorConfig = rec && rec.get('editorconfig') ? Ext4.decode(rec.get('editorconfig')) : null;
+        var editorConfig = rawEditorConfig ? Ext4.decode(rawEditorConfig) : null;
         editorConfig = editorConfig || {
             xtype: 'textfield'
         };
@@ -84,7 +100,6 @@ Ext4.define('EHR.plugin.ClinicalObservationsBulkEdit', {
         delete cfg.value;
         delete cfg.defaultValue;
         cfg.allowBlank = true;
-        cfg.originalDisabled = false;
         cfg.disabled = wasDisabled;
 
         cfg = EHR.DataEntryUtils.ensureLookupPlugin(cfg, false);
@@ -93,5 +108,14 @@ Ext4.define('EHR.plugin.ClinicalObservationsBulkEdit', {
         var newField = Ext4.widget(cfg);
         panel.addLabelToggle(newField);
         container.insert(index, newField);
+
+        // the databind plugin only registers listeners on the fields present at init, so register the
+        // replacement explicitly to keep record syncing and validation consistent with the original field
+        var databind = panel.getPlugin('ehr-databind');
+        if (databind){
+            databind.addFieldListener(newField);
+        }
+
+        this.appliedEditorConfig = rawEditorConfig;
     }
 });
