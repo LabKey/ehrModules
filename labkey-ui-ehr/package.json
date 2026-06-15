@@ -7,20 +7,16 @@
     "dist/"
   ],
   "main": "dist/ehr.js",
-  "module": "dist/ehr.js",
-  "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/ehr.js",
-    "./participanthistory": "./dist/participanthistory.js"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/index.d.ts"
-      ],
-      "participanthistory": [
-        "dist/ParticipantHistory/index.d.ts"
-      ]
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ehr.js",
+      "default": "./dist/ehr.js"
+    },
+    "./participanthistory": {
+      "types": "./dist/ParticipantHistory/index.d.ts",
+      "import": "./dist/participanthistory.js",
+      "default": "./dist/participanthistory.js"
     }
   },
   "scripts": {
