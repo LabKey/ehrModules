@@ -54,13 +54,13 @@
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
   "dependencies": {
-    "@labkey/components": "7.42.1-fb-package-updates-060126.0"
+    "@labkey/components": "7.42.1-fb-package-updates-060126.4"
   },
   "devDependencies": {
-    "@labkey/build": "9.1.5-fb-package-updates-060126.4",
+    "@labkey/build": "9.1.5-fb-package-updates-060126.6",
     "@labkey/eslint-config": "1.2.2-fb-package-updates-060126.1",
     "@types/jest": "30.0.0",
-    "@types/react": "18.3.30",
+    "@types/react": "18.3.31",
     "@types/react-dom": "18.3.7",
     "@typescript-eslint/eslint-plugin": "8.48.0",
     "@typescript-eslint/parser": "8.48.0",
