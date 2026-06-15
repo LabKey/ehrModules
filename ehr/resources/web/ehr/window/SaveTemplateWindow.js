@@ -202,20 +202,24 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
         var tn = this.down('#templateName').getValue();
         var rows = [];
+        var noFieldsSelected = false;
 
         this.down('#theForm').items.each(function(tab){
             var radioGroup = tab.down('#recordSelector');
             var selections = radioGroup.getValue()[radioGroup.down('[name]').name];
-            var fields = tab.down('#fieldSelector').getValue().fields;
-
-            if (!fields.length)
-                return;
-
-            if (!(fields instanceof Array))  // single elements aren't wrapped in an array
-                fields = [fields];
 
             if (selections == 'none')
                 return;
+
+            var fields = tab.down('#fieldSelector').getValue().fields;
+
+            if (!fields || !fields.length){
+                noFieldsSelected = true;
+                return;
+            }
+
+            if (!(fields instanceof Array))  // single elements aren't wrapped in an array
+                fields = [fields];
 
             var store = Ext4.StoreMgr.get(tab.storeId);
 
@@ -249,7 +253,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
         if (!rows.length){
             Ext4.Msg.hide();
-            Ext4.Msg.alert('Error', "No records selected");
+            Ext4.Msg.alert('Error', noFieldsSelected ? "At least one field is required and none are selected. Note: The field can be blank." : "No records selected");
             return;
         }
 
