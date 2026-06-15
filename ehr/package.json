@@ -17,7 +17,7 @@
   "dependencies": {
     "@labkey/api": "1.51.4-fb-package-updates-060126.0",
     "@labkey/components": "7.42.1-fb-package-updates-060126.0",
-    "@labkey/ehr": "0.0.8-fb-package-updates-060126.0"
+    "@labkey/ehr": "0.0.8-fb-package-updates-060126.1"
   },
   "devDependencies": {
     "@labkey/build": "9.1.5-fb-package-updates-060126.4",
