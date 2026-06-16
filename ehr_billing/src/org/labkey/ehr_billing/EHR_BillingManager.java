@@ -79,10 +79,23 @@ public class EHR_BillingManager
 
         //create filters
         SimpleFilter objectIdFilter = createContainerScopedInFilter(container, "objectid", pks);
-        SimpleFilter invoiceIdFilter = createContainerScopedInFilter(container, "invoiceId", pks);
-        SimpleFilter invoiceRunIdFilter = createContainerScopedInFilter(container, "invoiceRunId", pks);
+        Set<String> invoiceRunIds = getInvoiceRunIds(invoiceRuns, objectIdFilter);
+        if (invoiceRunIds.isEmpty())
+        {
+            List<String> ret = new ArrayList<>();
+            if (testOnly)
+            {
+                ret.add("0 records from invoiced items");
+                ret.add("0 records from invoice");
+                ret.add("0 invoice records from misc charges will be removed from the deleted invoice, which means they will be picked up by the next billing period.  They are not deleted.");
+            }
+            return ret;
+        }
 
-        SimpleFilter miscChargesFilter = createContainerScopedInFilter(container, "invoiceId", pks);
+        SimpleFilter invoiceIdFilter = createContainerScopedInFilter(container, "invoiceId", invoiceRunIds);
+        SimpleFilter invoiceRunIdFilter = createContainerScopedInFilter(container, "invoiceRunId", invoiceRunIds);
+
+        SimpleFilter miscChargesFilter = createMiscChargesFilter(invoiceRunIds);
 
         //perform the work
         List<String> ret = new ArrayList<>();
@@ -129,6 +142,28 @@ public class EHR_BillingManager
         return SimpleFilter.createContainerFilter(container).addInClause(FieldKey.fromString(columnName), values);
     }
 
+    private Set<String> getInvoiceRunIds(TableInfo invoiceRuns, SimpleFilter objectIdFilter)
+    {
+        TableSelector tsInvoiceRuns = new TableSelector(invoiceRuns, Collections.singleton("objectid"), objectIdFilter, null);
+        String[] invoiceRunIds = tsInvoiceRuns.getArray(String.class);
+        return new HashSet<>(Arrays.asList(invoiceRunIds));
+    }
+
+    private SimpleFilter createMiscChargesFilter(Collection<String> invoiceRunIds)
+    {
+        // Intentionally NOT container-scoped. Source miscCharges records can live in any number of containers
+        // (the billing/finance container, the configured EHR study container, or other satellite containers that
+        // feed charges into a billing run), so there is no reliable, complete set of "source" containers to filter on.
+        //
+        // This is not a cross-container security issue: invoiceRunIds has already been narrowed by getInvoiceRunIds()
+        // to the run ids that actually exist in the requesting container (see the container-scoped objectIdFilter).
+        // A forged or out-of-container run id never reaches this filter, so matching miscCharges solely by
+        // invoiceId only ever touches charges belonging to runs the caller is already authorized to delete.
+        SimpleFilter filter = new SimpleFilter();
+        filter.addInClause(FieldKey.fromString("invoiceId"), invoiceRunIds);
+        return filter;
+    }
+
     private void deleteInvoiceRuns(TableInfo tableInfo, Map<String, Object>[] rows, User user, Container container) throws QueryUpdateServiceException, BatchValidationException, InvalidKeyException
     {
         if(rows.length>0)
@@ -160,10 +195,14 @@ public class EHR_BillingManager
     {
         private static final String FOLDER_A = "EHRBillingDeleteTestA";
         private static final String FOLDER_B = "EHRBillingDeleteTestB";
+        private static final String FOLDER_EHR = "EHRBillingDeleteTestEHR";
+        private static final String FOLDER_SATELLITE = "EHRBillingDeleteTestSatellite";
 
         private User _user;
         private Container _containerA;
         private Container _containerB;
+        private Container _containerEHR;
+        private Container _containerSatellite;
         private String _runIdA;
         private String _runIdB;
 
@@ -176,6 +215,9 @@ public class EHR_BillingManager
             Container junit = JunitUtil.getTestContainer();
             _containerA = createBillingFolder(junit, FOLDER_A);
             _containerB = createBillingFolder(junit, FOLDER_B);
+            _containerEHR = createBillingFolder(junit, FOLDER_EHR);
+            _containerSatellite = createBillingFolder(junit, FOLDER_SATELLITE);
+            setEHRContainer(_containerA, _containerEHR);
 
             _runIdA = insertBillingRun(_containerA);
             _runIdB = insertBillingRun(_containerB);
@@ -204,6 +246,28 @@ public class EHR_BillingManager
             assertEquals("invoicedItems row in container B should survive a delete issued from container A", 1, containerRowCount(schema.getTableInvoiceItems(), _containerB));
             assertEquals("miscCharges row in container B should still reference its invoice", 1, miscChargesWithInvoiceCount(_containerB));
 
+            // WNPRC-style source data: billing artifacts live in the finance container, but miscCharges live in the EHR container
+            String runIdWithEHRMiscCharge = insertBillingRun(_containerA, _containerEHR);
+            List<String> preview = manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithEHRMiscCharge), true);
+            assertTrue("Preview should count miscCharges rows in the EHR source container: " + preview,
+                    preview.stream().anyMatch(summary -> summary.startsWith("1 invoice records from misc charges")));
+
+            manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithEHRMiscCharge), false);
+            assertEquals("miscCharges row in the EHR source container should be detached from the deleted invoice", 0, miscChargesWithInvoiceCount(_containerEHR));
+            assertEquals("miscCharges row in the EHR source container should not be deleted", 1, containerRowCount(schema.getMiscCharges(), _containerEHR));
+
+            // Satellite source data: miscCharges can live in a container that is neither the finance container nor
+            // the configured EHR study container. The delete is keyed off the authorized run id, so these rows are
+            // still previewed and detached.
+            String runIdWithSatelliteMiscCharge = insertBillingRun(_containerA, _containerSatellite);
+            List<String> satellitePreview = manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithSatelliteMiscCharge), true);
+            assertTrue("Preview should count miscCharges rows in an unrelated source container: " + satellitePreview,
+                    satellitePreview.stream().anyMatch(summary -> summary.startsWith("1 invoice records from misc charges")));
+
+            manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithSatelliteMiscCharge), false);
+            assertEquals("miscCharges row in the satellite source container should be detached from the deleted invoice", 0, miscChargesWithInvoiceCount(_containerSatellite));
+            assertEquals("miscCharges row in the satellite source container should not be deleted", 1, containerRowCount(schema.getMiscCharges(), _containerSatellite));
+
             // Positive control: deleting a run from its own container removes its rows
             manager.deleteBillingRuns(_user, _containerA, List.of(_runIdA), false);
             assertEquals("invoiceRuns row in container A should be deleted", 0, containerRowCount(schema.getTableInvoiceRuns(), _containerA));
@@ -224,36 +288,48 @@ public class EHR_BillingManager
 
         private String insertBillingRun(Container c)
         {
+            return insertBillingRun(c, c);
+        }
+
+        private String insertBillingRun(Container billingContainer, Container miscChargesContainer)
+        {
             EHR_BillingSchema schema = EHR_BillingSchema.getInstance();
             String runId = GUID.makeGUID();
-            String invoiceNumber = c.getName();
+            String invoiceNumber = billingContainer.getName() + "-" + runId;
 
             Map<String, Object> run = new CaseInsensitiveHashMap<>();
             run.put("objectid", runId);
             run.put("runDate", new Date());
-            run.put("container", c.getId());
+            run.put("container", billingContainer.getId());
             Table.insert(_user, schema.getTableInvoiceRuns(), run);
 
             Map<String, Object> invoice = new CaseInsensitiveHashMap<>();
             invoice.put("invoiceNumber", invoiceNumber);
             invoice.put("invoiceRunId", runId);
-            invoice.put("container", c.getId());
+            invoice.put("container", billingContainer.getId());
             Table.insert(_user, schema.getInvoice(), invoice);
 
             Map<String, Object> invoicedItem = new CaseInsensitiveHashMap<>();
             invoicedItem.put("objectId", GUID.makeGUID());
             invoicedItem.put("invoiceId", runId);
             invoicedItem.put("invoiceNumber", invoiceNumber);
-            invoicedItem.put("container", c.getId());
+            invoicedItem.put("container", billingContainer.getId());
             Table.insert(_user, schema.getTableInvoiceItems(), invoicedItem);
 
             Map<String, Object> miscCharge = new CaseInsensitiveHashMap<>();
             miscCharge.put("objectid", GUID.makeGUID());
             miscCharge.put("invoiceId", runId);
-            miscCharge.put("container", c.getId());
+            miscCharge.put("container", miscChargesContainer.getId());
             Table.insert(_user, schema.getMiscCharges(), miscCharge);
 
             return runId;
+        }
+
+        private void setEHRContainer(Container source, Container ehrContainer)
+        {
+            Module ehr = ModuleLoader.getInstance().getModule("EHR");
+            ModuleProperty mp = ehr.getModuleProperties().get("EHRStudyContainer");
+            mp.saveValue(_user, source, ehrContainer.getPath());
         }
 
         private long containerRowCount(TableInfo table, Container c)
@@ -271,7 +347,7 @@ public class EHR_BillingManager
         private void deleteTestFolders()
         {
             Container junit = JunitUtil.getTestContainer();
-            for (String name : List.of(FOLDER_A, FOLDER_B))
+            for (String name : List.of(FOLDER_A, FOLDER_B, FOLDER_EHR, FOLDER_SATELLITE))
             {
                 Container c = junit.getChild(name);
                 if (c != null)
