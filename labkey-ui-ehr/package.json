@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
   "dependencies": {
-    "@labkey/components": "7.42.1-fb-package-updates-060126.4"
+    "@labkey/components": "7.42.1"
   },
   "devDependencies": {
     "@labkey/build": "9.1.5",
