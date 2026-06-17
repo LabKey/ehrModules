@@ -300,7 +300,19 @@ if ((nrow(labkey.data) == 0) | (all(is.na(labkey.data$dam)) & all(is.na(labkey.d
         png(filename="${imgout:png_pedigree}", width = plotWidth, height=plotHeight);
         par(xpd=TRUE);
 
-        plot(ptemp, align=T, width=15, symbolsize=symSize, cex=cexSize, col=fixedPed$colors, mar=c(4.1,3.5,4.1,3.8))
+        # kinship2's QP-based alignment (align=TRUE) can fail with "constraints are inconsistent,
+        # no solution!" on deep/looped pedigrees. Fall back to the unaligned layout in that case so
+        # the report still renders rather than aborting.
+        tryCatch(
+            plot(ptemp, align=TRUE, width=15, symbolsize=symSize, cex=cexSize, col=fixedPed$colors, mar=c(4.1,3.5,4.1,3.8)),
+            error = function(e) {
+                # Only the QP alignment failure is recoverable by dropping alignment; re-raise anything else.
+                if (!grepl("constraints are inconsistent", conditionMessage(e), fixed = TRUE))
+                    stop(e)
+                message("Pedigree alignment failed (", conditionMessage(e), "); retrying with align=FALSE.")
+                plot(ptemp, align=FALSE, width=15, symbolsize=symSize, cex=cexSize, col=fixedPed$colors, mar=c(4.1,3.5,4.1,3.8))
+            }
+        )
         mtext("Unknown animals are marked with xxs ## or xxd ## where ## is a randomly generated unique number. This identifier is used only in this plot and is re-generated each time the plot is rendered.",
             side = 1, font = 3, cex = 0.95)
         leg.txt <- c("Male", "Female", "Deceased")
