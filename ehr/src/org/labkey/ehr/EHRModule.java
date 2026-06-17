@@ -137,6 +137,12 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
+    public @NotNull Set<Class> getIntegrationTests()
+    {
+        return Set.of(EHRController.TestCase.class);
+    }
+
+    @Override
     protected void init()
     {
         addController(CONTROLLER_NAME, EHRController.class);

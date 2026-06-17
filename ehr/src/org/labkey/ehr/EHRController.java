@@ -16,15 +16,21 @@
 
 package org.labkey.ehr;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.MutatingApiAction;
+import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
@@ -38,6 +44,9 @@ import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.DisplayColumn;
 import org.labkey.api.data.JsonWriter;
+import org.labkey.api.data.NormalContainerType;
+import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
@@ -76,17 +85,27 @@ import org.labkey.api.reader.Readers;
 import org.labkey.api.reader.TabLoader;
 import org.labkey.api.resource.FileResource;
 import org.labkey.api.resource.Resource;
+import org.labkey.api.security.MutableSecurityPolicy;
 import org.labkey.api.security.RequiresPermission;
+import org.labkey.api.security.SecurityManager;
+import org.labkey.api.security.SecurityPolicyManager;
+import org.labkey.api.security.User;
+import org.labkey.api.security.UserManager;
+import org.labkey.api.security.ValidEmail;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
+import org.labkey.api.security.roles.FolderAdminRole;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DatasetTable;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.GUID;
 import org.labkey.api.util.HtmlStringBuilder;
+import org.labkey.api.util.JunitUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
+import org.labkey.api.util.TestContext;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.ActionURL;
@@ -95,6 +114,7 @@ import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.Portal;
 import org.labkey.api.view.UnauthorizedException;
+import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
@@ -650,6 +670,13 @@ public class EHRController extends SpringActionController
                 errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
                 return null;
             }
+
+            // The @RequiresPermission check only covers the request container; re-verify admin on the
+            // resolved target so a folder admin can't redirect the (global) genetic-calc job at a
+            // container they don't administer.
+            if (!c.hasPermission(getUser(), AdminPermission.class))
+                throw new UnauthorizedException("You do not have permission to configure genetic calculations for container: " + c.getPath());
+
             GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay(), form.getDayOfWeek(), form.isKinshipValidation(), form.isAllowImportDuringBusinessHours());
 
             return new ApiSimpleResponse("success", true);
@@ -2445,6 +2472,146 @@ public class EHRController extends SpringActionController
         public void setStartingId(Integer startingId)
         {
             _startingId = startingId;
+        }
+    }
+
+    /**
+     * Verifies the cross-container authorization of {@link SetGeneticCalculationTaskSettingsAction}. The
+     * {@code @RequiresPermission(AdminPermission.class)} annotation only guards the request container, but the action
+     * resolves and acts on a caller-supplied {@code containerPath}. This test confirms a user who administers the
+     * request container but not the resolved target container is rejected, while a user who administers the target
+     * succeeds.
+     */
+    public static class TestCase extends Assert
+    {
+        private static final String REQUEST_ADMIN_EMAIL = "geneticcalc_request_admin@ehrcontroller.test";
+        private static final String BOTH_ADMIN_EMAIL = "geneticcalc_both_admin@ehrcontroller.test";
+
+        private static Container _requestContainer;
+        private static Container _targetContainer;
+        private static User _requestAdmin;  // folder admin on the request container only
+        private static User _bothAdmin;     // folder admin on both the request and target containers
+
+        @BeforeClass
+        public static void setup() throws Exception
+        {
+            cleanup();
+
+            User testUser = TestContext.get().getUser();
+            Container junit = JunitUtil.getTestContainer();
+            _requestContainer = ContainerManager.createContainer(junit, "EHRGeneticCalcTest-request-" + GUID.makeGUID(), null, null, NormalContainerType.NAME, testUser);
+            _targetContainer = ContainerManager.createContainer(junit, "EHRGeneticCalcTest-target-" + GUID.makeGUID(), null, null, NormalContainerType.NAME, testUser);
+
+            _requestAdmin = SecurityManager.addUser(new ValidEmail(REQUEST_ADMIN_EMAIL), null).getUser();
+            _bothAdmin = SecurityManager.addUser(new ValidEmail(BOTH_ADMIN_EMAIL), null).getUser();
+
+            MutableSecurityPolicy requestPolicy = new MutableSecurityPolicy(_requestContainer, _requestContainer.getPolicy());
+            requestPolicy.addRoleAssignment(_requestAdmin, FolderAdminRole.class);
+            requestPolicy.addRoleAssignment(_bothAdmin, FolderAdminRole.class);
+            SecurityPolicyManager.savePolicyForTests(requestPolicy, testUser);
+
+            MutableSecurityPolicy targetPolicy = new MutableSecurityPolicy(_targetContainer, _targetContainer.getPolicy());
+            targetPolicy.addRoleAssignment(_bothAdmin, FolderAdminRole.class);
+            SecurityPolicyManager.savePolicyForTests(targetPolicy, testUser);
+        }
+
+        @Test
+        public void testCannotConfigureForeignContainer()
+        {
+            // _requestAdmin administers the request container but NOT the target container, so pointing the
+            // (global) genetic-calc schedule at the target container must be rejected.
+            SetGeneticCalculationTaskSettingsAction action = new SetGeneticCalculationTaskSettingsAction();
+            action.setViewContext(makeContext(_requestAdmin, _requestContainer));
+
+            ScheduleGeneticCalculationForm form = new ScheduleGeneticCalculationForm();
+            form.setEnabled(false);
+            form.setContainerPath(_targetContainer.getPath());
+            form.setHourOfDay(2);
+
+            try
+            {
+                action.execute(form, new NullSafeBindException(form, "form"));
+                fail("Expected UnauthorizedException when targeting a container the user does not administer");
+            }
+            catch (UnauthorizedException expected)
+            {
+                // expected
+            }
+        }
+
+        @Test
+        public void testCanConfigureAdministeredContainer()
+        {
+            // _bothAdmin administers the target container, so configuring the schedule for it must succeed. Preserve
+            // and restore the server-global settings this action mutates so the test leaves no side effects.
+            Map<String, String> original = new HashMap<>(PropertyManager.getProperties(GeneticCalculationsJob.GENETICCALCULATIONS_PROPERTY_DOMAIN));
+            try
+            {
+                SetGeneticCalculationTaskSettingsAction action = new SetGeneticCalculationTaskSettingsAction();
+                action.setViewContext(makeContext(_bothAdmin, _requestContainer));
+
+                ScheduleGeneticCalculationForm form = new ScheduleGeneticCalculationForm();
+                form.setEnabled(false);  // keep disabled so no Quartz job is actually scheduled
+                form.setContainerPath(_targetContainer.getPath());
+                form.setHourOfDay(2);
+
+                ApiResponse response = action.execute(form, new NullSafeBindException(form, "form"));
+                assertNotNull("Expected a response when configuring an administered container", response);
+                assertNotNull("Expected the target container to be persisted", GeneticCalculationsJob.getContainer());
+                assertEquals("Schedule should target the requested container", _targetContainer.getId(), GeneticCalculationsJob.getContainer().getId());
+            }
+            finally
+            {
+                WritablePropertyMap pm = PropertyManager.getWritableProperties(GeneticCalculationsJob.GENETICCALCULATIONS_PROPERTY_DOMAIN, true);
+                pm.clear();
+                pm.putAll(original);
+                pm.save();
+                // Resync the live scheduler to the restored settings.
+                GeneticCalculationsJob.unschedule();
+                GeneticCalculationsJob.schedule();
+            }
+        }
+
+        private ViewContext makeContext(User u, Container c)
+        {
+            HttpServletRequest request = TestContext.get().getRequest();
+            ViewContext context = new ViewContext();
+            context.setContainer(c);
+            context.setUser(u);
+            context.setRequest(request);
+            return context;
+        }
+
+        @AfterClass
+        public static void cleanup()
+        {
+            User testUser = TestContext.get().getUser();
+
+            if (_targetContainer != null)
+            {
+                ContainerManager.delete(_targetContainer, testUser);
+                _targetContainer = null;
+            }
+            if (_requestContainer != null)
+            {
+                ContainerManager.delete(_requestContainer, testUser);
+                _requestContainer = null;
+            }
+
+            for (String email : new String[]{REQUEST_ADMIN_EMAIL, BOTH_ADMIN_EMAIL})
+            {
+                try
+                {
+                    User u = UserManager.getUser(new ValidEmail(email));
+                    if (u != null)
+                        UserManager.deleteUser(u.getUserId());
+                }
+                catch (ValidEmail.InvalidEmailException | SecurityManager.UserManagementException ignored)
+                {
+                }
+            }
+            _requestAdmin = null;
+            _bothAdmin = null;
         }
     }
 }
