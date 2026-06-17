@@ -589,6 +589,16 @@ public class EHRController extends SpringActionController
         }
     }
 
+    /**
+     * SECURITY &mdash; ELEVATED ACCESS BY DESIGN:
+     * Demographics are served from EHRDemographicsService, whose cache is intentionally built under the configured
+     * EHR service user (EHRService.getEHRUser(c)), NOT the requesting user. Callers therefore receive aggregated
+     * demographic/derived fields regardless of their per-dataset / per-QCState row permissions. This is the intended
+     * EHR design: Read access to an EHR study folder is the trust gate for the demographics summary, which backs the
+     * core data-entry and animal-history UIs via the shared EHR.DemographicsCache client. See
+     * {@link org.labkey.ehr.demographics.EHRDemographicsServiceImpl#getAnimals}. Do not expose the returned record map
+     * to a lower trust boundary without re-securing it.
+     */
     @RequiresPermission(ReadPermission.class)
     public static class GetDemographicsAction extends ReadOnlyApiAction<GetDemographicsForm>
     {
