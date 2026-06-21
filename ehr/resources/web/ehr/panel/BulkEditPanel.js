@@ -46,6 +46,20 @@ Ext4.define('EHR.panel.BulkEditPanel', {
 
         this.callParent(arguments);
 
+        // Allow a form section to contribute panel plugins to its bulk edit panel via formConfig.bulkEditPlugins.
+        // For example, the clinical observations grid uses this to make the Observation/Score editor depend on
+        // the selected Category (see EHR.plugin.ClinicalObservationsBulkEdit), keeping this panel generic. This
+        // runs after callParent because EHR.form.Panel resets this.plugins for collapsible forms. By this point
+        // the panel's own plugins have already been constructed, so we construct ours explicitly and append them;
+        // the component constructor then calls init() on every entry in this.plugins.
+        var extraPlugins = this.formConfig && this.formConfig.bulkEditPlugins;
+        if (extraPlugins){
+            this.plugins = this.plugins || [];
+            Ext4.Array.forEach(Ext4.Array.from(extraPlugins), function(p){
+                this.plugins.push(this.constructPlugin(p));
+            }, this);
+        }
+
         this.addEvents('bulkeditcomplete');
     },
 
@@ -117,32 +131,36 @@ Ext4.define('EHR.panel.BulkEditPanel', {
 
             item = Ext4.widget(item);
 
-            item.on('render', function(field){
-                if (field.labelEl){
-                    Ext4.QuickTips.register({
-                        target: field.labelEl,
-                        text: 'Click to toggle'
-                    });
-
-                    field.labelEl.on('click', function(){
-                        if (field.originalDisabled){
-                            Ext4.Msg.alert('Error', 'This field cannot be enabled');
-                            return;
-                        }
-
-                        field.setDisabled(!field.isDisabled());
-                        Ext4.defer(field.focus, 100, field);
-                    }, this);
-                }
-                else {
-                    console.log(field);
-                }
-            }, this);
+            this.addLabelToggle(item);
 
             newItems.push(item);
         }, this);
 
         return newItems;
+    },
+
+    addLabelToggle: function(field){
+        field.on('render', function(field){
+            if (field.labelEl){
+                Ext4.QuickTips.register({
+                    target: field.labelEl,
+                    text: 'Click to toggle'
+                });
+
+                field.labelEl.on('click', function(){
+                    if (field.originalDisabled){
+                        Ext4.Msg.alert('Error', 'This field cannot be enabled');
+                        return;
+                    }
+
+                    field.setDisabled(!field.isDisabled());
+                    Ext4.defer(field.focus, 100, field);
+                }, this);
+            }
+            else {
+                console.log(field);
+            }
+        }, this);
     },
 
     onSubmit: function(){
