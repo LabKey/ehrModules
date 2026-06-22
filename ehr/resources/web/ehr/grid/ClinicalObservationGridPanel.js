@@ -13,6 +13,16 @@ Ext4.define('EHR.grid.ClinicalObservationGridPanel', {
     initComponent: function(){
         this.observationTypesStore = EHR.DataEntryUtils.getObservationTypesStore();
 
+        // Make the bulk edit panel for this grid offer the same category-dependent Observation/Score
+        // editor as the grid's cell editor. formConfig is threaded unchanged to EHR.panel.BulkEditPanel,
+        // which instantiates any plugins listed here.
+        if (this.formConfig){
+            this.formConfig.bulkEditPlugins = Ext4.Array.from(this.formConfig.bulkEditPlugins || []);
+            if (!Ext4.Array.contains(this.formConfig.bulkEditPlugins, 'clinicalobservationsbulkedit')){
+                this.formConfig.bulkEditPlugins.push('clinicalobservationsbulkedit');
+            }
+        }
+
         this.callParent(arguments);
     },
 

@@ -801,7 +801,17 @@ EHR.DataEntryUtils = new function(){
                 schemaName: 'ehr',
                 queryName: 'observation_types',
                 columns: 'value,editorconfig',
-                autoLoad: true
+                autoLoad: true,
+                listeners: {
+                    // unlike EHR.data.DataEntryClientStore, LABKEY.ext4.data.Store has no hasLoaded();
+                    // consumers need to distinguish a pending initial load from one that returned no rows
+                    load: {
+                        single: true,
+                        fn: function(store){
+                            store.hasLoadedOnce = true;
+                        }
+                    }
+                }
             });
 
             return EHR._observationTypesStore;
