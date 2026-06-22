@@ -118,7 +118,16 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     /**
      * Queries the cache for the animal record, creating if not found.
-     * Always returns a copy of the original
+     * Always returns a copy of the original.
+     *
+     * <p>SECURITY &mdash; ELEVATED ACCESS BY DESIGN: records are built and cached under the configured EHR service
+     * user ({@link EHRService#getEHRUser(Container)}), NOT the calling user, and are shared across all users in the
+     * container. The aggregated demographic/derived fields therefore reflect the EHR service user's access, bypassing
+     * the caller's per-dataset / per-QCState row permissions (note that many {@code DemographicsProvider}s set
+     * {@code _supportsQCState = false}, so no QCState filter is applied at all). This is intentional: within an EHR
+     * study folder, Read access is the trust gate for the demographics summary. Callers exposing these records to an
+     * end user must treat folder Read as the boundary and must NOT forward them to a lower trust boundary without
+     * re-securing the data against the consuming user.
      */
     @Override
     public List<AnimalRecord> getAnimals(Container c, Collection<String> ids)
