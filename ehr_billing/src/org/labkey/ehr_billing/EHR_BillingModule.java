@@ -127,6 +127,13 @@ public class EHR_BillingModule extends SpringModule
         return Collections.singleton(EHR_BillingSchema.NAME);
     }
 
+    @Override
+    @NotNull
+    public Set<Class<?>> getIntegrationTests()
+    {
+        return Collections.singleton(EHR_BillingManager.TestCase.class);
+    }
+
     @NotNull
     @Override
     public JSONObject getPageContextJson(ContainerUser ctx)
