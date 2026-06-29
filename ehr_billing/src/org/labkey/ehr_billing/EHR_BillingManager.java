@@ -83,12 +83,12 @@ public class EHR_BillingManager
         Set<String> invoiceRunIds = getInvoiceRunIds(invoiceRuns, objectIdFilter);
         if (invoiceRunIds.isEmpty())
         {
-            List<String> ret = new ArrayList<>();
+            List<HtmlString> ret = new ArrayList<>();
             if (testOnly)
             {
-                ret.add("0 records from invoiced items");
-                ret.add("0 records from invoice");
-                ret.add("0 invoice records from misc charges will be removed from the deleted invoice, which means they will be picked up by the next billing period.  They are not deleted.");
+                ret.add(HtmlString.of("0 records from invoiced items"));
+                ret.add(HtmlString.of("0 records from invoice"));
+                ret.add(HtmlString.of("0 invoice records from misc charges will be removed from the deleted invoice, which means they will be picked up by the next billing period.  They are not deleted."));
             }
             return ret;
         }
@@ -237,8 +237,8 @@ public class EHR_BillingManager
             EHR_BillingSchema schema = EHR_BillingSchema.getInstance();
 
             // A testOnly preview issued from container A targeting container B's run must not see container B's rows
-            for (String summary : manager.deleteBillingRuns(_user, _containerA, List.of(_runIdB), true))
-                assertTrue("Preview from another container should count 0 rows, but got: " + summary, summary.startsWith("0 "));
+            for (HtmlString summary : manager.deleteBillingRuns(_user, _containerA, List.of(_runIdB), true))
+                assertTrue("Preview from another container should count 0 rows, but got: " + summary, summary.toString().startsWith("0 "));
 
             // An actual delete issued from container A targeting container B's run must leave container B untouched
             manager.deleteBillingRuns(_user, _containerA, List.of(_runIdB), false);
@@ -249,9 +249,9 @@ public class EHR_BillingManager
 
             // WNPRC-style source data: billing artifacts live in the finance container, but miscCharges live in the EHR container
             String runIdWithEHRMiscCharge = insertBillingRun(_containerA, _containerEHR);
-            List<String> preview = manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithEHRMiscCharge), true);
+            List<HtmlString> preview = manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithEHRMiscCharge), true);
             assertTrue("Preview should count miscCharges rows in the EHR source container: " + preview,
-                    preview.stream().anyMatch(summary -> summary.startsWith("1 invoice records from misc charges")));
+                    preview.stream().anyMatch(summary -> summary.toString().startsWith("1 invoice records from misc charges")));
 
             manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithEHRMiscCharge), false);
             assertEquals("miscCharges row in the EHR source container should be detached from the deleted invoice", 0, miscChargesWithInvoiceCount(_containerEHR));
@@ -261,9 +261,9 @@ public class EHR_BillingManager
             // the configured EHR study container. The delete is keyed off the authorized run id, so these rows are
             // still previewed and detached.
             String runIdWithSatelliteMiscCharge = insertBillingRun(_containerA, _containerSatellite);
-            List<String> satellitePreview = manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithSatelliteMiscCharge), true);
+            List<HtmlString> satellitePreview = manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithSatelliteMiscCharge), true);
             assertTrue("Preview should count miscCharges rows in an unrelated source container: " + satellitePreview,
-                    satellitePreview.stream().anyMatch(summary -> summary.startsWith("1 invoice records from misc charges")));
+                    satellitePreview.stream().anyMatch(summary -> summary.toString().startsWith("1 invoice records from misc charges")));
 
             manager.deleteBillingRuns(_user, _containerA, List.of(runIdWithSatelliteMiscCharge), false);
             assertEquals("miscCharges row in the satellite source container should be detached from the deleted invoice", 0, miscChargesWithInvoiceCount(_containerSatellite));
