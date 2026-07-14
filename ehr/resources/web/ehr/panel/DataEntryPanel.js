@@ -379,16 +379,6 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
         this.add(toAdd);
         this.hasStoreCollectionLoaded = true;
-
-        // Load-time validation requests start before the form renders, so 'validationstart' has already fired (and
-        // was suppressed) and 'beforevalidation' never fires for them. If they are still in flight once the form is
-        // visible, show the indicator directly; 'validationcomplete' will hide it when they drain.
-        // Ext4.defer(function(){
-        //     if (this.storeCollection && this.storeCollection.validationRequestsInFlight > 0){
-        //         this.validationInProgress = true;
-        //         this.setValidationIndicatorVisible(true);
-        //     }
-        // }, this.storeCollection.clientDataChangeBuffer * 2, this);
     },
 
     updateMinWidth: function(minWidth){
