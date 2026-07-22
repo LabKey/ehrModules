@@ -212,10 +212,18 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
 
             // By default, any hard tables in the ehr_lookups schema not accounted for above will fall into one of the
             // two categories below. Both of these will add a check that makes sure the user has EHRDataAdminPermission
-            // in order to insert/update/delete on the table. The ContainerScopedTable case is for those tables that
-            // have a true DB PK or rowid but a User pseudoPK that should be accounted for at the container level.
+            // in order to insert/update/delete on the table. The ContainerScopedTable case is for tables whose
+            // user-facing key (promoted via isKeyField in ehr_lookups.xml) differs from the true DB PK: the PK
+            // constraint does not enforce uniqueness of the pseudo-PK, so the wrapper enforces it per container and
+            // resolves the pseudo-PK to the real PK on update. Tables whose user-facing key is the true PK
+            // (e.g. project_types) get CustomPermissionsTable instead: the PK constraint already enforces uniqueness,
+            // and container-scoping such a table made its key column non-insertable in the UI.
             String pkColName = getPkColName(ti);
-            if (pkColName != null && !"rowid".equalsIgnoreCase(pkColName) && ti.getColumn("container") != null)
+            List<String> realPk = _dbSchema.getTable(name).getPkColumnNames();
+            boolean singleColumnPks = pkColName != null && realPk.size() == 1;
+            boolean realPkMatchesPseudoPk = singleColumnPks && realPk.get(0).equalsIgnoreCase(pkColName);
+
+            if (singleColumnPks && !realPkMatchesPseudoPk && ti.getColumn("container") != null)
                 return getContainerScopedTable(name, cf, pkColName, EHRDataAdminPermission.class);
             else
                 return getCustomPermissionTable(createSourceTable(name), cf, EHRDataAdminPermission.class);
