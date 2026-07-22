@@ -464,8 +464,8 @@ public class BillingNotification extends AbstractNotification
 
                     String baseUrl = createURL(containerMap.get(category), centerSpecificBillingSchema, categoryToQuery.get(category), null) + "&query.param.StartDate=" + getDateFormat(c).format(start.getTime()) + "&query.param.EndDate=" + getDateFormat(c).format(endDate.getTime());
                     String projUrl = baseUrl + ("None".equals(tokens[1]) ? "&query.project~isblank" : "&query.project~eq=" + tokens[1]);
-                    msg.append("<tr><td>" + financialAnalyst + "</td>");    //the FA
-                    msg.append("<td><a href='" + projUrl + "'>" + tokens[1] + "</a></td>");
+                    msg.append("<tr><td>" + PageFlowUtil.filter(financialAnalyst) + "</td>");    //the FA
+                    msg.append("<td><a href='" + PageFlowUtil.filter(projUrl) + "'>" + PageFlowUtil.filter(tokens[1]) + "</a></td>");
 
                     String accountUrl = null;
                     Container financeContainer = EHR_BillingManager.get().getBillingContainer(containerMap.get(category));
@@ -476,22 +476,22 @@ public class BillingNotification extends AbstractNotification
 
                     if (accountUrl != null)
                     {
-                        msg.append("<td><a href='" + accountUrl + "'>" + tokens[2] + "</a></td>");
+                        msg.append("<td><a href='" + PageFlowUtil.filter(accountUrl) + "'>" + PageFlowUtil.filter(tokens[2]) + "</a></td>");
                     }
                     else
                     {
-                        msg.append("<td>" + (tokens[2]) + "</td>");
+                        msg.append("<td>" + PageFlowUtil.filter(tokens[2]) + "</td>");
                     }
 
-                    msg.append("<td>" + (tokens[3]) + "</td>");
-                    msg.append("<td>" + category + "</td>");
+                    msg.append("<td>" + PageFlowUtil.filter(tokens[3]) + "</td>");
+                    msg.append("<td>" + PageFlowUtil.filter(category) + "</td>");
 
                     for (FieldDescriptor fd : foundCols)
                     {
                         if (totals.containsKey(fd.getFieldName()))
                         {
                             String url = projUrl + fd.getFilter();
-                            msg.append("<td" + (fd.isShouldHighlight() ? " style='background-color: yellow;'" : "") + "><a href='" + url + "'>" + totals.get(fd.getFieldName()) + "</a></td>");
+                            msg.append("<td" + (fd.isShouldHighlight() ? " style='background-color: yellow;'" : "") + "><a href='" + PageFlowUtil.filter(url) + "'>" + totals.get(fd.getFieldName()) + "</a></td>");
                         }
                         else
                         {
