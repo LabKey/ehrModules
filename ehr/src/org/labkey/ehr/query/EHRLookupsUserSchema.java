@@ -219,7 +219,9 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             // (e.g. project_types) get CustomPermissionsTable instead: the PK constraint already enforces uniqueness,
             // and container-scoping such a table made its key column non-insertable in the UI.
             String pkColName = getPkColName(ti);
-            List<String> realPk = _dbSchema.getTable(name).getPkColumnNames();
+            List<String> realPk = ti instanceof FilteredTable<?> ft
+                    ? ft.getRealTable().getPkColumnNames()
+                    : _dbSchema.getTable(name).getPkColumnNames();
             boolean singleColumnPks = pkColName != null && realPk.size() == 1;
             boolean realPkMatchesPseudoPk = singleColumnPks && realPk.get(0).equalsIgnoreCase(pkColName);
 
