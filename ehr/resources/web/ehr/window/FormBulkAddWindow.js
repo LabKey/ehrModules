@@ -148,7 +148,9 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         }
 
         if (errors.length){
-            Ext4.Msg.alert('Error', 'There following errors were found:<p>' + errors.join('<br>'));
+            // A condition that holds for a whole column rather than a single row is reported without a
+            // row number, so the identical copy pushed by every row collapses to one line here.
+            Ext4.Msg.alert('Error', 'There following errors were found:<p>' + Ext4.Array.unique(errors).join('<br>'));
             return;
         }
 
@@ -159,13 +161,21 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         this.close();
     },
 
+    // Cells pasted out of a spreadsheet routinely carry stray whitespace, which no exact match would
+    // survive. Trim before parsing or matching so a padded cell resolves and a blank one reads as empty.
+    normalizeValue: function(value){
+        return Ext4.isString(value) ? Ext4.String.trim(value) : value;
+    },
+
     resolveDate: function(field, value, errors, rowIdx){
+        value = this.normalizeValue(value);
+
         const parsed = LDK.ConvertUtils.parseDate(value);
 
         // parseDate returns null for anything it cannot match. Report it rather than letting the
         // column silently arrive empty, which only surfaces at all when the field is required.
         if (Ext4.isEmpty(parsed) && !Ext4.isEmpty(value)) {
-            errors.push('Row ' + rowIdx + ': unable to parse date for ' + field.name + ': ' + value);
+            errors.push('Row ' + rowIdx + ': unable to parse date for ' + field.name + ': ' + Ext4.util.Format.htmlEncode(value));
         }
 
         return parsed;
@@ -186,20 +196,46 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             }
         }
 
+        value = this.normalizeValue(value);
+        if (Ext4.isEmpty(value)) {
+            return value;
+        }
+
+        // Some client-side lookup configs declare only a key column, so neither of these is guaranteed.
+        // With nothing to match on, pass the value through as the missing-store case above does.
+        const columns = Ext4.Array.unique([field.lookup.displayColumn, field.lookup.keyColumn]).filter(function(c){
+            return !Ext4.isEmpty(c);
+        });
+        if (!columns.length) {
+            return value;
+        }
+
+        // A store holding no records cannot resolve anything, so say so rather than writing the raw text
+        // through as though it had resolved. getCount() on its own is not a load-state check -- it reads
+        // 0 both while records are still in flight and for a store that loaded no rows, and neither can
+        // produce a match. Reported without a row number so every row's copy collapses to one line.
+        if (field.lookup.store.isLoading() || !field.lookup.store.getCount()) {
+            errors.push('No lookup values are loaded for ' + field.name + '. Please retry the import.');
+            return value;
+        }
+
         // findRecord(fieldName, value, startIndex, anyMatch, caseSensitive, exactMatch) defaults to a
         // PREFIX match, which silently resolves a code to any record whose display value merely starts
         // with it -- e.g. source 'LABS' matched the record whose meaning is 'LABSINDO' and stored
         // 'LABSINDO'. Require an exact (still case-insensitive) match.
-        const lookupRecord = field.lookup.store.findRecord(field.lookup.displayColumn, value, 0, false, false, true);
-        if (lookupRecord) {
-            return lookupRecord.data[field.lookup.keyColumn];
+        //
+        // Try the display value first, then the key. A pasted cell legitimately holds either, and before
+        // an exact match was required a pasted key still resolved by falling through as raw text.
+        // EHR.form.field.ProjectEntryField resolves the same two ways.
+        for (let i = 0; i < columns.length; i++) {
+            const lookupRecord = field.lookup.store.findRecord(columns[i], value, 0, false, false, true);
+            if (lookupRecord) {
+                return lookupRecord.data[field.lookup.keyColumn];
+            }
         }
 
-        // Report rather than silently storing the raw text in place of the lookup's key. Skip an
-        // unloaded store, which would otherwise fail every row while its records are still in flight.
-        if (!Ext4.isEmpty(value) && field.lookup.store.getCount()) {
-            errors.push('Row ' + rowIdx + ': unrecognized value for ' + field.name + ': ' + value);
-        }
+        // Report rather than silently storing the raw text in place of the lookup's key.
+        errors.push('Row ' + rowIdx + ': unrecognized value for ' + field.name + ': ' + Ext4.util.Format.htmlEncode(value));
 
         return value;
     },
@@ -249,6 +285,7 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
     },
 
     resolveProjectByName: function(projectName, errors, rowIdx){
+        projectName = this.normalizeValue(projectName);
         if (!projectName){
             return null;
         }
@@ -259,7 +296,7 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         // unrelated project named '01234'. Require an exact (still case-insensitive) match.
         const recIdx = this.projectStore.find('name', projectName, 0, false, false, true);
         if (recIdx === -1){
-            errors.push('Row ' + rowIdx + ': unknown project ' + projectName);
+            errors.push('Row ' + rowIdx + ': unknown project ' + Ext4.util.Format.htmlEncode(projectName));
             return null;
         }
 
