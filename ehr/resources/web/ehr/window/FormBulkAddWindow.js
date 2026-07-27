@@ -174,7 +174,11 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             }
         }
 
-        const lookupRecord = field.lookup.store.findRecord(field.lookup.displayColumn, value);
+        // findRecord(fieldName, value, startIndex, anyMatch, caseSensitive, exactMatch) defaults to a
+        // PREFIX match, which silently resolves a code to any record whose display value merely starts
+        // with it -- e.g. source 'LABS' matched the record whose meaning is 'LABSINDO' and stored
+        // 'LABSINDO'. Require an exact (still case-insensitive) match.
+        const lookupRecord = field.lookup.store.findRecord(field.lookup.displayColumn, value, 0, false, false, true);
         if (lookupRecord) {
             return lookupRecord.data[field.lookup.keyColumn];
         }
@@ -196,7 +200,13 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
                     index = headers.indexOf(field.importAliases?.[0]);
                 }
                 if (index !== -1) {
-                    obj[field.name] = this.resolveLookup(field, row[index], errors);
+                    // Every date column needs parseDate, not just the one named 'date'. Left to the
+                    // raw string, an Ext date field applies JS new Date() semantics, and ES5+ parses a
+                    // bare yyyy-MM-dd as UTC -- so '1965-04-01' lands as the previous day in any
+                    // negative-offset timezone, and '1970-01-01' becomes 0 and is discarded as empty.
+                    obj[field.name] = field.jsonType === 'date'
+                        ? LDK.ConvertUtils.parseDate(row[index])
+                        : this.resolveLookup(field, row[index], errors);
                 }
             }
         }, this);
