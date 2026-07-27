@@ -55,6 +55,24 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             return f.name;
         });
 
+        // A header matching no field silently drops its whole column, so keep the full set of recognized
+        // names to check the pasted header row against. Built from allConfigs rather than fieldConfigs so
+        // the fields the importer itself skips (hidden, taskid, qcstate) count as known but not importable
+        // and are passed over without complaint.
+        this.knownHeaders = {};
+        const addKnownHeader = (name) => {
+            const key = this.normalizeHeader(name);
+            if (key) {
+                this.knownHeaders[key] = true;
+            }
+        };
+        allConfigs.forEach((f) => {
+            addKnownHeader(f.name);
+            (Ext4.isArray(f.importAliases) ? f.importAliases : []).forEach(addKnownHeader);
+        });
+        // processRow() handles these directly, whether or not the section declares them.
+        ['Id', 'date', 'project'].forEach(addKnownHeader);
+
         this.items = [{
             html : 'This allows you to import data using a simple Excel or TSV file.  To import, cut/paste the contents of the Excel or TSV file (Ctl + A is a good way to select all) into the box below and hit submit. The limit for import is 250 rows.',
             style: 'padding-bottom: 10px;'
@@ -130,17 +148,24 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             errors.push('Row Count - ' + dataRowCount + ': Import maximum is 250 rows.  Please split your import into multiple uploads and submit the form between each upload.');
         }
         else {
+            const headerMap = this.buildHeaderMap(parsed[0]);
+            this.checkHeaders(parsed[0], errors);
 
-            for (let i = 1; i < parsed.length; i++) {
-                const row = parsed[i];
-                if (!row || row.length < this.requiredFieldNames.length) {
-                    errors.push('Row ' + i + ': not enough items in row');
-                    continue;
-                }
+            // Only parse rows once the header row is sound. A misspelled header for a required column
+            // otherwise reports as a missing value on every one of up to 250 rows, burying the one error
+            // that explains all of them.
+            if (!errors.length) {
+                for (let i = 1; i < parsed.length; i++) {
+                    const row = parsed[i];
+                    if (!row || row.length < this.requiredFieldNames.length) {
+                        errors.push('Row ' + i + ': not enough items in row');
+                        continue;
+                    }
 
-                const newRow = this.processRow(parsed[0], row, errors, i);
-                if (newRow) {
-                    records.push(this.targetStore.createModel(newRow));
+                    const newRow = this.processRow(headerMap, row, errors, i);
+                    if (newRow) {
+                        records.push(this.targetStore.createModel(newRow));
+                    }
                 }
             }
 
@@ -167,7 +192,58 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         return Ext4.isString(value) ? Ext4.String.trim(value) : value;
     },
 
-    resolveDate: function(field, value, errors, rowIdx){
+    // Header cells carry the same stray whitespace and casing drift as any other pasted cell, and a header
+    // that fails to match drops its whole column, so normalize both sides before comparing them.
+    normalizeHeader: function(header){
+        return Ext4.isString(header) ? Ext4.String.trim(header).toLowerCase() : '';
+    },
+
+    // Maps each normalized header to its column index, first occurrence winning as indexOf() did. Keyed on
+    // pasted text, so membership is tested against own properties only rather than anything Object supplies.
+    buildHeaderMap: function(headers){
+        const map = {};
+        Ext4.each(headers, function(header, idx){
+            const key = this.normalizeHeader(header);
+            if (key && !Object.prototype.hasOwnProperty.call(map, key)) {
+                map[key] = idx;
+            }
+        }, this);
+
+        return map;
+    },
+
+    getHeaderIndex: function(headerMap, name){
+        const key = this.normalizeHeader(name);
+
+        return key && Object.prototype.hasOwnProperty.call(headerMap, key) ? headerMap[key] : -1;
+    },
+
+    // A header the form does not recognize, or two headers naming the same field, means a column is either
+    // dropped or read from the wrong place. Report both rather than importing part of the source silently.
+    // Reported without a row number, since each is a property of the header row as a whole.
+    checkHeaders: function(headers, errors){
+        const seen = {};
+        Ext4.each(headers, function(header){
+            const key = this.normalizeHeader(header);
+            // Trailing empty cells are a routine artifact of a spreadsheet copy and name no column.
+            if (!key) {
+                return;
+            }
+
+            const encoded = Ext4.util.Format.htmlEncode(Ext4.String.trim(header));
+            if (seen[key] === true) {
+                errors.push('Duplicate column: ' + encoded + '. Remove one so it is unambiguous which is imported.');
+            }
+            else {
+                seen[key] = true;
+                if (this.knownHeaders[key] !== true) {
+                    errors.push('Unrecognized column: ' + encoded + '. It matches no field in this form and would not be imported.');
+                }
+            }
+        }, this);
+    },
+
+    resolveDate: function(fieldName, value, errors, rowIdx){
         value = this.normalizeValue(value);
 
         const parsed = LDK.ConvertUtils.parseDate(value);
@@ -175,7 +251,7 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         // parseDate returns null for anything it cannot match. Report it rather than letting the
         // column silently arrive empty, which only surfaces at all when the field is required.
         if (Ext4.isEmpty(parsed) && !Ext4.isEmpty(value)) {
-            errors.push('Row ' + rowIdx + ': unable to parse date for ' + field.name + ': ' + Ext4.util.Format.htmlEncode(value));
+            errors.push('Row ' + rowIdx + ': unable to parse date for ' + fieldName + ': ' + Ext4.util.Format.htmlEncode(value));
         }
 
         return parsed;
@@ -240,28 +316,47 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         return value;
     },
 
-    processRow: function(headers, row, errors, rowIdx){
-        const obj = {
-            Id: this.upperCaseAnimalId ? row[headers.indexOf('Id')].toUpperCase() : row[headers.indexOf('Id')],
-            date: LDK.ConvertUtils.parseDate(row[headers.indexOf('date')]),
-            project: this.resolveProjectByName(row[headers.indexOf('project')], errors, rowIdx)
+    processRow: function(headerMap, row, errors, rowIdx){
+        const obj = {};
+
+        // Seeded only when the column was actually pasted, so that a field this method does not handle is
+        // left for the loop below to match on its own name or import alias.
+        const idIdx = this.getHeaderIndex(headerMap, 'Id');
+        if (idIdx !== -1) {
+            // A row shorter than the header row leaves this undefined, which checkRequired() reports.
+            obj.Id = this.upperCaseAnimalId && Ext4.isString(row[idIdx]) ? row[idIdx].toUpperCase() : row[idIdx];
+        }
+
+        const dateIdx = this.getHeaderIndex(headerMap, 'date');
+        if (dateIdx !== -1) {
+            obj.date = this.resolveDate('date', row[dateIdx], errors, rowIdx);
+        }
+
+        const projectIdx = this.getHeaderIndex(headerMap, 'project');
+        if (projectIdx !== -1) {
+            obj.project = this.resolveProjectByName(row[projectIdx], errors, rowIdx);
         }
 
         Ext4.each(this.fieldConfigs, function(field) {
-            if (!obj[field.name]) {
-                let index = headers.indexOf(field.name);
-                if (index === -1 && field.importAliases?.[0]) {
-                    index = headers.indexOf(field.importAliases?.[0]);
-                }
-                if (index !== -1) {
-                    // Every date column needs parseDate, not just the one named 'date'. Left to the
-                    // raw string, an Ext date field applies JS new Date() semantics, and ES5+ parses a
-                    // bare yyyy-MM-dd as UTC -- so '1965-04-01' lands as the previous day in any
-                    // negative-offset timezone, and '1970-01-01' becomes 0 and is discarded as empty.
-                    obj[field.name] = field.jsonType === 'date'
-                        ? this.resolveDate(field, row[index], errors, rowIdx)
-                        : this.resolveLookup(field, row[index], errors, rowIdx);
-                }
+            // Skip by name rather than by truthiness: a column handled above whose value came back null --
+            // an unknown project, an unparsable date -- must not be resolved a second time here, or the one
+            // cell is reported twice by two paths that match on different columns and disagree.
+            if (obj.hasOwnProperty(field.name)) {
+                return;
+            }
+
+            let index = this.getHeaderIndex(headerMap, field.name);
+            if (index === -1 && field.importAliases?.[0]) {
+                index = this.getHeaderIndex(headerMap, field.importAliases?.[0]);
+            }
+            if (index !== -1) {
+                // Every date column needs parseDate, not just the one named 'date'. Left to the
+                // raw string, an Ext date field applies JS new Date() semantics, and ES5+ parses a
+                // bare yyyy-MM-dd as UTC -- so '1965-04-01' lands as the previous day in any
+                // negative-offset timezone, and '1970-01-01' becomes 0 and is discarded as empty.
+                obj[field.name] = field.jsonType === 'date'
+                    ? this.resolveDate(field.name, row[index], errors, rowIdx)
+                    : this.resolveLookup(field, row[index], errors, rowIdx);
             }
         }, this);
 
@@ -290,12 +385,21 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             return null;
         }
 
-        projectName = Ext4.String.leftPad(projectName, 4, '0');
+        // Same load-state check as resolveLookup(): an unloaded store matches nothing, and blaming the
+        // pasted value for that sends the user looking for a problem their source file does not have. The
+        // store is autoLoad, so a submit can race it. Reported without a row number so every row's copy
+        // collapses to one line.
+        if (this.projectStore.isLoading() || !this.projectStore.getCount()){
+            errors.push('No projects are loaded yet. Please retry the import.');
+            return null;
+        }
 
         // find() shares findRecord()'s prefix-match default, so '0123' would otherwise resolve to an
         // unrelated project named '01234'. Require an exact (still case-insensitive) match.
-        const recIdx = this.projectStore.find('name', projectName, 0, false, false, true);
+        const recIdx = this.projectStore.find('name', Ext4.String.leftPad(projectName, 4, '0'), 0, false, false, true);
         if (recIdx === -1){
+            // Echo what was pasted rather than the zero-padded form, so the message names something the
+            // user can find in their source file.
             errors.push('Row ' + rowIdx + ': unknown project ' + Ext4.util.Format.htmlEncode(projectName));
             return null;
         }
