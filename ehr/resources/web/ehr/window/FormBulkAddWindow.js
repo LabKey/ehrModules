@@ -159,7 +159,19 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         this.close();
     },
 
-    resolveLookup: function(field, value, errors){
+    resolveDate: function(field, value, errors, rowIdx){
+        const parsed = LDK.ConvertUtils.parseDate(value);
+
+        // parseDate returns null for anything it cannot match. Report it rather than letting the
+        // column silently arrive empty, which only surfaces at all when the field is required.
+        if (Ext4.isEmpty(parsed) && !Ext4.isEmpty(value)) {
+            errors.push('Row ' + rowIdx + ': unable to parse date for ' + field.name + ': ' + value);
+        }
+
+        return parsed;
+    },
+
+    resolveLookup: function(field, value, errors, rowIdx){
         if (!field || !field.lookup)
             return value;
 
@@ -181,6 +193,12 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         const lookupRecord = field.lookup.store.findRecord(field.lookup.displayColumn, value, 0, false, false, true);
         if (lookupRecord) {
             return lookupRecord.data[field.lookup.keyColumn];
+        }
+
+        // Report rather than silently storing the raw text in place of the lookup's key. Skip an
+        // unloaded store, which would otherwise fail every row while its records are still in flight.
+        if (!Ext4.isEmpty(value) && field.lookup.store.getCount()) {
+            errors.push('Row ' + rowIdx + ': unrecognized value for ' + field.name + ': ' + value);
         }
 
         return value;
@@ -205,8 +223,8 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
                     // bare yyyy-MM-dd as UTC -- so '1965-04-01' lands as the previous day in any
                     // negative-offset timezone, and '1970-01-01' becomes 0 and is discarded as empty.
                     obj[field.name] = field.jsonType === 'date'
-                        ? LDK.ConvertUtils.parseDate(row[index])
-                        : this.resolveLookup(field, row[index], errors);
+                        ? this.resolveDate(field, row[index], errors, rowIdx)
+                        : this.resolveLookup(field, row[index], errors, rowIdx);
                 }
             }
         }, this);
@@ -237,7 +255,9 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
 
         projectName = Ext4.String.leftPad(projectName, 4, '0');
 
-        const recIdx = this.projectStore.find('name', projectName);
+        // find() shares findRecord()'s prefix-match default, so '0123' would otherwise resolve to an
+        // unrelated project named '01234'. Require an exact (still case-insensitive) match.
+        const recIdx = this.projectStore.find('name', projectName, 0, false, false, true);
         if (recIdx === -1){
             errors.push('Row ' + rowIdx + ': unknown project ' + projectName);
             return null;
