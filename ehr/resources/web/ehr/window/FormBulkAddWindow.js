@@ -55,23 +55,10 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             return f.name;
         });
 
-        // A header matching no field silently drops its whole column, so keep the full set of recognized
-        // names to check the pasted header row against. Built from allConfigs rather than fieldConfigs so
-        // the fields the importer itself skips (hidden, taskid, qcstate) count as known but not importable
-        // and are passed over without complaint.
-        this.knownHeaders = {};
-        const addKnownHeader = (name) => {
-            const key = this.normalizeHeader(name);
-            if (key) {
-                this.knownHeaders[key] = true;
-            }
-        };
-        allConfigs.forEach((f) => {
-            addKnownHeader(f.name);
-            (Ext4.isArray(f.importAliases) ? f.importAliases : []).forEach(addKnownHeader);
-        });
-        // processRow() handles these directly, whether or not the section declares them.
-        ['Id', 'date', 'project'].forEach(addKnownHeader);
+        // Headers are resolved against every field the section declares, not just the importable ones, so a
+        // header naming a field the importer skips (hidden, taskid, qcstate) is recognized and then ignored
+        // rather than reported as unknown.
+        this.allFieldConfigs = allConfigs;
 
         this.items = [{
             html : 'This allows you to import data using a simple Excel or TSV file.  To import, cut/paste the contents of the Excel or TSV file (Ctl + A is a good way to select all) into the box below and hit submit. The limit for import is 250 rows.',
@@ -148,8 +135,7 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             errors.push('Row Count - ' + dataRowCount + ': Import maximum is 250 rows.  Please split your import into multiple uploads and submit the form between each upload.');
         }
         else {
-            const headerMap = this.buildHeaderMap(parsed[0]);
-            this.checkHeaders(parsed[0], errors);
+            const headerMap = this.buildHeaderMap(parsed[0], errors);
 
             // Only parse rows once the header row is sound. A misspelled header for a required column
             // otherwise reports as a missing value on every one of up to 250 rows, burying the one error
@@ -192,55 +178,62 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         return Ext4.isString(value) ? Ext4.String.trim(value) : value;
     },
 
-    // Header cells carry the same stray whitespace and casing drift as any other pasted cell, and a header
-    // that fails to match drops its whole column, so normalize both sides before comparing them.
-    normalizeHeader: function(header){
-        return Ext4.isString(header) ? Ext4.String.trim(header).toLowerCase() : '';
+    // Identifies the field a pasted header names, which is what LABKEY.ext4.Util.resolveFieldNameFromLabel()
+    // exists for: it compares case-insensitively against a field's name, label, caption and every import
+    // alias, and accepts importAliases as either an array or a comma-separated string. Matching only the name
+    // and the first alias, as this window used to, drops the column for any other spelling.
+    //
+    // An exact name match is tried first because the helper stops at its first name/caption/label hit, so a
+    // field whose LABEL matches this header could otherwise win over the field this header actually names,
+    // purely on config order. Only the broader spellings are left to the helper.
+    resolveHeaderToFieldName: function(header){
+        const exact = this.allFieldConfigs.find((f) => {
+            return Ext4.isString(f.name) && f.name.toLowerCase() === header.toLowerCase();
+        });
+
+        return exact ? exact.name : LABKEY.ext4.Util.resolveFieldNameFromLabel(header, this.allFieldConfigs);
     },
 
-    // Maps each normalized header to its column index, first occurrence winning as indexOf() did. Keyed on
-    // pasted text, so membership is tested against own properties only rather than anything Object supplies.
-    buildHeaderMap: function(headers){
+    // Maps each field named by the header row to the column holding its values, and reports any header that
+    // resolves to no field or to a field another header already claimed -- either way a column would be read
+    // from the wrong place or not at all. Keyed on the resolved field name rather than the pasted text, so
+    // this is the single answer to "which column holds this field" that processRow() then reads.
+    //
+    // Reported without a row number, since each is a property of the header row as a whole.
+    buildHeaderMap: function(headers, errors){
         const map = {};
+        const claimedBy = {};
+
         Ext4.each(headers, function(header, idx){
-            const key = this.normalizeHeader(header);
-            if (key && !Object.prototype.hasOwnProperty.call(map, key)) {
-                map[key] = idx;
+            const text = Ext4.isString(header) ? Ext4.String.trim(header) : '';
+            // A spreadsheet copy routinely leaves empty cells past the last real column.
+            if (!text) {
+                return;
             }
+
+            const encoded = Ext4.util.Format.htmlEncode(text);
+            const fieldName = this.resolveHeaderToFieldName(text);
+            if (!fieldName) {
+                // The helper reports nothing both for a header no field claims and for an alias several
+                // fields share, so the message cannot promise which of the two it was.
+                errors.push('Unrecognized column: ' + encoded + '. It matches no field in this form, or matches more than one.');
+                return;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(claimedBy, fieldName)) {
+                errors.push('Duplicate column: ' + encoded + ' names the same field as ' + Ext4.util.Format.htmlEncode(claimedBy[fieldName]) + '. Remove one so it is unambiguous which is imported.');
+                return;
+            }
+
+            claimedBy[fieldName] = text;
+            map[fieldName] = idx;
         }, this);
 
         return map;
     },
 
-    getHeaderIndex: function(headerMap, name){
-        const key = this.normalizeHeader(name);
-
-        return key && Object.prototype.hasOwnProperty.call(headerMap, key) ? headerMap[key] : -1;
-    },
-
-    // A header the form does not recognize, or two headers naming the same field, means a column is either
-    // dropped or read from the wrong place. Report both rather than importing part of the source silently.
-    // Reported without a row number, since each is a property of the header row as a whole.
-    checkHeaders: function(headers, errors){
-        const seen = {};
-        Ext4.each(headers, function(header){
-            const key = this.normalizeHeader(header);
-            // Trailing empty cells are a routine artifact of a spreadsheet copy and name no column.
-            if (!key) {
-                return;
-            }
-
-            const encoded = Ext4.util.Format.htmlEncode(Ext4.String.trim(header));
-            if (seen[key] === true) {
-                errors.push('Duplicate column: ' + encoded + '. Remove one so it is unambiguous which is imported.');
-            }
-            else {
-                seen[key] = true;
-                if (this.knownHeaders[key] !== true) {
-                    errors.push('Unrecognized column: ' + encoded + '. It matches no field in this form and would not be imported.');
-                }
-            }
-        }, this);
+    getFieldIndex: function(headerMap, fieldName){
+        return Object.prototype.hasOwnProperty.call(headerMap, fieldName) ? headerMap[fieldName] : -1;
     },
 
     resolveDate: function(fieldName, value, errors, rowIdx){
@@ -320,19 +313,19 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         const obj = {};
 
         // Seeded only when the column was actually pasted, so that a field this method does not handle is
-        // left for the loop below to match on its own name or import alias.
-        const idIdx = this.getHeaderIndex(headerMap, 'Id');
+        // left for the loop below.
+        const idIdx = this.getFieldIndex(headerMap, 'Id');
         if (idIdx !== -1) {
             // A row shorter than the header row leaves this undefined, which checkRequired() reports.
             obj.Id = this.upperCaseAnimalId && Ext4.isString(row[idIdx]) ? row[idIdx].toUpperCase() : row[idIdx];
         }
 
-        const dateIdx = this.getHeaderIndex(headerMap, 'date');
+        const dateIdx = this.getFieldIndex(headerMap, 'date');
         if (dateIdx !== -1) {
             obj.date = this.resolveDate('date', row[dateIdx], errors, rowIdx);
         }
 
-        const projectIdx = this.getHeaderIndex(headerMap, 'project');
+        const projectIdx = this.getFieldIndex(headerMap, 'project');
         if (projectIdx !== -1) {
             obj.project = this.resolveProjectByName(row[projectIdx], errors, rowIdx);
         }
@@ -345,10 +338,9 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
                 return;
             }
 
-            let index = this.getHeaderIndex(headerMap, field.name);
-            if (index === -1 && field.importAliases?.[0]) {
-                index = this.getHeaderIndex(headerMap, field.importAliases?.[0]);
-            }
+            // Every spelling the header row might have used was resolved to a field name up front, so a
+            // label or any import alias the user pasted is already accounted for by this one lookup.
+            const index = this.getFieldIndex(headerMap, field.name);
             if (index !== -1) {
                 // Every date column needs parseDate, not just the one named 'date'. Left to the
                 // raw string, an Ext date field applies JS new Date() semantics, and ES5+ parses a
