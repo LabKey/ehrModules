@@ -55,10 +55,8 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             return f.name;
         });
 
-        // Header resolution needs both halves of the section separately: the importable fields decide first,
-        // and the ones the importer skips (hidden, taskid, qcstate) are consulted only to tell a header this
-        // form knows but will not import from one it does not recognize at all.
-        this.allFieldConfigs = allConfigs;
+        // The fields the importer skips (hidden, taskid, qcstate) are still consulted during header
+        // resolution, but only to tell a header this form knows from one it does not recognize at all.
         this.skippedFieldConfigs = allConfigs.filter((f) => {
             return this.fieldConfigs.indexOf(f) === -1;
         });
@@ -112,12 +110,11 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             return;
         }
 
-        // Spaces and line endings are trimmed off the block, but never tabs. Ext4.String.trim() counts a tab
-        // as whitespace, so it stripped the last row's trailing tabs along with them, dropping that row's empty
-        // final cells and leaving it narrower than the rest -- which then read as a truncated row even though
-        // every value in it was correct. Spaces still have to go: a stray one after the final newline would
-        // otherwise parse as a junk one-cell row, and one on a leading blank line would be read as the header
-        // row itself. Individual cells are trimmed downstream by normalizeValue() and buildHeaderMap().
+        // Trim spaces and line endings off the block but never tabs: Ext4.String.trim() treats a tab as
+        // whitespace, so it stripped the last row's trailing tabs and left that row looking truncated when
+        // every value in it was correct. Spaces still have to go -- a stray one after the final newline parses
+        // as a junk one-cell row, and one on a leading blank line becomes the header row. Cells are trimmed
+        // later by normalizeValue() and buildHeaderMap(), blank rows dropped by isEmptyRow().
         const parsed = LDK.Utils.CSVToArray(text.replace(/^[ \r\n]+|[ \r\n]+$/g, ''), '\t');
         if (!parsed){
             Ext4.Msg.alert('Error', 'There was an error parsing the data.');
@@ -139,23 +136,30 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         //first get global values:
         Ext4.Msg.wait('Processing...');
 
-        const dataRowCount = parsed.length - 1;
+        // Only the rows that will actually be read, since blank ones are skipped below -- counting every
+        // parsed row would turn away a paste of exactly 250 rows that ends in a tab-only line.
+        const dataRowCount = parsed.slice(1).filter((row) => {
+            return !this.isEmptyRow(row);
+        }).length;
         if (dataRowCount > 250) {
             errors.push('Row Count - ' + dataRowCount + ': Import maximum is 250 rows.  Please split your import into multiple uploads and submit the form between each upload.');
         }
         else {
             const headerMap = this.buildHeaderMap(parsed[0], errors);
 
-            // Only parse rows once the header row is sound. A misspelled header for a required column
-            // otherwise reports as a missing value on every one of up to 250 rows, burying the one error
-            // that explains all of them.
+            // Only read rows once the header row is sound: a misspelled header for a required column
+            // otherwise reports as a missing value on all 250 rows, burying the one error that explains them.
             if (!errors.length) {
                 const columnCount = this.getRequiredColumnCount(headerMap);
 
                 for (let i = 1; i < parsed.length; i++) {
                     const row = parsed[i];
-                    if (!row || row.length < columnCount) {
-                        errors.push('Row ' + i + ': not enough items in row -- has ' + (row ? row.length : 0) + ', needs at least ' + columnCount);
+                    if (this.isEmptyRow(row)) {
+                        continue;
+                    }
+
+                    if (row.length < columnCount) {
+                        errors.push('Row ' + i + ': not enough items in row -- has ' + row.length + ', needs at least ' + columnCount);
                         continue;
                     }
 
@@ -170,8 +174,8 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         }
 
         if (errors.length){
-            // A condition that holds for a whole column rather than a single row is reported without a
-            // row number, so the identical copy pushed by every row collapses to one line here.
+            // Column-wide problems are pushed without a row number, so every row's identical copy collapses
+            // to one line here.
             Ext4.Msg.alert('Error', 'There following errors were found:<p>' + Ext4.Array.unique(errors).join('<br>'));
             return;
         }
@@ -183,25 +187,28 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         this.close();
     },
 
-    // Cells pasted out of a spreadsheet routinely carry stray whitespace, which no exact match would
-    // survive. Trim before parsing or matching so a padded cell resolves and a blank one reads as empty.
+    // Pasted cells routinely carry stray whitespace, which no exact match would survive.
     normalizeValue: function(value){
         return Ext4.isString(value) ? Ext4.String.trim(value) : value;
     },
 
-    // Identifies the field a pasted header names, which is what LABKEY.ext4.Util.resolveFieldNameFromLabel()
-    // exists for: it compares case-insensitively against a field's name, the display names the UI shows for it
-    // (label, caption, shortCaption) and every one of its import aliases. Matching only the name and the first
-    // alias, as this window used to, drops the column for any other spelling.
-    //
-    // Two things are decided here rather than left to the helper, because it breaks out of its search on the
-    // first name or display-name hit: it cannot distinguish one match from several, and so resolves a shared
-    // display name to whichever field is declared first.
+    // A row with no value in any cell has nothing to import, so it is skipped rather than reported as missing
+    // every required field. Now that trimming preserves tabs, a spreadsheet selection one row too tall
+    // arrives here as a line of empty cells instead of vanishing with the trailing whitespace.
+    isEmptyRow: function(row){
+        return !row || !row.some((cell) => {
+            return !Ext4.isEmpty(this.normalizeValue(cell));
+        });
+    },
+
+    // Identifies the field a pasted header names. LABKEY.ext4.Util.resolveFieldNameFromLabel() does the
+    // matching -- case-insensitively against name, label, caption, shortCaption and every import alias --
+    // where this window used to try only the name and the first alias, dropping the column for any other
+    // spelling. Ambiguity is decided here instead, since the helper breaks out of its search on the first
+    // name or display-name hit and so cannot tell one match from several.
     resolveHeaderToFieldName: function(header){
-        // An exact name match wins outright, so the field this header actually names cannot lose to another
-        // field that merely shares its display name. Importable fields are searched first here for the same
-        // reason they are below: a section can declare one name in two queries, and letting the skipped copy
-        // win would drop the column in silence.
+        // An exact name match wins outright, so a field cannot lose the header it actually names to another
+        // that merely shares its display name.
         const exact = this.findFieldByExactName(this.fieldConfigs, header)
                 || this.findFieldByExactName(this.skippedFieldConfigs, header);
         if (exact) {
@@ -209,14 +216,14 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         }
 
         // Several fields answering to one display name is undecidable, and guessing is how a column lands in
-        // the wrong field. Report it instead by resolving to nothing.
+        // the wrong field. Resolve to nothing so buildHeaderMap() reports it.
         if (this.countDisplayNameClaimants(this.fieldConfigs, header) > 1) {
             return null;
         }
 
-        // Importable fields resolve before the skipped ones so a header cannot be captured by a field the
-        // importer ignores that happens to share its display name -- that would drop the column silently,
-        // since a header resolving to a skipped field is deliberately not reported.
+        // Importable before skipped, so a header cannot be captured by a field the importer ignores that
+        // happens to share its display name -- that would drop the column silently, since a header resolving
+        // to a skipped field is deliberately not reported.
         return LABKEY.ext4.Util.resolveFieldNameFromLabel(header, this.fieldConfigs)
                 || LABKEY.ext4.Util.resolveFieldNameFromLabel(header, this.skippedFieldConfigs);
     },
@@ -229,9 +236,8 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         });
     },
 
-    // Counts the fields answering to this header by one of the names the helper treats as identifying. Import
-    // aliases are deliberately excluded: the helper does gather every alias match and rejects an ambiguous one
-    // on its own, so only the display names need counting here.
+    // Counts the fields answering to this header by a display name. Import aliases are excluded on purpose:
+    // the helper gathers every alias match and rejects an ambiguous one itself.
     countDisplayNameClaimants: function(configs, header){
         const lower = header.toLowerCase();
 
@@ -242,12 +248,11 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         }).length;
     },
 
-    // Maps each field named by the header row to the column holding its values, and reports any header that
-    // resolves to no field or to a field another header already claimed -- either way a column would be read
-    // from the wrong place or not at all. Keyed on the resolved field name rather than the pasted text, so
-    // this is the single answer to "which column holds this field" that processRow() then reads.
-    //
-    // Reported without a row number, since each is a property of the header row as a whole.
+    // Maps each field named by the header row to the column holding its values, and reports a header that
+    // resolves to no field or to one another header already claimed -- either way a column would be read from
+    // the wrong place or not at all. Keyed on the resolved field name, so this is the single answer to "which
+    // column holds this field" that processRow() reads. Reported without a row number, since each is a
+    // property of the header row as a whole.
     buildHeaderMap: function(headers, errors){
         const map = {};
         const claimedBy = {};
@@ -262,8 +267,8 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             const encoded = Ext4.util.Format.htmlEncode(text);
             const fieldName = this.resolveHeaderToFieldName(text);
             if (!fieldName) {
-                // The helper reports nothing both for a header no field claims and for an alias several
-                // fields share, so the message cannot promise which of the two it was.
+                // Resolution yields nothing whether no field claims the header or several do, so the message
+                // has to cover both.
                 errors.push('Unrecognized column: ' + encoded + '. It matches no field in this form, or matches more than one.');
                 return;
             }
@@ -287,8 +292,7 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             return map;
         }
 
-        // A required field with no column at all is a property of the header row, not of each row, so report it
-        // once here rather than as a missing value repeated down every row.
+        // A required field with no column at all is a property of the header row, not of each row.
         Ext4.each(this.requiredFieldNames, function(fieldName){
             if (this.getFieldIndex(map, fieldName) === -1) {
                 errors.push('Missing required column: ' + Ext4.util.Format.htmlEncode(fieldName) + '.');
@@ -303,9 +307,8 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
     },
 
     // How wide a data row has to be: far enough to reach the last column a REQUIRED field was mapped to.
-    // Measuring against every mapped column instead would reject a row whose only absent cells were empty in
-    // the source anyway, which is an ordinary shape -- the last row of a spreadsheet selection often leaves an
-    // optional trailing cell blank.
+    // Measuring against every mapped column would reject a row whose only absent cells were empty in the
+    // source anyway -- the last row of a spreadsheet selection often leaves an optional trailing cell blank.
     getRequiredColumnCount: function(headerMap){
         return this.requiredFieldNames.reduce((count, fieldName) => {
             const idx = this.getFieldIndex(headerMap, fieldName);
@@ -319,8 +322,8 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
 
         const parsed = LDK.ConvertUtils.parseDate(value);
 
-        // parseDate returns null for anything it cannot match. Report it rather than letting the
-        // column silently arrive empty, which only surfaces at all when the field is required.
+        // parseDate() yields nothing for a value it cannot match. Report that rather than letting the column
+        // silently arrive empty, which only surfaces at all when the field is required.
         if (Ext4.isEmpty(parsed) && !Ext4.isEmpty(value)) {
             errors.push('Row ' + rowIdx + ': unable to parse date for ' + fieldName + ': ' + Ext4.util.Format.htmlEncode(value));
         }
@@ -329,6 +332,10 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
     },
 
     resolveLookup: function(field, value, errors, rowIdx){
+        // Normalized here rather than beside the matching below, because every non-date column arrives here:
+        // returning early for a plain one would leave it the only value written through untrimmed.
+        value = this.normalizeValue(value);
+
         if (!field || !field.lookup)
             return value;
 
@@ -343,7 +350,6 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             }
         }
 
-        value = this.normalizeValue(value);
         if (Ext4.isEmpty(value)) {
             return value;
         }
@@ -358,22 +364,17 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         }
 
         // A store holding no records cannot resolve anything, so say so rather than writing the raw text
-        // through as though it had resolved. getCount() on its own is not a load-state check -- it reads
-        // 0 both while records are still in flight and for a store that loaded no rows, and neither can
-        // produce a match. Reported without a row number so every row's copy collapses to one line.
+        // through as though it had resolved. getCount() is not a load-state check on its own -- it reads 0
+        // both while records are in flight and for a store that loaded none, and neither can produce a match.
         if (field.lookup.store.isLoading() || !field.lookup.store.getCount()) {
             errors.push('No lookup values are loaded for ' + field.name + '. Please retry the import.');
             return value;
         }
 
-        // findRecord(fieldName, value, startIndex, anyMatch, caseSensitive, exactMatch) defaults to a
-        // PREFIX match, which silently resolves a code to any record whose display value merely starts
-        // with it -- e.g. source 'LABS' matched the record whose meaning is 'LABSINDO' and stored
-        // 'LABSINDO'. Require an exact (still case-insensitive) match.
-        //
-        // Try the display value first, then the key. A pasted cell legitimately holds either, and before
-        // an exact match was required a pasted key still resolved by falling through as raw text.
-        // EHR.form.field.ProjectEntryField resolves the same two ways.
+        // findRecord(fieldName, value, startIndex, anyMatch, caseSensitive, exactMatch) defaults to a PREFIX
+        // match, which silently resolved 'LABS' to the record whose display value is 'LABSINDO'. Require an
+        // exact -- still case-insensitive -- match, trying the display value then the key, since a pasted
+        // cell legitimately holds either. EHR.form.field.ProjectEntryField resolves the same two ways.
         for (let i = 0; i < columns.length; i++) {
             const lookupRecord = field.lookup.store.findRecord(columns[i], value, 0, false, false, true);
             if (lookupRecord) {
@@ -390,12 +391,15 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
     processRow: function(headerMap, row, errors, rowIdx){
         const obj = {};
 
-        // Seeded only when the column was actually pasted, so that a field this method does not handle is
-        // left for the loop below.
+        // Id, date and project are resolved by name here; the loop below handles every other field and skips
+        // whatever this seeded.
         const idIdx = this.getFieldIndex(headerMap, 'Id');
         if (idIdx !== -1) {
-            // A row shorter than the header row leaves this undefined, which checkRequired() reports.
-            obj.Id = this.upperCaseAnimalId && Ext4.isString(row[idIdx]) ? row[idIdx].toUpperCase() : row[idIdx];
+            // Trimmed like every other cell, and for one reason more: a form that accepts an animal not yet
+            // in the study creates it, so a padded id would silently register a second animal that no query
+            // matching the real id would find. A row too short leaves this undefined for checkRequired().
+            const id = this.normalizeValue(row[idIdx]);
+            obj.Id = this.upperCaseAnimalId && Ext4.isString(id) ? id.toUpperCase() : id;
         }
 
         const dateIdx = this.getFieldIndex(headerMap, 'date');
@@ -409,21 +413,20 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
         }
 
         Ext4.each(this.fieldConfigs, function(field) {
-            // Skip by name rather than by truthiness: a column handled above whose value came back null --
-            // an unknown project, an unparsable date -- must not be resolved a second time here, or the one
-            // cell is reported twice by two paths that match on different columns and disagree.
+            // Skip by name, not by truthiness: a field seeded above whose value came back null -- an unknown
+            // project, an unparsable date -- must not be resolved again here, or the same cell is reported
+            // twice, once by each resolver.
             if (obj.hasOwnProperty(field.name)) {
                 return;
             }
 
-            // Every spelling the header row might have used was resolved to a field name up front, so a
-            // label or any import alias the user pasted is already accounted for by this one lookup.
+            // Every spelling the header row might have used was resolved up front, so this one lookup by
+            // field name already accounts for a pasted label or import alias.
             const index = this.getFieldIndex(headerMap, field.name);
             if (index !== -1) {
-                // Every date column needs parseDate, not just the one named 'date'. Left to the
-                // raw string, an Ext date field applies JS new Date() semantics, and ES5+ parses a
-                // bare yyyy-MM-dd as UTC -- so '1965-04-01' lands as the previous day in any
-                // negative-offset timezone, and '1970-01-01' becomes 0 and is discarded as empty.
+                // Every date column needs parseDate, not just the one named 'date'. Left as a raw string an
+                // Ext date field applies new Date() semantics, and ES5+ reads a bare yyyy-MM-dd as UTC, so
+                // '1965-04-01' lands a day early in any negative-offset zone and '1970-01-01' becomes 0.
                 obj[field.name] = field.jsonType === 'date'
                     ? this.resolveDate(field.name, row[index], errors, rowIdx)
                     : this.resolveLookup(field, row[index], errors, rowIdx);
@@ -455,10 +458,9 @@ Ext4.define('EHR.window.FormBulkAddWindow', {
             return null;
         }
 
-        // Same load-state check as resolveLookup(): an unloaded store matches nothing, and blaming the
-        // pasted value for that sends the user looking for a problem their source file does not have. The
-        // store is autoLoad, so a submit can race it. Reported without a row number so every row's copy
-        // collapses to one line.
+        // Same load-state check as resolveLookup(): an unloaded store matches nothing, and blaming the pasted
+        // value sends the user hunting a problem their source file does not have. The store is autoLoad, so a
+        // submit can race it.
         if (this.projectStore.isLoading() || !this.projectStore.getCount()){
             errors.push('No projects are loaded yet. Please retry the import.');
             return null;
