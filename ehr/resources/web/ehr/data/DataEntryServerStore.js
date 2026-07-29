@@ -64,9 +64,17 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 }
             }, this);
 
-            if (ret){
-                return ret;
-            }
+            // An empty key cannot identify an existing record, so stop here rather than falling
+            // through to findExact() below -- an empty value matches ANY earlier unsaved record
+            // whose key is likewise empty, so the 2nd and later new rows all resolve to the 1st
+            // and collapse onto it, leaving only the last row's values. Returning nothing lets
+            // processServerRecords() create a server record bound to this client model instead.
+            //
+            // Only tables keyed on a server-assigned identity column hit this: study datasets key
+            // on objectid, which is generated client-side per row and so is never empty. A table
+            // whose sole key is a SERIAL (nbri_ehr.Conception.rowId) has an empty key on every new
+            // row, making it impossible to add more than one row per save.
+            return ret;
         }
 
         var idx = this.findExact(fieldName, value);
