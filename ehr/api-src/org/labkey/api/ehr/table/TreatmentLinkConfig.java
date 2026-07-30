@@ -12,7 +12,9 @@ import java.util.Map;
  * A center's vocabulary for the treatment links rendered by {@link TreatmentLinkDisplayColumnFactory}: which data entry
  * form each treatment category routes to, what the link says, and which report the user returns to.
  *
- * The builder starts from the values shared by most centers, so a center only names what differs for it.
+ * The builder defaults cover the link text, the order id parameter, the return report, and the forms that categories
+ * without a mapping of their own route to. Category-specific routing is never assumed: a center that treats a category
+ * differently must name it, so its routing is visible where the config is declared rather than inherited from here.
  */
 public class TreatmentLinkConfig
 {
@@ -81,7 +83,6 @@ public class TreatmentLinkConfig
 
         private Builder()
         {
-            _formTypesByCategory.put("Behavior", new FormTypes("Behavioral Rounds", "Bulk Behavior Entry"));
         }
 
         private Builder(TreatmentLinkConfig base)
