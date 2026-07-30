@@ -23,7 +23,7 @@ count(*) as replicates,
 stddev(viralLoad) as stdDeviation,
 group_concat(distinct v.qcflag, ';') as qcflags,
 group_concat(distinct v.comment, ';') as comments,
-cast(min(v.well) as varchar) as lowestWell,~
+cast(min(v.well) as varchar) as lowestWell,
 v.run,
 v.folder,
 v.workbook
