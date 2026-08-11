@@ -20,7 +20,7 @@
     }
   },
   "scripts": {
-    "build": "npm run clean && cross-env NODE_ENV=production webpack --config package.config.js --color --progress --profile",
+    "build": "npm run clean && cross-env NODE_ENV=production rspack build --config package.config.js",
     "build-analyze": "cross-env ANALYZE=true npm run build",
     "clean": "rimraf dist",
     "cleanAll": "rimraf dist && rimraf node_modules",
@@ -50,11 +50,11 @@
   },
   "homepage": "https://github.com/LabKey/ehrModules/labkey-ui-ehr#readme",
   "dependencies": {
-    "@labkey/components": "7.42.1"
+    "@labkey/components": "7.54.2"
   },
   "devDependencies": {
-    "@labkey/build": "9.1.5",
-    "@labkey/eslint-config": "1.2.2",
+    "@labkey/build": "10.1.0",
+    "@labkey/eslint-config": "1.2.3",
     "@types/jest": "30.0.0",
     "@types/react": "18.3.31",
     "@types/react-dom": "18.3.7",
