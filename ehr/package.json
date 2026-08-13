@@ -17,7 +17,7 @@
   "dependencies": {
     "@labkey/api": "1.51.4",
     "@labkey/components": "7.55.2",
-    "@labkey/ehr": "0.0.9-fb-update-deps-aug-11.1"
+    "@labkey/ehr": "0.0.9"
   },
   "devDependencies": {
     "@labkey/build": "10.1.0",
