@@ -3,7 +3,10 @@ default:
     just --list
 
 currentBranch := `git branch --show-current`
-branchAsTag := replace(currentBranch, '_', '-')
+# The release prefix (e.g. 26.8_) must be stripped: its '.' becomes a prerelease separator, so `npm version prerelease`
+# can't match the preid against the existing identifiers and keeps regenerating '.0' instead of bumping.
+branchAsPreId := replace(replace_regex(currentBranch, '^\d{2}\.\d{1,2}_', ''), '_', '-')
+branchAsTag := replace(replace(currentBranch, '.', '-'), '_', '-')
 packageName := '@labkey/ehr'
 
 ehr := ".." / "ehr"
@@ -32,8 +35,8 @@ bc: build copy
 
 # Bumps version to a prerelease version based on the current branch name
 preVersion:
-    @echo {{ GREEN }}Bumping prerelease version with preid='{{CYAN}}'{{ branchAsTag }}{{ NORMAL }}
-    @npm version prerelease --preid {{ branchAsTag }} --no-git-tag-version
+    @echo {{ GREEN }}Bumping prerelease version with preid='{{CYAN}}'{{ branchAsPreId }}{{ NORMAL }}
+    @npm version prerelease --preid {{ branchAsPreId }} --no-git-tag-version
 
 # Publishes the current version with the current branch name as a tag
 publishPreVersion:

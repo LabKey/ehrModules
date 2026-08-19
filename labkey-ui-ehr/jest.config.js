@@ -36,6 +36,7 @@ module.exports = {
     },
     moduleFileExtensions: ['ts', 'tsx', 'js'],
     roots: ['<rootDir>'],
+    setupFiles: ['./src/test/jest.polyfills.ts'],
     setupFilesAfterEnv: [
         './src/test/jest.setup.ts'
     ],

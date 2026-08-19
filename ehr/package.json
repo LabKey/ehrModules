@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@labkey/api": "1.51.4",
-    "@labkey/components": "7.55.2",
-    "@labkey/ehr": "0.0.9"
+    "@labkey/components": "7.58.1",
+    "@labkey/ehr": "0.0.10"
   },
   "devDependencies": {
-    "@labkey/build": "10.1.0",
+    "@labkey/build": "10.1.2",
     "@labkey/eslint-config": "1.2.3",
     "@types/jest": "30.0.0",
     "@types/react": "18.3.31",
