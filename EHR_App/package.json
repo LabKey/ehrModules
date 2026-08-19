@@ -21,7 +21,7 @@
     "lint-branch-fix": "node lint.diff.mjs --currentBranch --fix"
   },
   "dependencies": {
-    "@labkey/components": "7.58.1-fb-remove-bootstrap.1",
+    "@labkey/components": "7.58.1",
     "@labkey/ehr": "0.0.10-fb-remove-bootstrap.0"
   },
   "devDependencies": {
