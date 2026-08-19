@@ -25,7 +25,7 @@
     "@labkey/ehr": "0.0.10-fb-remove-bootstrap.0"
   },
   "devDependencies": {
-    "@labkey/build": "10.1.2-fb-remove-bootstrap.0",
+    "@labkey/build": "10.1.2",
     "@labkey/eslint-config": "1.2.3",
     "@types/jest": "30.0.0",
     "@types/react": "18.3.31",
