@@ -36,9 +36,9 @@ module.exports = {
     },
     moduleFileExtensions: ['ts', 'tsx', 'js'],
     roots: ['<rootDir>'],
-    setupFiles: ['./src/client/test/jest.polyfills.ts'],
+    setupFiles: ['./test/js/jest.polyfills.ts'],
     setupFilesAfterEnv: [
-        './src/client/test/jest.setup.ts'
+        './test/js/jest.setup.ts'
     ],
     testEnvironment: 'jsdom',
     testPathIgnorePatterns: [
