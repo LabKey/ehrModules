@@ -145,12 +145,8 @@ EHR.Server.Validation = {
 
         cal1.add(java.util.Calendar.YEAR, -1); //adjust for the year we added above
         cal1.add(java.util.Calendar.DATE, -60);
-        //TEMP DIAGNOSTIC - remove once the PostgreSQL-only missing WARN is understood
-        console.log('flagSuspiciousDate: query=' + helper.getQueryName() + ' date=' + date + ' isMoreThan60DaysPast=' + cal1.after(cal2));
         if (cal1.after(cal2)){
             var qc = EHR.Server.Security.getQCState(row);
-            //TEMP DIAGNOSTIC
-            console.log('flagSuspiciousDate: qc=' + (qc ? qc.Label : 'none') + ' publicData=' + (qc ? qc.PublicData : 'n/a') + ' generatedByServer=' + helper.isGeneratedByServer() + ' allowDatesInDistantPast=' + helper.allowDatesInDistantPast());
             if (!qc || !qc.PublicData){
                 var severity = helper.allowDatesInDistantPast() ? 'INFO' : 'WARN';
                 EHR.Server.Utils.addError(scriptErrors, 'date', 'Date is more than 60 days in past', severity);
