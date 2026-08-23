@@ -71,21 +71,11 @@ public class EHR_SMCustomizer extends AbstractTableCustomizer
 
     private SQLFragment getAgeSql(TableInfo demographics, String sampleType, ColumnInfo idCol, ColumnInfo receivedCol)
     {
-        SQLFragment ageSql = null;
         String alias = AliasManager.makeLegalName(sampleType, demographics.getSqlDialect());
-        if (demographics.getSqlDialect().isSqlServer())
-        {
-            ageSql = new SQLFragment("(SELECT CONVERT(DECIMAL(10,2), DATEDIFF(month, dem.birth, ").append(receivedCol.getValueSql(alias));
-            ageSql.append(") / 12.0) as ageAtSample FROM ").append(demographics, "dem");
-            ageSql.append(" WHERE dem.ParticipantId = ").append(idCol.getValueSql(alias)).append(")");
-        }
-        else if (demographics.getSqlDialect().isPostgreSQL())
-        {
-            ageSql = new SQLFragment("(SELECT ROUND(CAST((EXTRACT(YEAR FROM age) + EXTRACT(MONTH FROM age) / 12) AS NUMERIC), 2) AS ageAtSample ");
-            ageSql.append("FROM age(").append(receivedCol.getValueSql(alias)).append(", ");
-            ageSql.append("(SELECT dem.birth FROM ").append(demographics, "dem");
-            ageSql.append(" WHERE dem.ParticipantId = ").append(idCol.getValueSql(alias)).append(")) AS t(age))");
-        }
+        SQLFragment ageSql = new SQLFragment("(SELECT ROUND(CAST((EXTRACT(YEAR FROM age) + EXTRACT(MONTH FROM age) / 12) AS NUMERIC), 2) AS ageAtSample ");
+        ageSql.append("FROM age(").append(receivedCol.getValueSql(alias)).append(", ");
+        ageSql.append("(SELECT dem.birth FROM ").append(demographics, "dem");
+        ageSql.append(" WHERE dem.ParticipantId = ").append(idCol.getValueSql(alias)).append(")) AS t(age))");
 
         return ageSql;
     }
@@ -133,33 +123,30 @@ public class EHR_SMCustomizer extends AbstractTableCustomizer
             if (null != receivedCol && null != demographics)
             {
                 SQLFragment ageSql = getAgeSql(demographics, ti.getName(), idCol, receivedCol);
-                if (null != ageSql)
-                {
-                    FieldKey ageFk = FieldKey.fromParts("ageAtSample");
-                    defaultCols.add(ageFk);
-                    ExprColumn ageAtSampleCol = new ExprColumn(ti, ageFk, ageSql, JdbcType.DECIMAL, idCol, receivedCol);
-                    ageAtSampleCol.setLabel("Age At Sample (yrs)");
+                FieldKey ageFk = FieldKey.fromParts("ageAtSample");
+                defaultCols.add(ageFk);
+                ExprColumn ageAtSampleCol = new ExprColumn(ti, ageFk, ageSql, JdbcType.DECIMAL, idCol, receivedCol);
+                ageAtSampleCol.setLabel("Age At Sample (yrs)");
 
-                    // Need this display column factory just to ensure the "received column" is available in the underlying
-                    // samples query if it is not in the displayed view
-                    ageAtSampleCol.setDisplayColumnFactory(new DisplayColumnFactory()
+                // Need this display column factory just to ensure the "received column" is available in the underlying
+                // samples query if it is not in the displayed view
+                ageAtSampleCol.setDisplayColumnFactory(new DisplayColumnFactory()
+                {
+                    @Override
+                    public DisplayColumn createRenderer(ColumnInfo colInfo)
                     {
-                        @Override
-                        public DisplayColumn createRenderer(ColumnInfo colInfo)
+                        return new DataColumn(colInfo)
                         {
-                            return new DataColumn(colInfo)
+                            @Override
+                            public void addQueryFieldKeys(Set<FieldKey> keys)
                             {
-                                @Override
-                                public void addQueryFieldKeys(Set<FieldKey> keys)
-                                {
-                                    super.addQueryFieldKeys(keys);
-                                    keys.add(receivedCol.getFieldKey());
-                                }
-                            };
-                        }
-                    });
-                    ti.addColumn(ageAtSampleCol);
-                }
+                                super.addQueryFieldKeys(keys);
+                                keys.add(receivedCol.getFieldKey());
+                            }
+                        };
+                    }
+                });
+                ti.addColumn(ageAtSampleCol);
             }
         }
     }

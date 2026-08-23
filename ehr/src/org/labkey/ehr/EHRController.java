@@ -1378,40 +1378,6 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public static class EnsureEHRSchemaIndexesAction extends ConfirmAction<Object>
-    {
-        @Override
-        public void validateCommand(Object form, Errors errors)
-        {
-
-        }
-
-        @Override
-        public @NotNull URLHelper getSuccessURL(Object form)
-        {
-            return getContainer().getStartURL(getUser());
-        }
-
-        @Override
-        public ModelAndView getConfirmView(Object form, BindException errors)
-        {
-            if (!getUser().hasSiteAdminPermission())
-            {
-                throw new UnauthorizedException("Only site admins can view this page");
-            }
-
-            return HtmlView.of("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
-        }
-
-        @Override
-        public boolean handlePost(Object form, BindException errors)
-        {
-            EHRManager.get().compressEHRSchemaIndexes();
-            return true;
-        }
-    }
-
-    @RequiresPermission(AdminPermission.class)
     public static class EnsureQcStatesAction extends ConfirmAction<Object>
     {
         @Override

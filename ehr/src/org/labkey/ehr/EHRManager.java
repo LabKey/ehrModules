@@ -33,7 +33,6 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.PropertyManager.WritablePropertyMap;
-import org.labkey.api.data.PropertyStorageSpec;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
@@ -44,7 +43,6 @@ import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableResultSet;
 import org.labkey.api.data.TableSelector;
-import org.labkey.api.data.dialect.SqlDialect;
 import org.labkey.api.ehr.EHRQCState;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -60,7 +58,6 @@ import org.labkey.api.exp.property.PropertyService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
-import org.labkey.api.query.AliasManager;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
@@ -155,30 +152,17 @@ public class EHRManager
         static final String VET_REVIEW = "vetreview";
 
         // Dataset-specific columns
-        static final String CAGE = "cage";
-        static final String ROOM = "room";
         static final String PROJECT = "project";
         static final String CASE_NO = "caseno";
         static final String CALCULATED_STATUS = "calculated_status";
-        static final String DEATH = "death";
         static final String CATEGORY = "category";
-        static final String VALUE = "value";
-        static final String HX = "hx";
-        static final String CASE_ID = "caseid";
-        static final String DATE_FINALIZED = "datefinalized";
         static final String ASSIGNED_VET = "assignedvet";
-        static final String OBSERVATION = "observation";
-        static final String AREA = "area";
-        static final String REMARK = "remark";
         static final String TREATMENT_ID = "treatmentid";
 
         // Database/schema columns
         static final String KEY_MANAGEMENT_TYPE = "keymanagementtype";
         static final String KEY_PROPERTY_NAME = "keypropertyname";
         static final String DEMOGRAPHIC_DATA = "demographicdata";
-
-        // Index include prefix
-        static final String INCLUDE_PREFIX = "include:";
     }
 
     // Dataset name constants
@@ -196,29 +180,12 @@ public class EHRManager
         static final String CASES = "Cases";
         static final String DRUG = "drug";
         static final String BLOOD = "blood";
-        static final String GROSS_FINDINGS = "Gross Findings";
     }
 
     // Clinical observations index configuration - shared between ensureDatasetPropertyDescriptors and prepareEHRIndexContext
-    private static final String[] CLINICAL_OBSERVATIONS_REGULAR_COLS = new String[]{
-        ColumnNames.PARTICIPANT_ID,
-        ColumnNames.DATE
-    };
-
-    private static final String[] CLINICAL_OBSERVATIONS_INCLUDED_COLS = new String[]{
-        ColumnNames.TASK_ID,
-        ColumnNames.LSID,
-        ColumnNames.CATEGORY,
-        ColumnNames.OBSERVATION,
-        ColumnNames.AREA,
-        ColumnNames.REMARK
-    };
-
-    // Constructed from the regular and included columns above
     private static final String[] CLINICAL_OBSERVATIONS_INDEX_COLS = new String[]{
         ColumnNames.PARTICIPANT_ID,
-        ColumnNames.DATE,
-        ColumnNames.INCLUDE_PREFIX + String.join(",", CLINICAL_OBSERVATIONS_INCLUDED_COLS)
+        ColumnNames.DATE
     };
 
     private static final Logger _log = LogHelper.getLogger(EHRManager.class, "Details of comparing data types with expectations, DB status");
@@ -692,15 +659,15 @@ public class EHRManager
                 Collections.addAll(toRemove, idxToRemove);
 
                 if (realTable.getColumn(ColumnNames.VET_REVIEW) != null && !d.getName().equalsIgnoreCase(DatasetNames.DRUG))
-                    toRemove.add(new String[]{ColumnNames.QC_STATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.VET_REVIEW});
+                    toRemove.add(new String[]{ColumnNames.QC_STATE});
 
                 if (d.getLabel().equalsIgnoreCase(DatasetNames.HOUSING))
                 {
                     toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.END_DATE});
-                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.INCLUDE_PREFIX + ColumnNames.DATE + "," + ColumnNames.CAGE + "," + ColumnNames.ROOM});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID});
                     toAdd.add(new String[]{ColumnNames.LSID, ColumnNames.PARTICIPANT_ID});
                     toAdd.add(new String[]{ColumnNames.DATE, ColumnNames.LSID, ColumnNames.PARTICIPANT_ID});
-                    toAdd.add(new String[]{ColumnNames.DATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.LSID + "," + ColumnNames.PARTICIPANT_ID + "," + ColumnNames.CAGE + "," + ColumnNames.ROOM});
+                    toAdd.add(new String[]{ColumnNames.DATE});
                     toAdd.add(new String[]{ColumnNames.OBJECT_ID});
                 }
                 else if (d.getLabel().equalsIgnoreCase(DatasetNames.ASSIGNMENT))
@@ -727,19 +694,17 @@ public class EHRManager
                 else if (d.getLabel().equalsIgnoreCase(DatasetNames.DEMOGRAPHICS))
                 {
                     toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.CALCULATED_STATUS});
-                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.INCLUDE_PREFIX + ColumnNames.DEATH});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC"});
                 }
                 else if (d.getLabel().equalsIgnoreCase(DatasetNames.ANIMAL_RECORD_FLAGS))
                 {
-                    toRemove.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.INCLUDE_PREFIX + ColumnNames.CATEGORY + "," + ColumnNames.VALUE});
+                    toRemove.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC"});
                 }
                 else if (d.getLabel().equalsIgnoreCase(DatasetNames.CLINICAL_REMARKS))
                 {
                     toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID, ColumnNames.LSID});
                     toRemove.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.DATE + ":ASC", ColumnNames.LSID + ":ASC"});
-                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.DATE + ":ASC", ColumnNames.LSID + ":ASC",
-                        ColumnNames.INCLUDE_PREFIX + ColumnNames.HX + "," + ColumnNames.QC_STATE + "," + ColumnNames.DATE_FINALIZED + "," + ColumnNames.CATEGORY});
-                    toRemove.add(new String[]{ColumnNames.DATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.HX + "," + ColumnNames.CASE_ID});
+                    toAdd.add(new String[]{ColumnNames.PARTICIPANT_ID + ":ASC", ColumnNames.DATE + ":ASC", ColumnNames.LSID + ":ASC"});
                     toAdd.add(new String[]{ColumnNames.OBJECT_ID});
                 }
                 else if (d.getLabel().equalsIgnoreCase(DatasetNames.TREATMENT_ORDERS))
@@ -770,14 +735,13 @@ public class EHRManager
                         }
                     }
 
-                    toRemove.add(CLINICAL_OBSERVATIONS_REGULAR_COLS);
+                    toRemove.add(CLINICAL_OBSERVATIONS_INDEX_COLS);
                 }
                 else if (d.getName().equalsIgnoreCase(DatasetNames.DRUG))
                 {
                     toAdd.add(new String[]{ColumnNames.TREATMENT_ID});
 
-                    toRemove.add(new String[]{ColumnNames.QC_STATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.TREATMENT_ID + "," + ColumnNames.VET_REVIEW});
-                    toRemove.add(new String[]{ColumnNames.QC_STATE, ColumnNames.INCLUDE_PREFIX + ColumnNames.TREATMENT_ID});
+                    toRemove.add(new String[]{ColumnNames.QC_STATE});
 
                     toAdd.add(new String[]{ColumnNames.REQUEST_ID});
                     toRemove.remove(new String[]{ColumnNames.REQUEST_ID});
@@ -791,11 +755,11 @@ public class EHRManager
                 //ensure indexes removed, unless explicitly requested by a table
                 for (String[] cols : toRemove)
                 {
-                    String indexName = getIndexName(realTable.getSqlDialect(), tableName, cols);
+                    String indexName = getIndexName(tableName, cols);
                     boolean found = false;
                     for (String[] addedIndex : toAdd)
                     {
-                        String addedIndexName = getIndexName(realTable.getSqlDialect(), tableName, addedIndex);
+                        String addedIndexName = getIndexName(tableName, addedIndex);
                         if (addedIndexName.equalsIgnoreCase(indexName))
                         {
                             found = true;
@@ -813,7 +777,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            dropIndex(realTable.getSchema(), realTable, indexName, Arrays.asList(cols), d.getLabel(), messages);
+                            dropIndex(realTable.getSchema(), indexName, Arrays.asList(cols), d.getLabel(), messages);
                         }
                         else
                         {
@@ -828,25 +792,10 @@ public class EHRManager
                     boolean missingCols = false;
 
                     List<String> cols = new ArrayList<>();
-                    String[] includedCols = null;
-                    Map<String, String> directionMap = new HashMap<>();
 
                     for (String name : indexCols)
                     {
-                        String[] tokens = name.split(":");
-                        if (tokens[0].equalsIgnoreCase("include"))
-                        {
-                            if (tokens.length > 1)
-                            {
-                                includedCols = tokens[1].split(",");
-                            }
-                        }
-                        else
-                        {
-                            cols.add(tokens[0]);
-                            if (tokens.length > 1)
-                                directionMap.put(tokens[0], tokens[1]);
-                        }
+                        cols.add(name.split(":")[0]);
                     }
 
                     for (String col : cols)
@@ -857,21 +806,10 @@ public class EHRManager
                         }
                     }
 
-                    if (includedCols != null)
-                    {
-                        for (String col : includedCols)
-                        {
-                            if (realTable.getColumn(col) == null)
-                            {
-                                missingCols = true;
-                            }
-                        }
-                    }
-
                     if (missingCols)
                         continue;
 
-                    String indexName = getIndexName(realTable.getSqlDialect(), tableName, indexCols);
+                    String indexName = getIndexName(tableName, indexCols);
 
                     if (distinctIndexes.contains(indexName))
                         throw new RuntimeException("An index has already been created with the name: " + indexName);
@@ -893,7 +831,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            dropIndex(realTable.getSchema(), realTable, indexName, cols, d.getLabel(), messages);
+                            dropIndex(realTable.getSchema(), indexName, cols, d.getLabel(), messages);
                         }
                         else
                         {
@@ -906,16 +844,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            List<String> columns = new ArrayList<>();
-                            for (String name : cols)
-                            {
-                                if (realTable.getSqlDialect().isSqlServer() && directionMap.containsKey(name))
-                                    name += " " + directionMap.get(name);
-
-                                columns.add(name);
-                            }
-
-                            createIndex(realTable.getSchema(), realTable, d.getLabel(), indexName, columns, includedCols, messages);
+                            createIndex(realTable.getSchema(), realTable, d.getLabel(), indexName, new ArrayList<>(cols), messages);
                         }
                         else
                         {
@@ -923,68 +852,9 @@ public class EHRManager
                         }
                     }
                 }
-
-                //then disable if needed.  only attempt on SQLServer
-                if (realTable.getSqlDialect().isSqlServer())
-                {
-                    if (!DatasetNames.DEMOGRAPHICS.equalsIgnoreCase(d.getName()))
-                    {
-                        PropertyStorageSpec.Index[] idxToDisable = new PropertyStorageSpec.Index[]{
-                                new PropertyStorageSpec.Index(false, "participantsequencenum"),
-                                new PropertyStorageSpec.Index(false, ColumnNames.QC_STATE)
-                        };
-
-                        for (PropertyStorageSpec.Index toDisable : idxToDisable)
-                        {
-                            String idxName = AliasManager.makeLegalName(tableName + '_' + StringUtils.join(toDisable.columnNames, "_"), DbScope.getLabKeyScope().getSqlDialect());
-                            if (doesIndexExist(realTable.getSchema(), tableName, idxName))
-                            {
-                                messages.add("will disable index: " + tableName + "." + idxName);
-                                if (commitChanges)
-                                {
-                                    new SqlExecutor(realTable.getSchema()).execute(new SQLFragment("ALTER INDEX " + idxName + " ON studydataset." + tableName + " DISABLE"));
-                                }
-                            }
-                            else
-                            {
-                                _log.warn("unable to find index: {}.{}", tableName, idxName);
-                                String indexName = getIndexName(realTable.getSqlDialect(), tableName, toDisable.columnNames);
-                                if (doesIndexExist(realTable.getSchema(), tableName, indexName))
-                                {
-                                    messages.add("will disable index: " + tableName + "." + indexName);
-                                    if (commitChanges)
-                                    {
-                                        new SqlExecutor(realTable.getSchema()).execute(new SQLFragment("ALTER INDEX " + indexName + " ON studydataset." + tableName + " DISABLE"));
-                                    }
-                                }
-                                else
-                                {
-                                    _log.warn("unable to find index: {}.{}", tableName, indexName);
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
             createEHRLookupIndexes(messages, commitChanges, rebuildIndexes);
-
-            //increase length of encounters remark col
-            if (commitChanges && DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
-            {
-                for (String label : new String[]{DatasetNames.CLINICAL_ENCOUNTERS, DatasetNames.GROSS_FINDINGS})
-                {
-                    Dataset ds = study.getDatasetByLabel(label);
-                    if (ds != null)
-                    {
-                        _log.info("increasing size of " + ColumnNames.REMARK + " column for dataset: {}", label);
-                        SQLFragment sql = new SQLFragment("ALTER TABLE studydataset." + ds.getDomain().getStorageTableName() +
-                            " ALTER COLUMN " + ColumnNames.REMARK + " NVARCHAR(max)");
-                        SqlExecutor se = new SqlExecutor(DbScope.getLabKeyScope());
-                        se.execute(sql);
-                    }
-                }
-            }
 
             transaction.commit();
 
@@ -1035,45 +905,16 @@ public class EHRManager
         }
     }
 
-    //only sqlserver enterprise edition supports index compression.  team city is not enterprise
-    private boolean isEnterpriseEdition(DbSchema schema)
-    {
-        SqlSelector ss = new SqlSelector(schema, new SQLFragment("select serverproperty('Edition')"));
-
-        return ss.getObject(String.class).contains("Enterprise");
-    }
-
-    private String getIndexName(SqlDialect dialect, String tableName, String[] indexCols)
+    private String getIndexName(String tableName, String[] indexCols)
     {
         List<String> cols = new ArrayList<>();
-        String[] includedCols = null;
-        Map<String, String> directionMap = new HashMap<>();
 
         for (String name : indexCols)
         {
-            String[] tokens = name.split(":");
-            if (tokens[0].equalsIgnoreCase("include"))
-            {
-                if (tokens.length > 1)
-                {
-                    includedCols = tokens[1].split(",");
-                }
-            }
-            else
-            {
-                cols.add(tokens[0]);
-                if (tokens.length > 1)
-                    directionMap.put(tokens[0], tokens[1]);
-            }
+            cols.add(name.split(":")[0]);
         }
 
-        String indexName = tableName + "_" + StringUtils.join(cols, "_");
-        if (includedCols != null && dialect.isSqlServer())
-        {
-            indexName += "_include_" + StringUtils.join(includedCols, "_");
-        }
-
-        return indexName;
+        return tableName + "_" + StringUtils.join(cols, "_");
     }
 
     private void createEHRLookupIndexes(List<String> messages, boolean commitChanges, boolean rebuildIndexes) throws SQLException
@@ -1088,9 +929,9 @@ public class EHRManager
         if (commitChanges && (!exists || rebuildIndexes))
         {
             if (exists)
-                dropIndex(schema, realTable, indexName, cols, indexName, messages);
+                dropIndex(schema, indexName, cols, indexName, messages);
 
-            createIndex(schema, realTable, indexName, indexName, cols, new String[]{ColumnNames.VALUE}, messages);
+            createIndex(schema, realTable, indexName, indexName, cols, messages);
         }
         else if ((!exists || rebuildIndexes))
         {
@@ -1101,18 +942,10 @@ public class EHRManager
         }
     }
 
-    private void createIndex(DbSchema schema, TableInfo realTable, String tableName, String indexName, List<String> columns, String[] includedCols, List<String> messages)
+    private void createIndex(DbSchema schema, TableInfo realTable, String tableName, String indexName, List<String> columns, List<String> messages)
     {
         messages.add("Creating index on column(s): " + StringUtils.join(columns, ", ") + " for table: " + tableName);
-        String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")";
-        if (schema.getSqlDialect().isSqlServer() && isEnterpriseEdition(schema))
-        {
-            if (includedCols != null)
-                sqlString += " INCLUDE (" + StringUtils.join(includedCols, ", ") + ") ";
-
-            sqlString += " WITH (DATA_COMPRESSION = ROW)";
-        }
-        SQLFragment sql = new SQLFragment(sqlString);
+        SQLFragment sql = new SQLFragment("CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")");
         SqlExecutor se = new SqlExecutor(schema);
         se.execute(sql);
     }
@@ -1132,19 +965,10 @@ public class EHRManager
         return indexNames.contains(indexName);
     }
 
-    private void dropIndex(DbSchema schema, TableInfo realTable, String indexName, List<String> cols, String tableName, List<String> messages)
+    private void dropIndex(DbSchema schema, String indexName, List<String> cols, String tableName, List<String> messages)
     {
         messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + tableName);
-        String sqlString;
-        if (realTable.getSqlDialect().isSqlServer())
-        {
-            sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
-        }
-        else
-        {
-            sqlString = "DROP INDEX " + schema.getName() + "." + indexName;
-        }
-        SQLFragment sql = new SQLFragment(sqlString);
+        SQLFragment sql = new SQLFragment("DROP INDEX " + schema.getName() + "." + indexName);
         SqlExecutor se = new SqlExecutor(schema);
         se.execute(sql);
     }
@@ -1155,16 +979,12 @@ public class EHRManager
     private static class DatasetIndexConfig
     {
         final String datasetName;
-        final String[] indexCols;
-        final String[] regularCols;
-        final String[] includedCols;
+        final String[] cols;
 
-        DatasetIndexConfig(String datasetName, String[] indexCols, String[] regularCols, String[] includedCols)
+        DatasetIndexConfig(String datasetName, String[] cols)
         {
             this.datasetName = datasetName;
-            this.indexCols = indexCols;
-            this.regularCols = regularCols;
-            this.includedCols = includedCols;
+            this.cols = cols;
         }
     }
 
@@ -1176,9 +996,7 @@ public class EHRManager
         DATASET_INDEX_CONFIGS.add(
             new DatasetIndexConfig(
                 DatasetNames.CLINICAL_OBSERVATIONS,
-                CLINICAL_OBSERVATIONS_INDEX_COLS,
-                CLINICAL_OBSERVATIONS_REGULAR_COLS,
-                CLINICAL_OBSERVATIONS_INCLUDED_COLS
+                CLINICAL_OBSERVATIONS_INDEX_COLS
             )
         );
         // Additional dataset index configurations can be registered here
@@ -1196,9 +1014,8 @@ public class EHRManager
         final DbSchema schema;
         final String indexName;
         final List<String> cols;
-        final String[] includedCols;
 
-        EHRIndexContext(Dataset dataset, TableInfo realTable, String tableName, DbSchema schema, String indexName, List<String> cols, String[] includedCols)
+        EHRIndexContext(Dataset dataset, TableInfo realTable, String tableName, DbSchema schema, String indexName, List<String> cols)
         {
             this.dataset = dataset;
             this.realTable = realTable;
@@ -1206,7 +1023,6 @@ public class EHRManager
             this.schema = schema;
             this.indexName = indexName;
             this.cols = cols;
-            this.includedCols = includedCols;
         }
     }
 
@@ -1238,11 +1054,9 @@ public class EHRManager
         String tableName = dataset.getDomain().getStorageTableName();
         DbSchema schema = realTable.getSchema();
 
-        String indexName = getIndexName(schema.getSqlDialect(), tableName, config.indexCols);
+        String indexName = getIndexName(tableName, config.cols);
 
-        List<String> cols = Arrays.asList(config.regularCols);
-
-        return new EHRIndexContext(dataset, realTable, tableName, schema, indexName, cols, config.includedCols);
+        return new EHRIndexContext(dataset, realTable, tableName, schema, indexName, Arrays.asList(config.cols));
     }
 
     /**
@@ -1283,7 +1097,7 @@ public class EHRManager
             boolean exists = doesIndexExist(ctx.schema, ctx.tableName, ctx.indexName);
             if (exists)
             {
-                dropIndex(ctx.schema, ctx.realTable, ctx.indexName, ctx.cols, ctx.dataset.getLabel(), messages);
+                dropIndex(ctx.schema, ctx.indexName, ctx.cols, ctx.dataset.getLabel(), messages);
                 messages.add("Successfully dropped " + config.datasetName + " index: " + ctx.indexName);
             }
             else
@@ -1343,7 +1157,7 @@ public class EHRManager
             }
             else
             {
-                createIndex(ctx.schema, ctx.realTable, ctx.dataset.getLabel(), ctx.indexName, ctx.cols, ctx.includedCols, messages);
+                createIndex(ctx.schema, ctx.realTable, ctx.dataset.getLabel(), ctx.indexName, ctx.cols, messages);
                 messages.add("Successfully created " + config.datasetName + " index: " + ctx.indexName);
             }
 
@@ -1357,55 +1171,6 @@ public class EHRManager
         return messages;
     }
 
-    //the module's SQL scripts create indexes, but apparently only SQL server enterprise supports compression,
-    //so this code will let admins compress them after the fact
-    public void compressEHRSchemaIndexes()
-    {
-        if (!DbScope.getLabKeyScope().getSqlDialect().isSqlServer() && isEnterpriseEdition(EHRSchema.getInstance().getSchema()))
-        {
-            _log.error("Index compression on EHR can only be performed on SQL server currently.");
-            return;
-        }
-
-        _log.info("Compressing indexes on select EHR schema tables");
-
-        List<Pair<String, String[]>> names = new ArrayList<>();
-        names.add(Pair.of("encounter_flags", new String[]{"objectid"}));
-        names.add(Pair.of("encounter_flags", new String[]{"parentid"}));
-        names.add(Pair.of("encounter_flags", new String[]{"id"}));
-
-        names.add(Pair.of("encounter_participants", new String[]{"parentid"}));
-        names.add(Pair.of("encounter_participants", new String[]{"id"}));
-        names.add(Pair.of("encounter_participants", new String[]{"taskid"}));
-
-        names.add(Pair.of("encounter_summaries", new String[]{"id"}));
-        names.add(Pair.of("encounter_summaries", new String[]{"container", "objectid"}));
-        names.add(Pair.of("encounter_summaries", new String[]{"container", "parentid"}));
-        names.add(Pair.of("encounter_summaries", new String[]{"taskid"}));
-
-        names.add(Pair.of("snomed_tags", new String[]{"taskid"}));
-        names.add(Pair.of("snomed_tags", new String[]{"code", "container"}));
-
-        names.add(Pair.of("treatment_times", new String[]{"container", "treatmentid"}));
-
-        for (Pair<String, String[]> pair : names)
-        {
-            String table = pair.first;
-            String indexName = table + "_" + StringUtils.join(pair.second, "_");
-            rebuildIndex(table, indexName);
-        }
-
-        //clustered index does not follow other naming conventions
-        rebuildIndex("snomed_tags", "CIDX_snomed_tags");
-    }
-
-    private void rebuildIndex(String table, String indexName)
-    {
-        DbSchema ehr = EHRSchema.getInstance().getSchema();
-        SQLFragment sql = new SQLFragment("ALTER INDEX " + indexName + " ON ehr." + table + " REBUILD WITH (DATA_COMPRESSION = ROW)");
-        SqlExecutor se = new SqlExecutor(ehr);
-        se.execute(sql);
-    }
     
     //NOTE: this assumes the property already exists
     private void updatePropertyURI(Domain d, PropertyDescriptor pd) throws SQLException
@@ -1423,7 +1188,7 @@ public class EHRManager
         long propertyId = ids[0];
 
         //first ensure the propertyURI exists
-        SQLFragment sql = new SQLFragment("select propertyid from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name " + (expSchema.getSqlDialect().isPostgreSQL() ? "ilike" : "like") + " ?)", d.getTypeId(), pd.getName());
+        SQLFragment sql = new SQLFragment("select propertyid from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name ilike ?)", d.getTypeId(), pd.getName());
         SqlSelector selector = new SqlSelector(expSchema.getScope(), sql);
         List<Long> oldIds = new ArrayList<>();
 

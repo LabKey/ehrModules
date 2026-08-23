@@ -424,7 +424,6 @@ public class ViralLoadAssayTest extends AbstractLabModuleAssayTest
 
         try
         {
-            //this page fails to load on team city windows/sqlserver agents only?
             waitForElement(Locator.xpath("//span[contains(text(), 'Freezer Id') and contains(@class, 'x4-column-header-text')]"), WAIT_FOR_JAVASCRIPT * 2); //ensure grid loaded
         }
         catch (NoSuchElementException e)
