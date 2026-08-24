@@ -54,6 +54,24 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in ApplyTemplateWindow', dataEntryPanel);
 
             var data = EHR.DataEntryUtils.getEncountersRecords(dataEntryPanel);
+            //TEMP DEBUG - remove once the empty encounters store is understood
+            if (!data.length) {
+                var debugStore = dataEntryPanel.storeCollection.getClientStoreByName('encounters');
+                var debugRows = [];
+                if (debugStore) {
+                    debugStore.each(function(r){
+                        debugRows.push('Id=' + r.get('Id') + ' date=' + r.get('date') + ' procedureid=' + r.get('procedureid') + ' phantom=' + r.phantom);
+                    }, this);
+                }
+                LDK.Utils.logToServer({
+                    level: 'ERROR',
+                    message: 'TEMP DEBUG EHR.window.ApplyTemplateWindow: no encounters records.  idSelectionMode=' + this.idSelectionMode
+                            + ' storeFound=' + !!debugStore
+                            + ' count=' + (debugStore ? debugStore.getCount() : -1)
+                            + ' rows=[' + debugRows.join(' | ') + ']'
+                });
+            }
+
             if (!data.length) {
                 this.on('beforeshow', function(){
                     Ext4.Msg.alert('No Records', 'Cannot add results to this section without a corresponding procedure above.  Note: the procedure must have an Id/date in order to enter results');
