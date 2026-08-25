@@ -20,9 +20,7 @@ Ext4.define('EHR.panel.TaskDataEntryPanel', {
         cfg = this.callParent(arguments);
         cfg.filterArray = cfg.filterArray || [];
         cfg.filterArray.push(LABKEY.Filter.create('taskid', this.taskId, LABKEY.Filter.Types.EQUALS));
-        // A redundant filter that can help the DB choose a more efficient query plan. SQLServer does better with this
-        // filter in choosing to use the index on the TaskId column, even if the value is being passed as a JDBC
-        // parameter instead of being embedded in the SQL as a string literal.
+        // A redundant filter that helps the DB pick the index on the TaskId column even when the value arrives as a JDBC parameter rather than a literal.
         cfg.filterArray.push(LABKEY.Filter.create('taskid', this.taskId, LABKEY.Filter.Types.NOT_MISSING));
 
         return cfg;

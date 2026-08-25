@@ -716,27 +716,11 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String name = "isNumericId";
         if (ti.getColumn(name, false) == null)
         {
-            SQLFragment sql = null;
+            SQLFragment sql = new SQLFragment("CASE WHEN ( " + ExprColumn.STR_TABLE_ALIAS + ".participantid ~ '^([0-9]+)$' ) THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END");
 
-            if (ti.getSqlDialect().isSqlServer())
-            {
-                sql = new SQLFragment("CASE WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".participantid NOT LIKE '%[^0-9]%') THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END");
-            }
-            else if (ti.getSqlDialect().isPostgreSQL())
-            {
-                sql = new SQLFragment("CASE WHEN ( " + ExprColumn.STR_TABLE_ALIAS + ".participantid ~ '^([0-9]+)$' ) THEN " + ti.getSqlDialect().getBooleanTRUE() + " ELSE " + ti.getSqlDialect().getBooleanFALSE() + " END");
-            }
-            else
-            {
-                _log.error("Only postgres and sqlserver are supported");
-            }
-
-            if (sql != null)
-            {
-                ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("Id"));
-                newCol.setLabel("Is Numeric Id?");
-                ti.addColumn(newCol);
-            }
+            ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("Id"));
+            newCol.setLabel("Is Numeric Id?");
+            ti.addColumn(newCol);
         }
     }
 
@@ -1295,8 +1279,7 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         String codeAndMeaning = "codeAndMeaning";
         if (table.getColumn(codeAndMeaning) == null)
         {
-            String chr = table.getSqlDialect().isPostgreSQL() ? "chr" : "char";
-            SQLFragment sql = new SQLFragment(table.getSqlDialect().concatenate(ExprColumn.STR_TABLE_ALIAS + ".code", chr + "(9)", ExprColumn.STR_TABLE_ALIAS + ".meaning"));
+            SQLFragment sql = new SQLFragment(table.getSqlDialect().concatenate(ExprColumn.STR_TABLE_ALIAS + ".code", "chr(9)", ExprColumn.STR_TABLE_ALIAS + ".meaning"));
             ExprColumn col = new ExprColumn(table, codeAndMeaning, sql, JdbcType.VARCHAR, table.getColumn("code"), table.getColumn("meaning"));
             col.setLabel("Code and Meaning");
             col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);

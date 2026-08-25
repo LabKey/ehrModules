@@ -221,28 +221,18 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 }
 
                 SqlExecutor ex = new SqlExecutor(kinshipTable.getSchema());
-                if (kinshipTable.getSqlDialect().isSqlServer())
+
+                //find sequence name.  this was autocreated by the serial
+                String seqName = "kinship_rowid_seq";
+                SqlSelector series = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT relname FROM pg_class WHERE relkind='S' AND relname = ?", seqName));
+                if (!series.exists())
                 {
-                    ex.execute(new SQLFragment("DBCC CHECKIDENT ('" + kinshipTable.getSelectName() + "', RESEED, " + maxVal + ")"));
-                }
-                else if (kinshipTable.getSqlDialect().isPostgreSQL())
-                {
-                    //find sequence name.  this was autocreated by the serial
-                    String seqName = "kinship_rowid_seq";
-                    SqlSelector series = new SqlSelector(kinshipTable.getSchema(), new SQLFragment("SELECT relname FROM pg_class WHERE relkind='S' AND relname = ?", seqName));
-                    if (!series.exists())
-                    {
-                        throw new PipelineJobException("Unable to find sequence with name: " + seqName);
-                    }
-                    else
-                    {
-                        maxVal++;
-                        ex.execute(new SQLFragment("SELECT setval(?, ?)", "ehr." + seqName, maxVal));
-                    }
+                    throw new PipelineJobException("Unable to find sequence with name: " + seqName);
                 }
                 else
                 {
-                    throw new PipelineJobException("Unknown SQL Dialect: " + kinshipTable.getSqlDialect().getProductName());
+                    maxVal++;
+                    ex.execute(new SQLFragment("SELECT setval(?, ?)", "ehr." + seqName, maxVal));
                 }
                 transaction.commit();
             }

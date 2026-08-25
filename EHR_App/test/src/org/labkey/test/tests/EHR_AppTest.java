@@ -27,7 +27,6 @@ import org.labkey.test.categories.EHR;
 import org.labkey.test.pages.ReactAnimalHistoryPage;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.DataRegionTable;
-import org.labkey.test.util.PostgresOnlyTest;
 import org.labkey.test.util.TextSearcher;
 import org.openqa.selenium.WebElement;
 
@@ -43,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 import static org.labkey.test.components.html.Input.Input;
 
 @Category({EHR.class})
-public class EHR_AppTest extends AbstractGenericEHRTest implements PostgresOnlyTest
+public class EHR_AppTest extends AbstractGenericEHRTest
 {
     private static final String PROJECT_NAME = "EHR App";
     private static final String FOLDER_NAME = "EHR";

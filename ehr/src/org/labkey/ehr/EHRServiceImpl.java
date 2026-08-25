@@ -1006,8 +1006,7 @@ public class EHRServiceImpl extends EHRService
         if (existing == null && ti.getColumn("objectid") != null && ti.getUserSchema() != null)
         {
             //display version of the column
-            String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
-            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, new SQLFragment(chr + "(10)"));
+            SQLFragment groupConcatSQL = ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("CAST(t.sort as varchar(10))", "': '", "s.meaning", "' ('", "t.code", "')'")), true, true, new SQLFragment("chr(10)"));
             SQLFragment displaySQL = new SQLFragment("(SELECT ");
             displaySQL.append(groupConcatSQL);
             displaySQL.append("\nFROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code AND s.container = t.container) ");

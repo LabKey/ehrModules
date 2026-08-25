@@ -505,7 +505,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
         Date startTime = new Date();
         Map<String, Map<String, Object>> ret = new HashMap<>();
-        //NOTE: SQLServer can complain if requesting more than 2000 at a time, so break into smaller sets
+        //NOTE: break into smaller sets to keep the IN clause a reasonable size
         int start = 0;
         // Use a set to remove duplicates
         List<String> allIds = new ArrayList<>(new HashSet<>(ids));

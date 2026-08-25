@@ -180,18 +180,7 @@ public class BillingTask extends PipelineJob.Task<BillingTask.Factory>
 
     private void loadTransactionNumber()
     {
-        SqlSelector se;
-        if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
-            se = new SqlSelector(EHR_BILLING_SCHEMA,
-                    new SQLFragment("select max(cast(transactionNumber as integer)) as expr from " + EHR_BillingSchema.NAME+ "." + EHR_BillingSchema.TABLE_INVOICED_ITEMS + " WHERE transactionNumber not like '%[^0-9]%'"));
-        else if (DbScope.getLabKeyScope().getSqlDialect().isPostgreSQL())
-        {
-            se = new SqlSelector(EHR_BILLING_SCHEMA, new SQLFragment("select max(cast(transactionNumber as integer)) as expr from " + EHR_BillingSchema.NAME+ "." + EHR_BillingSchema.TABLE_INVOICED_ITEMS + " WHERE transactionNumber ~ '^[0-9]$'"));
-        }
-        else
-        {
-            throw new UnsupportedOperationException("The billing pipeline is only supported on sqlserver and postgres");
-        }
+        SqlSelector se = new SqlSelector(EHR_BILLING_SCHEMA, new SQLFragment("select max(cast(transactionNumber as integer)) as expr from " + EHR_BillingSchema.NAME+ "." + EHR_BillingSchema.TABLE_INVOICED_ITEMS + " WHERE transactionNumber ~ '^[0-9]+$'"));
 
         Integer[] rows = se.getArray(Integer.class);
 
