@@ -269,14 +269,9 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     width: 200
                 },{
                     xtype: 'ldk-linkbutton',
-                    text: 'Requests With Manual Results',
+                    text: 'Requests',
                     linkCls: 'labkey-text-link',
-                    href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': false})
-                },{
-                    xtype: 'ldk-linkbutton',
-                    text: 'Requests With Automatic Results',
-                    linkCls: 'labkey-text-link',
-                    href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath', 'query.mergeSyncInfo/automaticresults~eq': true})
+                    href: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath'})
                 }]
             },{
                 layout: 'hbox',
