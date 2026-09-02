@@ -615,7 +615,10 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         },
 
         addTableModified: function(schemaName, queryName){
-            props.tablesModified.push(schemaName + ';' + queryName);
+            var key = schemaName + ';' + queryName;
+            if (props.tablesModified.indexOf(key) == -1){
+                props.tablesModified.push(key);
+            }
         },
 
         isRequiresStatusRecalc: function(){
@@ -692,21 +695,41 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             if (!this.isValidateOnly() && !this.isETL() && !this.skipClosingRecords()){
                 console.log("closing records");
                 var rows = this.getRows();
-                var idsToClose = [];
+                // At most one row per animal: closePreviousDatasetRecords closes open records dated <= the row it is
+                // given, so two same-dated rows for one animal each close the other and the animal is left with no
+                // open record. Keep the latest.
+                var latestByAnimal = {};
                 if (rows){
                     for (var i=0;i<rows.length;i++){
-                        if (EHR.Server.Security.getQCStateByLabel(rows[i].row.QCStateLabel).PublicData && rows[i].row.date){
-                            idsToClose.push({
-                                Id: rows[i].row.Id,
-                                date: EHR.Server.Utils.datetimeToString(rows[i].row.date),  //stringify to serialize properly
-                                objectid: rows[i].row.objectid
-                            });
+                        var row = rows[i].row;
+                        if (!row.Id || !row.date || !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
+                            continue;
+                        }
+
+                        var existing = latestByAnimal[row.Id];
+                        if (!existing || new Date(row.date) > new Date(existing.rawDate)){
+                            latestByAnimal[row.Id] = {
+                                Id: row.Id,
+                                rawDate: row.date,
+                                date: EHR.Server.Utils.datetimeToString(row.date),  //stringify to serialize properly
+                                objectid: row.objectid
+                            };
                         }
                     }
                 }
 
+                var idsToClose = [];
+                for (var id in latestByAnimal){
+                    if (latestByAnimal.hasOwnProperty(id)){
+                        idsToClose.push({
+                            Id: latestByAnimal[id].Id,
+                            date: latestByAnimal[id].date,
+                            objectid: latestByAnimal[id].objectid
+                        });
+                    }
+                }
+
                 if (idsToClose.length){
-                    //NOTE: this list should be limited to 1 row per animalId
                     this.getJavaHelper().closePreviousDatasetRecords(this.getQueryName(), idsToClose, this.shouldRemoveTimeFromDate(), publicData);
                 }
             }
