@@ -46,14 +46,13 @@ ALTER TABLE ehr_billing.aliases DROP COLUMN aliasEnabled;
 ALTER TABLE ehr_billing.aliases ADD isAcceptingCharges boolean DEFAULT true;
 
 -- dropping to avoid duplicate index, EHR_BILLING_ALIASES_INDEX includes index to container
-SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'ehr_billing_aliases_container_index');
+DROP INDEX IF EXISTS ehr_billing.ehr_billing_aliases_container_index;
 
 -- index on lsid col in extensible tables
-SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_ALIASES_LSID');
 CREATE INDEX IX_EHR_BILLING_ALIASES_LSID ON ehr_billing.aliases (lsid);
 
 -- Convert from a plain index to a unique constraint
-SELECT core.fn_dropifexists ('aliases', 'ehr_billing', 'INDEX', 'EHR_BILLING_ALIASES_INDEX');
+DROP INDEX IF EXISTS ehr_billing.EHR_BILLING_ALIASES_INDEX;
 
 ALTER TABLE ehr_billing.aliases ADD CONSTRAINT UNIQUE_ALIAS UNIQUE (Container, alias);
 
@@ -82,11 +81,8 @@ ALTER TABLE ehr_billing.chargeRates ADD COLUMN LSID LSIDtype;
 
 ALTER TABLE ehr_billing.chargeRates ALTER COLUMN unitCost TYPE DECIMAL(13,2);
 -- constraint and index in chargeRates table
-SELECT core.fn_dropifexists ('chargeRates', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_CHARGE_RATES_CHARGEID');
-SELECT core.fn_dropifexists ('chargeRates', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_RATES_CHARGEID');
 CREATE INDEX IX_EHR_BILLING_CHARGE_RATES_CHARGEID ON ehr_billing.chargeRates (chargeId);
 
-SELECT core.fn_dropifexists ('chargeRates', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_RATES_LSID');
 CREATE INDEX IX_EHR_BILLING_CHARGE_RATES_LSID ON ehr_billing.chargeRates (lsid);
 
 --this table contains records of misc charges that have happened that cannot otherwise be
@@ -136,9 +132,9 @@ CREATE INDEX EHR_BILLING_MISC_CHARGES_CONTAINER_INDEX ON ehr_billing.miscCharges
 
 ALTER TABLE ehr_billing.miscCharges ADD COLUMN Lsid LSIDType;
 
-SELECT core.fn_dropifexists('miscCharges', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_MISC_CHARGES_CONTAINER');
+ALTER TABLE ehr_billing.miscCharges DROP CONSTRAINT IF EXISTS FK_EHR_BILLING_MISC_CHARGES_CONTAINER;
 
-SELECT core.fn_dropifexists('miscCharges', 'ehr_billing', 'INDEX', 'EHR_BILLING_MISC_CHARGES_CONTAINER_INDEX');
+DROP INDEX IF EXISTS ehr_billing.EHR_BILLING_MISC_CHARGES_CONTAINER_INDEX;
 
 
 ALTER TABLE ehr_billing.miscCharges ADD CONSTRAINT FK_EHR_BILLING_MISC_CHARGES_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
@@ -149,14 +145,10 @@ ALTER TABLE ehr_billing.miscCharges ALTER COLUMN unitCost TYPE DECIMAL(13,2);
 ALTER TABLE ehr_billing.miscCharges ADD investigator varchar(100);
 
 -- constraint and index in miscCharges
-SELECT core.fn_dropifexists ('misccharges', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_MISC_CHARGES_CHARGEID');
-SELECT core.fn_dropifexists ('misccharges', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_MISC_CHARGES_CHARGEID');
 CREATE INDEX IX_EHR_BILLING_MISC_CHARGES_CHARGEID ON ehr_billing.misccharges (chargeid);
 
-SELECT core.fn_dropifexists ('misccharges', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_MISC_CHARGES_PROJECT');
 CREATE INDEX IX_EHR_BILLING_MISC_CHARGES_PROJECT ON ehr_billing.misccharges (project);
 
-SELECT core.fn_dropifexists ('miscCharges', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_MISC_CHARGES_LSID');
 CREATE INDEX IX_EHR_BILLING_MISC_CHARGES_LSID ON ehr_billing.miscCharges (lsid);
 
 ALTER TABLE ehr_billing.miscCharges ALTER COLUMN creditedaccount TYPE varchar(200);
@@ -191,12 +183,11 @@ CREATE INDEX EHR_BILLING_INVOICE_RUNS_CONTAINER_INDEX ON ehr_billing.invoiceRuns
 ALTER TABLE ehr_billing.invoiceRuns DROP invoiceNumber;
 
 ALTER TABLE ehr_billing.invoiceruns ADD COLUMN Lsid LSIDType;
-SELECT core.fn_dropifexists('invoiceRuns', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_INVOICE_RUNS_CONTAINER');
-SELECT core.fn_dropifexists('invoiceRuns', 'ehr_billing', 'INDEX', 'EHR_BILLING_INVOICE_RUNS_CONTAINER_INDEX');
+ALTER TABLE ehr_billing.invoiceRuns DROP CONSTRAINT IF EXISTS FK_EHR_BILLING_INVOICE_RUNS_CONTAINER;
+DROP INDEX IF EXISTS ehr_billing.EHR_BILLING_INVOICE_RUNS_CONTAINER_INDEX;
 ALTER TABLE ehr_billing.invoiceRuns ADD CONSTRAINT FK_EHR_BILLING_INVOICE_RUNS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
 CREATE INDEX EHR_BILLING_INVOICE_RUNS_CONTAINER_INDEX ON ehr_billing.invoiceRuns (Container);
 
-SELECT core.fn_dropifexists ('invoiceRuns', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_RUNS_LSID');
 CREATE INDEX IX_EHR_BILLING_INVOICE_RUNS_LSID ON ehr_billing.invoiceRuns (lsid);
 
 --this table contains a snapshot of items actually invoiced, which will draw from many places in the animal record
@@ -260,18 +251,15 @@ ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN invoiceNumber SET NOT NULL;
 CREATE INDEX EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX ON ehr_billing.invoicedItems (invoiceNumber);
 
 ALTER TABLE ehr_billing.invoiceditems ADD COLUMN Lsid LSIDType;
-SELECT core.fn_dropifexists('invoicedItems', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_INVOICED_ITEMS_CONTAINER');
-SELECT core.fn_dropifexists('invoicedItems', 'ehr_billing', 'INDEX', 'EHR_BILLING_INVOICED_ITEMS_CONTAINER_INDEX');
+ALTER TABLE ehr_billing.invoicedItems DROP CONSTRAINT IF EXISTS FK_EHR_BILLING_INVOICED_ITEMS_CONTAINER;
+DROP INDEX IF EXISTS ehr_billing.EHR_BILLING_INVOICED_ITEMS_CONTAINER_INDEX;
 ALTER TABLE ehr_billing.invoicedItems ADD CONSTRAINT FK_EHR_BILLING_INVOICED_ITEMS_CONTAINER FOREIGN KEY (Container) REFERENCES core.Containers (EntityId);
 CREATE INDEX EHR_BILLING_INVOICED_ITEMS_CONTAINER_INDEX ON ehr_billing.invoicedItems (Container);
 
-SELECT core.fn_dropifexists('invoiceRuns', 'ehr_billing', 'COLUMN', 'invoiceNumber');
-SELECT core.fn_dropifexists('invoicedItems', 'ehr_billing', 'COLUMN', 'invoiceNumber');
+ALTER TABLE ehr_billing.invoicedItems DROP COLUMN IF EXISTS invoiceNumber CASCADE;
 
 TRUNCATE TABLE ehr_billing.invoicedItems;
 ALTER TABLE ehr_billing.invoicedItems ADD COLUMN invoiceNumber varchar(20) NOT NULL;
-
-SELECT core.fn_dropifexists('invoicedItems', 'ehr_billing', 'CONSTRAINT', 'EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX');
 
 CREATE INDEX EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX ON ehr_billing.invoicedItems (invoiceNumber);
 
@@ -279,15 +267,12 @@ ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN unitCost TYPE DECIMAL(13,2);
 ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN totalCost TYPE DECIMAL(13,2);
 
 -- constraint and index in invoicedItems
-SELECT core.fn_dropifexists ('invoiceditems', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_INVOICED_ITEMS_CHARGEID');
-SELECT core.fn_dropifexists ('invoiceditems', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICED_ITEMS_CHARGEID');
 CREATE INDEX IX_EHR_BILLING_INVOICED_ITEMS_CHARGEID ON ehr_billing.invoiceditems (chargeid);
 
-SELECT core.fn_dropifexists ('invoicedItems', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICED_ITEMS_LSID');
 CREATE INDEX IX_EHR_BILLING_INVOICED_ITEMS_LSID ON ehr_billing.invoicedItems (lsid);
 
 -- drop Index and Constraints
-SELECT core.fn_dropifexists ('invoicedItems', 'ehr_billing', 'INDEX', 'EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX');
+DROP INDEX IF EXISTS ehr_billing.EHR_BILLING_INVOICEDITEMS_INVNUM_INDEX;
 
 -- Modify invoiceNumber
 ALTER TABLE ehr_billing.invoicedItems ALTER COLUMN invoiceNumber TYPE varchar(100);
@@ -337,7 +322,6 @@ ALTER TABLE ehr_billing.invoiceditems ADD CONSTRAINT FK_EHR_BILLING_INVOICED_ITE
 
 ALTER TABLE ehr_billing.misccharges ADD CONSTRAINT FK_EHR_BILLING_MISC_CHARGES_CHARGEID FOREIGN KEY (chargeid) REFERENCES ehr_billing.chargeableItems (rowid);
 
-SELECT core.fn_dropifexists ('chargeableItems', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGEABLE_ITEMS_LSID');
 CREATE INDEX IX_EHR_BILLING_CHARGEABLE_ITEMS_LSID ON ehr_billing.chargeableItems (lsid);
 
 CREATE TABLE ehr_billing.chargeRateExemptions
@@ -361,7 +345,6 @@ CREATE TABLE ehr_billing.chargeRateExemptions
 );
 
 CREATE INDEX EHR_BILLING_CHARGERATEEXEMPTIONS_CONTAINER_INDEX ON ehr_billing.chargeRateExemptions (Container);
-SELECT core.fn_dropifexists ('chargeRateExemptions', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_RATE_EXEMPTIONS_LSID');
 CREATE INDEX IX_EHR_BILLING_CHARGE_RATE_EXEMPTIONS_LSID ON ehr_billing.chargeRateExemptions (lsid);
 
 CREATE TABLE ehr_billing.chargeUnits
@@ -385,7 +368,6 @@ CREATE TABLE ehr_billing.chargeUnits
 );
 
 CREATE INDEX EHR_BILLING_CHARGEUNITS_CONTAINER_INDEX ON ehr_billing.chargeUnits (Container);
-SELECT core.fn_dropifexists ('chargeUnits', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_CHARGE_UNITS_LSID');
 CREATE INDEX IX_EHR_BILLING_CHARGE_UNITS_LSID ON ehr_billing.chargeUnits (lsid);
 
 CREATE TABLE ehr_billing.invoice
@@ -419,31 +401,25 @@ ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceAmount TYPE DECIMAL(13,2);
 ALTER TABLE ehr_billing.invoice ALTER COLUMN paymentAmountReceived TYPE DECIMAL(13,2);
 ALTER TABLE ehr_billing.invoice ADD balanceDue DECIMAL(13,2);
 -- constraint and index in invoice table
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_INVOICE_INVOICERUNID');
 ALTER TABLE ehr_billing.invoice ADD CONSTRAINT FK_EHR_BILLING_INVOICE_INVOICERUNID FOREIGN KEY (invoicerunid) REFERENCES ehr_billing.invoiceRuns (objectid);
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_INVOICERUNID');
 CREATE INDEX IX_EHR_BILLING_INVOICE_INVOICERUNID ON ehr_billing.invoice (invoicerunid);
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_ACCOUNTNUMBER');
 CREATE INDEX IX_EHR_BILLING_INVOICE_ACCOUNTNUMBER ON ehr_billing.invoice (accountnumber);
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'UQ_EHR_BILLING_INVOICE_INVOICENUMBER');
 ALTER TABLE ehr_billing.invoice ADD CONSTRAINT UQ_EHR_BILLING_INVOICE_INVOICENUMBER UNIQUE (invoicenumber);
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_INVOICENUMBER');
 CREATE INDEX IX_EHR_BILLING_INVOICE_INVOICENUMBER ON ehr_billing.invoice (invoicenumber);
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_LSID');
 CREATE INDEX IX_EHR_BILLING_INVOICE_LSID ON ehr_billing.invoice (lsid);
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'PK_EHR_BILLING_INVOICE_INVNUM');
+ALTER TABLE ehr_billing.invoice DROP CONSTRAINT IF EXISTS PK_EHR_BILLING_INVOICE_INVNUM;
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'UNIQUE_INVOICE_NUM');
+ALTER TABLE ehr_billing.invoice DROP CONSTRAINT IF EXISTS UNIQUE_INVOICE_NUM;
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'CONSTRAINT', 'UQ_EHR_BILLING_INVOICE_INVOICENUMBER');
+ALTER TABLE ehr_billing.invoice DROP CONSTRAINT IF EXISTS UQ_EHR_BILLING_INVOICE_INVOICENUMBER;
 
-SELECT core.fn_dropifexists ('invoice', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_INVOICE_INVOICENUMBER');
+DROP INDEX IF EXISTS ehr_billing.IX_EHR_BILLING_INVOICE_INVOICENUMBER;
 
 ALTER TABLE ehr_billing.invoice ALTER COLUMN invoiceNumber TYPE varchar(100);
 
@@ -502,13 +478,10 @@ CREATE TABLE ehr_billing.dataAccess
 CREATE INDEX EHR_BILLING_DATA_ACCESS_CONTAINER_INDEX ON ehr_billing.dataAccess (Container);
 
 -- constraint and index in dataaccess table
-SELECT core.fn_dropifexists ('dataaccess', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_DATA_ACCESS_PROJECT');
 CREATE INDEX IX_EHR_BILLING_DATA_ACCESS_PROJECT ON ehr_billing.dataaccess (project);
 
-SELECT core.fn_dropifexists ('dataaccess', 'ehr_billing', 'CONSTRAINT', 'FK_EHR_BILLING_DATA_ACCESS_USERID');
 ALTER TABLE ehr_billing.dataaccess ADD CONSTRAINT FK_EHR_BILLING_DATA_ACCESS_USERID FOREIGN KEY (userid) REFERENCES core.Usersdata (UserId);
 
-SELECT core.fn_dropifexists ('dataaccess', 'ehr_billing', 'INDEX', 'IX_EHR_BILLING_DATA_ACCESS_USERID');
 CREATE INDEX IX_EHR_BILLING_DATA_ACCESS_USERID ON ehr_billing.dataaccess (userid);
 
 CREATE TABLE ehr_billing.fiscalAuthorities

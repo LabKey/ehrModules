@@ -9331,7 +9331,7 @@ UPDATE ehr_lookups.procedure_default_treatments set dosage_units = null;
 ALTER TABLE ehr_lookups.snomed_subsets ADD container entityid;
 ALTER TABLE ehr_lookups.snomed_subsets ADD rowid serial;
 
-SELECT core.fn_dropifexists('snomed_subsets', 'ehr_lookups', 'CONSTRAINT', 'PK_snomed_subsets');
+ALTER TABLE ehr_lookups.snomed_subsets DROP CONSTRAINT IF EXISTS PK_snomed_subsets;
 ALTER TABLE ehr_lookups.snomed_subsets ADD CONSTRAINT pk_snomed_subsets PRIMARY KEY (rowid);
 
 --upgrade path for WNPRC
@@ -9356,7 +9356,7 @@ ALTER TABLE ehr_lookups.snomed ADD container ENTITYID;
 --upgrade path for WNPRC
 UPDATE ehr_lookups.snomed SET container = (SELECT c.entityid from core.containers c LEFT JOIN core.Containers c2 on (c.Parent = c2.EntityId) WHERE c.name = 'EHR' and c2.name = 'WNPRC');
 
-SELECT core.fn_dropifexists('snomed', 'ehr_lookups', 'CONSTRAINT', 'PK_snomed');
+ALTER TABLE ehr_lookups.snomed DROP CONSTRAINT IF EXISTS PK_snomed;
 ALTER TABLE ehr_lookups.snomed ADD rowid SERIAL;
 
 ALTER TABLE ehr_lookups.snomed ADD CONSTRAINT pk_snomed PRIMARY KEY (rowid);
