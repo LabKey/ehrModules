@@ -1309,22 +1309,20 @@ ALTER TABLE ehr.encounter_participants ADD taskid entityid;
 truncate table ehr.encounter_participants;
 
 --this might have been created by EHRManager
-SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'INDEX', 'encounter_participants_objectid');
+DROP INDEX IF EXISTS ehr.encounter_participants_objectid;
 
 ALTER TABLE ehr.encounter_participants ALTER COLUMN objectid SET NOT NULL;
 
-SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'CONSTRAINT', 'pk_encounter_participants');
+ALTER TABLE ehr.encounter_participants DROP CONSTRAINT IF EXISTS pk_encounter_participants;
 
 ALTER TABLE ehr.encounter_participants ADD CONSTRAINT pk_encounter_participants PRIMARY KEY (objectid);
 
-SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'INDEX', 'encounter_participants_container_rowid_id');
-SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'INDEX', 'encounter_participants_container_rowid_parentid');
+DROP INDEX IF EXISTS ehr.encounter_participants_container_rowid_id;
+DROP INDEX IF EXISTS ehr.encounter_participants_container_rowid_parentid;
 
 ALTER TABLE ehr.encounter_participants DROP COLUMN rowid;
 
---this might have been created by EHRManager
-SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'INDEX', 'encounter_participants_objectid');
-SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'CONSTRAINT', 'pk_encounter_participants');
+ALTER TABLE ehr.encounter_participants DROP CONSTRAINT IF EXISTS pk_encounter_participants;
 
 ALTER TABLE ehr.encounter_participants ALTER COLUMN objectid TYPE VARCHAR(60);
 
@@ -1333,10 +1331,10 @@ ALTER TABLE ehr.encounter_participants ADD CONSTRAINT pk_encounter_participants 
 ALTER TABLE ehr.project ADD shortname varchar(200);
 
 --this might have been created by EHRManager
-SELECT core.fn_dropifexists('encounter_summaries', 'ehr', 'index', 'encounter_summaries_objectid');
-SELECT core.fn_dropifexists('encounter_summaries', 'ehr', 'index', 'encounter_summaries_parentid_rowid_container_id');
-SELECT core.fn_dropifexists('encounter_summaries', 'ehr', 'index', 'encounter_summaries_container_rowid');
-SELECT core.fn_dropifexists('encounter_summaries', 'ehr', 'constraint', 'PK_encounter_summaries');
+DROP INDEX IF EXISTS ehr.encounter_summaries_objectid;
+DROP INDEX IF EXISTS ehr.encounter_summaries_parentid_rowid_container_id;
+DROP INDEX IF EXISTS ehr.encounter_summaries_container_rowid;
+ALTER TABLE ehr.encounter_summaries DROP CONSTRAINT IF EXISTS PK_encounter_summaries;
 
 ALTER TABLE ehr.encounter_summaries ADD taskid entityid;
 ALTER TABLE ehr.encounter_summaries ALTER COLUMN objectid SET NOT NULL;
@@ -1498,7 +1496,7 @@ SELECT ehr.handleUpgrade();
 
 DROP FUNCTION ehr.handleUpgrade();
 
-SELECT core.fn_dropifexists('treatment_times', 'ehr', 'Index', 'IDX_treatment_times_treatmentid');
+DROP INDEX IF EXISTS ehr.IDX_treatment_times_treatmentid;
 
 CREATE INDEX IDX_treatment_times_treatmentid ON ehr.treatment_times (treatmentid);
 

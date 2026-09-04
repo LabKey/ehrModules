@@ -345,7 +345,7 @@ ALTER TABLE ehr_compliancedb.requirementsperemployee DROP CONSTRAINT fk_requirem
 ALTER TABLE ehr_compliancedb.sopbycategory DROP CONSTRAINT fk_sopbycategory_category;
 ALTER TABLE ehr_compliancedb.sopdates DROP CONSTRAINT fk_sopdates_employeeid;
 
-SELECT core.fn_dropifexists('requirements', 'ehr_compliancedb', 'CONSTRAINT', 'PK_requirements');
+ALTER TABLE ehr_compliancedb.requirements DROP CONSTRAINT IF EXISTS PK_requirements;
 ALTER TABLE ehr_compliancedb.requirements ADD CONSTRAINT pk_requirements PRIMARY KEY (rowid);
 
 ALTER TABLE ehr_compliancedb.requirements ADD datedisabled TIMESTAMP;
