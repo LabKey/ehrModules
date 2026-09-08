@@ -37,6 +37,7 @@ function afterUpdate(row, oldRow, errors){
         fieldName = fields[i];
         if (row[fieldName] && oldRow[fieldName] && row[fieldName] != oldRow[fieldName]){
             helper.cascadeUpdate('ehr_compliancedb', 'employeerequirementexemptions', 'employeeid', row[fieldName], oldRow[fieldName]);
+            helper.cascadeUpdate('ehr_compliancedb', 'employeeperunit', 'employeeid', row[fieldName], oldRow[fieldName]);
             helper.cascadeUpdate('ehr_compliancedb', 'requirementsperemployee', 'employeeid', row[fieldName], oldRow[fieldName]);
             helper.cascadeUpdate('ehr_compliancedb', 'sopdates', 'employeeid', row[fieldName], oldRow[fieldName]);
             helper.cascadeUpdate('ehr_compliancedb', 'completiondates', 'employeeid', row[fieldName], oldRow[fieldName]);
@@ -46,7 +47,7 @@ function afterUpdate(row, oldRow, errors){
 }
 
 function beforeDelete(row, errors){
-    var queries = ['employeerequirementexemptions', 'requirementsperemployee', 'sopdates', 'completiondates'], query;
+    var queries = ['employeerequirementexemptions', 'employeeperunit', 'requirementsperemployee', 'sopdates', 'completiondates'], query;
     var fields = ['employeeid'], fieldName;
     for (var j=0;j<queries.length;j++){
         query = queries[j];
