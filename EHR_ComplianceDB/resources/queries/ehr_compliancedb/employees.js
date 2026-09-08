@@ -6,6 +6,7 @@
 
 var console = require("console");
 var LABKEY = require("labkey");
+var ldkUtils = require("ldk/Utils").LDK.Server.Utils;
 
 var helper = org.labkey.ldk.query.LookupValidationHelper.create(LABKEY.Security.currentContainer.id, LABKEY.Security.currentUser.id, 'ehr_compliancedb', 'employees');
 
@@ -27,19 +28,7 @@ function beforeUpdate(row, oldRow, errors){
 }
 
 function beforeUpsert(row, errors){
-    var lookupFields = ['type', 'title', 'category', 'unit', 'location'];
-    for (var i=0;i<lookupFields.length;i++){
-        var f = lookupFields[i];
-        var val = row[f];
-        if (!LABKEY.ExtAdapter.isEmpty(val)){
-            var normalizedVal = helper.getLookupValue(val, f);
-
-            if (LABKEY.ExtAdapter.isEmpty(normalizedVal))
-                errors[f] = 'Unknown value for field: ' + f + '. Value was: ' + val;
-            else
-                row[f] = normalizedVal;  //cache value for purpose of normalizing case
-        }
-    }
+    ldkUtils.normalizeLookupFields(helper, row, errors, ['type', 'title', 'category', 'unit', 'location']);
 }
 
 function afterUpdate(row, oldRow, errors){
