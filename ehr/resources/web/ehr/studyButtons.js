@@ -139,8 +139,7 @@ EHR.DatasetButtons = new function () {
                                     var params = {
                                         schemaName: 'auditLog',
                                         'query.queryName': 'DatasetAuditEvent',
-                                        'query.viewName': 'Detailed',
-                                        'query.intkey1~eq': row['Dataset/DataSetId']
+                                        'query.datasetId~eq': row['Dataset/DataSetId']
                                     };
 
                                     //NOTE: for demographics data, the objectId is not part of the LSID.  therefore the best we can do is filter on Id, even though this might have changed over the life of the record.
