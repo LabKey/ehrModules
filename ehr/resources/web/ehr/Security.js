@@ -17,7 +17,14 @@ EHR.Security = new function(){
     var hasLoaded = false;
     var schemaMap = {};
     var datasetInfo = {};
+    var datasetNames = null;
     var qcMap;
+
+    //schemaMap holds only datasets the user can read, so a miss there usually means no permission, not a bad name.
+    //study.Datasets is unfiltered and tells the two apart; if it failed to load, assume known rather than log noise.
+    function isKnownDataset(queryName){
+        return !datasetNames || datasetNames[queryName] === true;
+    }
 
     //A helper to return a map of QCStates and their properties.
     function getQCStateMap(config){
@@ -126,14 +133,23 @@ EHR.Security = new function(){
             function onSuccess(){
                 // Copy the permission information from the label (which is how LABKEY.Security.getSchemaPermissions
                 // assembles them) to the name so we can look it up with either value
-                Ext4.each(datasetInfo.rows, function(row)
+                if (datasetInfo.rows)
                 {
-                    var queryInfo = schemaMap.schemas['study'].queries[row.Label];
-                    if (queryInfo)
+                    datasetNames = {};
+                    Ext4.each(datasetInfo.rows, function(row)
                     {
-                        schemaMap.schemas['study'].queries[row.Name] = schemaMap.schemas['study'].queries[row.Label];
-                    }
-                });
+                        if (row.Name)
+                            datasetNames[row.Name] = true;
+                        if (row.Label)
+                            datasetNames[row.Label] = true;
+
+                        var queryInfo = schemaMap.schemas['study'].queries[row.Label];
+                        if (queryInfo)
+                        {
+                            schemaMap.schemas['study'].queries[row.Name] = schemaMap.schemas['study'].queries[row.Label];
+                        }
+                    });
+                }
 
                 for (var qcState in qcMap.label){
                     var qcRow = qcMap.label[qcState];
@@ -232,7 +248,7 @@ EHR.Security = new function(){
                     return true;
 
                 var sm = schemaMap.schemas[query.schemaName].queries[query.queryName];
-                if (!sm){
+                if (!sm && !isKnownDataset(query.queryName)){
                     LDK.Utils.logToServer({
                         level: 'ERROR',
                         message: "EHR.Security.hasPermission() has been called for a query that doesn't exist: " + query.queryName
