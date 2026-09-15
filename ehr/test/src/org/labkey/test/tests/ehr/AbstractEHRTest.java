@@ -77,6 +77,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     // Longest buffer DataEntryErrorPanel puts between a validation event and repainting the error summary
     protected static final int ERROR_PANEL_REPAINT_BUFFER = 1500;
 
+    // DataEntryErrorPanel's heading, on screen whenever the form is reporting anything at all
+    private static final String FORM_ERROR_SUMMARY = "The form has the following errors and warnings:";
+
     public static final String PROJECT_ID = "640991"; // project with one participant
     public static final String PROJECT_ID_2 = "123456";
     public static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
@@ -1063,6 +1066,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             this.description = description;
             this.publicData = publicData;
         }
+    }
+
+    /** Waits for the form to stop reporting anything, so a submit does not race a stale error summary. */
+    protected void waitForFormValidationToClear()
+    {
+        waitForValidationToClear(FORM_ERROR_SUMMARY);
     }
 
     /**
