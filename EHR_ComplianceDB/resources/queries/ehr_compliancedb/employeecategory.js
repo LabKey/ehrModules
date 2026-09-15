@@ -16,6 +16,7 @@ function afterUpdate(row, oldRow, errors){
             helper.cascadeUpdate('ehr_compliancedb', 'employees', 'category', row[fieldName], oldRow[fieldName]);
             helper.cascadeUpdate('ehr_compliancedb', 'requirementspercategory', 'category', row[fieldName], oldRow[fieldName]);
             helper.cascadeUpdate('ehr_compliancedb', 'sopbycategory', 'category', row[fieldName], oldRow[fieldName]);
+            helper.cascadeUpdate('ehr_compliancedb', 'employeeperunit', 'category', row[fieldName], oldRow[fieldName]);
         }
     }
 }
@@ -34,6 +35,10 @@ function beforeDelete(row, errors){
 
         if (helper.verifyNotUsed('ehr_compliancedb', 'sopbycategory', 'category', row[fieldName], 'employeecategory')){
             addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the sopbycategory table');
+        }
+
+        if (helper.verifyNotUsed('ehr_compliancedb', 'employeeperunit', 'category', row[fieldName], 'employeecategory')){
+            addError(errors, fieldName, 'Cannot delete row with value: ' + row[fieldName] + ' because it is referenced by the employeeperunit table');
         }
     }
 }

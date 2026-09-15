@@ -41,6 +41,7 @@ import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.Sort;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
@@ -1781,7 +1782,9 @@ public class TriggerScriptHelper
                 ColumnInfo acquisitionColumn = columns.get(acquisitionFieldKey);
                 if (acquisitionColumn != null)
                 {
-                    TableSelector ts = new TableSelector(arrivalTable, Collections.singleton(acquisitionColumn), new SimpleFilter(FieldKey.fromParts("Id"), id), null);
+                    // In some cases, an animal can arrive more than once, so bound this to one row: unbounded, getObject()
+                    // throws on the extra rows rather than picking one. Sort so the row picked is the latest arrival, not arbitrary.
+                    TableSelector ts = new TableSelector(arrivalTable, Collections.singleton(acquisitionColumn), new SimpleFilter(FieldKey.fromParts("Id"), id), new Sort("-date")).setMaxRows(1);
                     acquitype = ts.getObject(String.class);
                 }
             }
