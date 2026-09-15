@@ -74,6 +74,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     protected static final int POPULATE_TIMEOUT_MS = 300000;
 
+    // Longest buffer DataEntryErrorPanel puts between a validation event and repainting the error summary
+    protected static final int ERROR_PANEL_REPAINT_BUFFER = 1500;
+
     public static final String PROJECT_ID = "640991"; // project with one participant
     public static final String PROJECT_ID_2 = "123456";
     public static final String DUMMY_PROTOCOL = "dummyprotocol"; // need a protocol to create table entry
@@ -1060,6 +1063,58 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             this.description = description;
             this.publicData = publicData;
         }
+    }
+
+    /**
+     * Waits for a validation message to clear, re-running server-side validation once if it does not. A value can be
+     * accepted at the field while the form's error summary still lists it, which the form itself handles by pointing
+     * the user at More Actions -> Re-Validate.
+     */
+    protected void waitForValidationToClear(String message)
+    {
+        if (waitForValidationToSettleWithout(message))
+            return;
+
+        log("Form kept reporting '" + message + "', re-validating");
+        revalidateForm();
+        if (!waitForValidationToSettleWithout(message))
+            Assert.fail("Form kept reporting after re-validating: " + message);
+    }
+
+    /**
+     * Waits for the form to go quiet without reporting the given message. DataEntryErrorPanel repaints on a buffered
+     * event rather than when the validation response lands, so the summary trails the form's actual state by up to a
+     * second: a message can read as absent before validation has reported it, and read as present after the value
+     * that raised it was accepted. Neither is worth acting on, so require no validation in flight and the message
+     * absent, then re-check after the repaint window to confirm the absence survives it.
+     */
+    protected boolean waitForValidationToSettleWithout(String message)
+    {
+        return waitFor(() -> {
+            if (getValidationRequestsInFlight() > 0 || isTextPresent(message))
+                return false;
+
+            sleep(ERROR_PANEL_REPAINT_BUFFER);
+            return getValidationRequestsInFlight() == 0 && !isTextPresent(message);
+        }, WAIT_FOR_JAVASCRIPT);
+    }
+
+    // Server validations the form is still waiting on. StoreCollection counts these itself; the form has no
+    // rendered "validating" state to watch instead.
+    protected int getValidationRequestsInFlight()
+    {
+        Object inFlight = executeScript("var panel = Ext4.ComponentQuery.query('ehr-dataentrypanel')[0];" +
+                "return panel && panel.storeCollection ? panel.storeCollection.validationRequestsInFlight : 0;");
+
+        return inFlight == null ? 0 : ((Number) inFlight).intValue();
+    }
+
+    // More Actions -> Re-Validate: re-runs server-side validation on every record in the form
+    protected void revalidateForm()
+    {
+        WebElement moreActions = _helper.getDataEntryButton("More Actions").findElement(getDriver());
+        scrollIntoView(moreActions);
+        _ext4Helper.clickExt4MenuButton(false, moreActions, false, "Re-Validate");
     }
 
     protected void setupNotificationService()
