@@ -113,6 +113,12 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 }, this);
             }
         }
+
+        // Show the indicator here rather than relying solely on 'validationstart', which only fires when the in-flight
+        // request count transitions 0 -> 1. That transition can happen during initial load (where the indicator is
+        // suppressed) and won't fire again for validations queued behind those requests, leaving the buttons disabled
+        // with no indicator. Initial-load validation doesn't fire 'beforevalidation', so this stays quiet during load.
+        this.onValidationStart();
     },
 
     onValidationStart: function(){
@@ -147,6 +153,11 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         if (this.storeCollection && this.storeCollection.validationRequestsInFlight > 0){
             return;
         }
+
+        // A validate cycle can send no requests (nothing produced commands), in which case 'validationcomplete' never
+        // fires. Clear the indicator whenever buttons are recalculated with no requests in flight.
+        this.validationInProgress = false;
+        this.setValidationIndicatorVisible(false);
 
         var maxSeverity = sc.getMaxErrorSeverity();
 
