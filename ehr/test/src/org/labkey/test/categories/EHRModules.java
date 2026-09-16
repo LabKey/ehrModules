@@ -15,6 +15,6 @@
  */
 package org.labkey.test.categories;
 
-public abstract class EHR extends Test
+public abstract class EHRModules extends Test
 {
 }
