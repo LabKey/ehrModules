@@ -1,16 +1,13 @@
 /*
-* Copyright (c) 2013-2019 LabKey Corporation
+* Copyright (c) 2026 LabKey Corporation
 *
 * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 */
 
-var console = require("console");
 var LABKEY = require("labkey");
 var ldkUtils = require("ldk/Utils").LDK.Server.Utils;
 
-var helper = org.labkey.ldk.query.LookupValidationHelper.create(LABKEY.Security.currentContainer.id, LABKEY.Security.currentUser.id, 'ehr_compliancedb', 'requirementspercategory');
-
-console.log("** evaluating: " + this['javax.script.filename']);
+var helper = org.labkey.ldk.query.LookupValidationHelper.create(LABKEY.Security.currentContainer.id, LABKEY.Security.currentUser.id, 'ehr_compliancedb', 'employeeperunit');
 
 function beforeInsert(row, errors){
     beforeUpsert(row, errors);
@@ -28,5 +25,5 @@ function beforeUpdate(row, oldRow, errors){
 }
 
 function beforeUpsert(row, errors){
-    ldkUtils.normalizeLookupFields(helper, row, errors, ['requirementname', 'category', 'unit']);
+    ldkUtils.normalizeLookupFields(helper, row, errors, ['employeeid', 'unit', 'category']);
 }
