@@ -1109,10 +1109,12 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     // Server validations the form is still waiting on. StoreCollection counts these itself; the form has no
-    // rendered "validating" state to watch instead.
+    // rendered "validating" state to watch instead. Callers reach this mid-navigation, before Ext4 has loaded, so
+    // referencing it unguarded throws rather than reporting the nothing that is actually in flight.
     protected int getValidationRequestsInFlight()
     {
-        Object inFlight = executeScript("var panel = Ext4.ComponentQuery.query('ehr-dataentrypanel')[0];" +
+        Object inFlight = executeScript("if (typeof Ext4 === 'undefined') return 0;" +
+                "var panel = Ext4.ComponentQuery.query('ehr-dataentrypanel')[0];" +
                 "return panel && panel.storeCollection ? panel.storeCollection.validationRequestsInFlight : 0;");
 
         return inFlight == null ? 0 : ((Number) inFlight).intValue();
