@@ -47,6 +47,8 @@ import org.labkey.test.util.ehr.EHRClientAPIHelper;
 import org.labkey.test.util.ehr.EHRTestHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -79,6 +81,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
     // DataEntryErrorPanel's heading, on screen whenever the form is reporting anything at all
     private static final String FORM_ERROR_SUMMARY = "The form has the following errors and warnings:";
+
+    // A submit waits longer than a field edit: the whole form has to go quiet, not one message
+    private static final int FORM_ERROR_SUMMARY_TIMEOUT = 30000;
 
     public static final String PROJECT_ID = "640991"; // project with one participant
     public static final String PROJECT_ID_2 = "123456";
@@ -1071,7 +1076,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     /** Waits for the form to stop reporting anything, so a submit does not race a stale error summary. */
     protected void waitForFormValidationToClear()
     {
-        waitForValidationToClear(FORM_ERROR_SUMMARY);
+        waitForValidationToClear(FORM_ERROR_SUMMARY, FORM_ERROR_SUMMARY_TIMEOUT);
     }
 
     /**
@@ -1081,12 +1086,20 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
      */
     protected void waitForValidationToClear(String message)
     {
-        if (waitForValidationToSettleWithout(message))
+        waitForValidationToClear(message, WAIT_FOR_JAVASCRIPT);
+    }
+
+    /** @see #waitForValidationToClear(String) */
+    protected void waitForValidationToClear(String message, int timeout)
+    {
+        if (waitForValidationToSettleWithout(message, timeout))
             return;
 
         log("Form kept reporting '" + message + "', re-validating");
-        revalidateForm();
-        if (!waitForValidationToSettleWithout(message))
+        if (!revalidateForm())
+            Assert.fail("Form kept reporting, and offers no Re-Validate to clear it: " + message);
+
+        if (!waitForValidationToSettleWithout(message, timeout))
             Assert.fail("Form kept reporting after re-validating: " + message);
     }
 
@@ -1097,7 +1110,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
      * that raised it was accepted. Neither is worth acting on, so require no validation in flight and the message
      * absent, then re-check after the repaint window to confirm the absence survives it.
      */
-    protected boolean waitForValidationToSettleWithout(String message)
+    protected boolean waitForValidationToSettleWithout(String message, int timeout)
     {
         return waitFor(() -> {
             if (getValidationRequestsInFlight() > 0 || isTextPresent(message))
@@ -1105,7 +1118,7 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
 
             sleep(ERROR_PANEL_REPAINT_BUFFER);
             return getValidationRequestsInFlight() == 0 && !isTextPresent(message);
-        }, WAIT_FOR_JAVASCRIPT);
+        }, timeout);
     }
 
     // Server validations the form is still waiting on. StoreCollection counts these itself; the form has no
@@ -1120,12 +1133,26 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         return inFlight == null ? 0 : ((Number) inFlight).intValue();
     }
 
-    // More Actions -> Re-Validate: re-runs server-side validation on every record in the form
-    protected void revalidateForm()
+    /**
+     * More Actions -> Re-Validate: re-runs server-side validation on every record in the form. Not every form offers
+     * it, so report that rather than failing on the missing menu item and burying the message that would not clear.
+     *
+     * @return whether validation was re-run
+     */
+    protected boolean revalidateForm()
     {
-        WebElement moreActions = _helper.getDataEntryButton("More Actions").findElement(getDriver());
-        scrollIntoView(moreActions);
-        _ext4Helper.clickExt4MenuButton(false, moreActions, false, "Re-Validate");
+        try
+        {
+            WebElement moreActions = _helper.getDataEntryButton("More Actions").findElement(getDriver());
+            scrollIntoView(moreActions);
+            _ext4Helper.clickExt4MenuButton(false, moreActions, false, "Re-Validate");
+            return true;
+        }
+        catch (NoSuchElementException | TimeoutException e)
+        {
+            log("Form offers no Re-Validate");
+            return false;
+        }
     }
 
     protected void setupNotificationService()
