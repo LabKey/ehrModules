@@ -78,6 +78,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 {
     private static final Logger _log = LogHelper.getLogger(EHRDemographicsServiceImpl.class, "Demographics caching, refreshing, and consistency checking");
     private static JobDetail _job = null;
+    private static final int MAX_LOGGED_PROPERTIES = 5;
+    private static final int MAX_LOGGED_VALUE_LENGTH = 200;
 
     private final Cache<String, AnimalRecordImpl> _cache;
 
@@ -184,7 +186,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 
     /**
      * Compares a freshly built record against the one already cached for the same animal.
-     * @return a single-line description of every difference, suitable for logging, or null if they agree
+     * @return a single-line description of the differences, suitable for logging, or null if they agree
      */
     private String describeMismatch(AnimalRecord cached, AnimalRecordImpl fresh)
     {
@@ -194,21 +196,21 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         String prefix = "Mismatch for cached record for animal " + fresh.getId() + " in " + fresh.getContainer().getPath() + ": ";
 
         if (fresh.getProps().isEmpty())
-            return prefix + "cached record has properties " + cached.getProps().keySet() + " , but the newly created record does not";
+            return prefix + "cached record has properties " + cached.getProps().keySet() + ", but the newly created record does not";
 
         if (cached.getProps().isEmpty())
             return prefix + "cached record has no properties, but the newly created record has " + fresh.getProps().keySet();
 
         Map<String, Object> cachedProps = new TreeMap<>();
         Map<String, Object> freshProps = new TreeMap<>();
-        Map<String, String> providerNames = new HashMap<>();
+        Map<String, Set<String>> providerNames = new HashMap<>();
         for (DemographicsProvider p : EHRService.get().getDemographicsProviders(fresh.getContainer(), EHRService.get().getEHRUser(fresh.getContainer())))
         {
             for (String fk : p.getKeysToTest())
             {
                 cachedProps.put(fk, cached.getProps().get(fk));
                 freshProps.put(fk, fresh.getProps().get(fk));
-                providerNames.put(fk, p.getName());
+                providerNames.computeIfAbsent(fk, _ -> new TreeSet<>()).add(p.getName());
             }
         }
 
@@ -217,22 +219,34 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             return null;
 
         Map<String, MapDifference.ValueDifference<Object>> diffEntries = diff.entriesDiffering();
-        if (diffEntries.isEmpty())
-            return prefix + "maps are unequal, but no differing values were found. Keys only in the cached record: " + diff.entriesOnlyOnLeft().keySet() + ", keys only in the new record: " + diff.entriesOnlyOnRight().keySet();
-
         StringBuilder sb = new StringBuilder(prefix);
         sb.append(diffEntries.size()).append(diffEntries.size() == 1 ? " property differs. " : " properties differ. ");
         String separator = "";
+        int described = 0;
         for (Map.Entry<String, MapDifference.ValueDifference<Object>> entry : diffEntries.entrySet())
         {
+            if (described++ == MAX_LOGGED_PROPERTIES)
+            {
+                sb.append(separator).append("and ").append(diffEntries.size() - MAX_LOGGED_PROPERTIES).append(" more");
+                break;
+            }
+
             sb.append(separator);
             separator = "; ";
-            sb.append(entry.getKey()).append(" (provider: ").append(providerNames.get(entry.getKey())).append(")")
-                    .append(" cached: [").append(entry.getValue().leftValue()).append("]")
-                    .append(", new: [").append(entry.getValue().rightValue()).append("]");
+            Set<String> providers = providerNames.get(entry.getKey());
+            sb.append(entry.getKey())
+                    .append(providers.size() == 1 ? " (provider: " : " (providers: ").append(String.join(", ", providers)).append(")")
+                    .append(" cached: [").append(abbreviate(entry.getValue().leftValue())).append("]")
+                    .append(", new: [").append(abbreviate(entry.getValue().rightValue())).append("]");
         }
 
         return sb.toString();
+    }
+
+    // A list-valued provider holds an entire list of maps under one key, so a single value could be very long
+    private static String abbreviate(Object value)
+    {
+        return StringUtils.abbreviate(String.valueOf(value), MAX_LOGGED_VALUE_LENGTH);
     }
 
     public void recacheRecords(Container c, List<String> ids)
