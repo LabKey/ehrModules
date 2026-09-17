@@ -61,6 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -73,6 +74,16 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     protected static String FOLDER_NAME = "EHR";
 
     protected static final int POPULATE_TIMEOUT_MS = 300000;
+
+    // Longest buffer DataEntryErrorPanel puts between a validation event and repainting the error summary. It does
+    // not cover a repaint held off by an open grid editor, which isFormValidationQuiet() reports separately.
+    private static final int ERROR_PANEL_REPAINT_BUFFER = 1500;
+
+    // DataEntryErrorPanel's heading, on screen whenever the form is reporting anything at all
+    private static final String FORM_ERROR_SUMMARY = "The form has the following errors and warnings:";
+
+    // A submit waits longer than a field edit: the whole form has to go quiet, not one message
+    private static final int FORM_ERROR_SUMMARY_TIMEOUT = 30000;
 
     public static final String PROJECT_ID = "640991"; // project with one participant
     public static final String PROJECT_ID_2 = "123456";
@@ -1060,6 +1071,106 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             this.description = description;
             this.publicData = publicData;
         }
+    }
+
+    /** Waits for the form to stop reporting anything, so a submit does not race a stale error summary. */
+    protected void waitForFormValidationToClear()
+    {
+        // The summary heading is a container of its own, so a locator finds it without reading the whole page's text
+        Locator summary = Locator.tagContainingText("div", FORM_ERROR_SUMMARY);
+        waitForValidationToClear(FORM_ERROR_SUMMARY, () -> summary.existsIn(getDriver()), FORM_ERROR_SUMMARY_TIMEOUT);
+    }
+
+    /**
+     * Waits for a validation message to clear, re-running server-side validation once if it does not. A value can be
+     * accepted at the field while the form's error summary still lists it, which the form itself handles by pointing
+     * the user at More Actions -> Re-Validate.
+     */
+    protected void waitForValidationToClear(String message)
+    {
+        waitForValidationToClear(message, WAIT_FOR_JAVASCRIPT);
+    }
+
+    /** @see #waitForValidationToClear(String) */
+    protected void waitForValidationToClear(String message, int timeout)
+    {
+        // A message spans the error summary's label and text containers, so only the page's own text holds all of it
+        waitForValidationToClear(message, () -> isTextPresent(message), timeout);
+    }
+
+    private void waitForValidationToClear(String message, BooleanSupplier reported, int timeout)
+    {
+        if (waitForValidationToSettleWithout(reported, timeout))
+            return;
+
+        log("Form kept reporting '" + message + "', re-validating");
+        if (!revalidateForm())
+            Assert.fail("Form kept reporting, and offers no Re-Validate to clear it: " + message);
+
+        if (!waitForValidationToSettleWithout(reported, timeout))
+            Assert.fail("Form kept reporting after re-validating: " + message);
+    }
+
+    /**
+     * Waits for the form to go quiet without reporting the given message. DataEntryErrorPanel repaints on a buffered
+     * event rather than when the validation response lands, so the summary trails the form's actual state by up to a
+     * second: a message can read as absent before validation has reported it, and read as present after the value
+     * that raised it was accepted. Neither is worth acting on, so require the form quiet and the message absent, then
+     * re-check after the repaint window to confirm the absence survives it.
+     */
+    private boolean waitForValidationToSettleWithout(BooleanSupplier reported, int timeout)
+    {
+        return waitFor(() -> {
+            if (!isFormValidationQuiet() || reported.getAsBoolean())
+                return false;
+
+            sleep(ERROR_PANEL_REPAINT_BUFFER);
+            return isFormValidationQuiet() && !reported.getAsBoolean();
+        }, timeout);
+    }
+
+    /**
+     * Whether the form has finished reporting: no server validation outstanding and no open grid editor.
+     * StoreCollection counts validation requests itself, and DataEntryPanel's rendered validating indicator cannot
+     * stand in for that count because it stays hidden through the form's initial load. An open editor counts because
+     * DataEntryErrorPanel skips the repaint entirely while one is up, leaving the summary at its pre-edit contents.
+     *
+     * <p>Not quiet when the form's scripting is not on the page. Callers reach this mid-navigation, and a wait that
+     * cannot yet tell has to keep polling rather than read the silence as a form that is done.
+     */
+    private boolean isFormValidationQuiet()
+    {
+        Object quiet = executeScript("if (typeof Ext4 === 'undefined') return null;" +
+                "var panel = Ext4.ComponentQuery.query('ehr-dataentrypanel')[0];" +
+                "if (!panel || !panel.storeCollection) return null;" +
+                "return panel.storeCollection.validationRequestsInFlight === 0 && !panel.isEditing();");
+
+        return Boolean.TRUE.equals(quiet);
+    }
+
+    /**
+     * More Actions -> Re-Validate: re-runs server-side validation on every record in the form. Not every form offers
+     * it, so report that rather than failing on the missing menu item and burying the message that would not clear.
+     *
+     * @return whether validation was re-run
+     */
+    private boolean revalidateForm()
+    {
+        // Only a form that has been churning for a full timeout gets here, so wait the toolbar out: a button that has
+        // simply not rendered yet must not read as a form without the feature
+        WebElement moreActions = _helper.getDataEntryButton("More Actions").waitForElement(getDriver(), WAIT_FOR_JAVASCRIPT);
+        scrollIntoView(moreActions);
+        _ext4Helper.openMenu(moreActions);
+
+        WebElement revalidate = Ext4Helper.Locators.menuItem("Re-Validate").notHidden().findElementOrNull(getDriver());
+        if (revalidate == null)
+        {
+            log("Form offers no Re-Validate");
+            return false;
+        }
+
+        revalidate.click();
+        return true;
     }
 
     protected void setupNotificationService()
