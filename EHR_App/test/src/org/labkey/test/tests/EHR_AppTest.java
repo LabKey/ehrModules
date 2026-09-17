@@ -23,7 +23,7 @@ import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
-import org.labkey.test.categories.EHR;
+import org.labkey.test.categories.EHRModules;
 import org.labkey.test.pages.ReactAnimalHistoryPage;
 import org.labkey.test.tests.ehr.AbstractGenericEHRTest;
 import org.labkey.test.util.DataRegionTable;
@@ -41,7 +41,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.labkey.test.components.html.Input.Input;
 
-@Category({EHR.class})
+@Category({EHRModules.class})
 public class EHR_AppTest extends AbstractGenericEHRTest
 {
     private static final String PROJECT_NAME = "EHR App";
