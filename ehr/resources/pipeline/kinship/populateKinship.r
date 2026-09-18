@@ -18,11 +18,6 @@
 # largest one small.
 library(getopt)
 
-# Minimum coefficient to emit; 0 disables the filter.  Enabling this silently lowers colony-wide kinship averages, because those
-# queries divide by an independent population count rather than by the rows present: at 2^-6 it removed 62% of the rows and a
-# third of the total kinship at one colony measured.
-MIN_COEFFICIENT <- 0
-
 # Columns of the dense matrix copied out at a time.  The index and value vectors and the frame handed to write.table are all derived
 # from the slab, so a mostly-nonzero slab costs roughly four times this while it is written.  Smaller is not cheaper: 4e6 and 512e6
 # both raised the peak at a 25,000-animal colony.
@@ -33,11 +28,19 @@ CHUNK_ROWS <- 512L
 
 OUTPUT_FILE <- 'kinship.txt'
 TEMP_FILE <- 'kinship.txt.part'
+FAMILY_OUTPUT <- 'kinship.families.txt'
 
 spec <- matrix(c(
-    'inputFile', '-f', 1, 'character'
+    'inputFile', 'f', 1, 'character',
+	'minCoefficient', 'mc', 1, 'double'
 ), ncol=4, byrow=TRUE)
 opts <- getopt(spec, commandArgs(trailingOnly = TRUE))
+
+
+# Minimum coefficient to emit; omitting the argument disables the filter.  Enabling this silently lowers colony-wide kinship averages, because those
+# queries divide by an independent population count rather than by the rows present: at 2^-6 it removed 62% of the rows and a
+# third of the total kinship at one colony measured.
+if (is.null(opts$minCoefficient)) opts$minCoefficient <- -1
 
 # Row index of each animal's parent, 0 where the parent is unknown
 parentIndex <- function(id, parent)
@@ -238,8 +241,8 @@ writeFamily <- function(kin, ids, con)
         # Upper triangle only: the matrix is symmetric, so the mirror row is emitted below rather than stored.  This also drops
         # the diagonal, and the importer discards self-pairs anyway.
         sel <- i < j
-        if (MIN_COEFFICIENT > 0)
-            sel <- sel & vals >= MIN_COEFFICIENT
+        if (opts$minCoefficient >= 0)
+            sel <- sel & vals > opts$minCoefficient
 
         i <- i[sel]
         j <- j[sel]
@@ -304,6 +307,7 @@ main <- function()
 
     totalRows <- 0
     totalFamilies <- 0
+	allPed$FamilyId <- NA
     for (species in unique(allPed$Species)){
         allRecordsForSpecies <- allPed[allPed$Species %in% species,]
         print(paste0('Processing species: ', species, ', with ', nrow(allRecordsForSpecies), ' IDs'))
@@ -328,6 +332,7 @@ main <- function()
         for (f in famIds)
         {
             idx <- which(fam == f)
+			allPed$FamilyId[allPed$Id %in% ped$id[idx]] <- paste0(species, '-', f)
             totalFamilies <- totalFamilies + 1
             speciesRows <- speciesRows + processFamily(ped$id, ped$dam, ped$sire, idx, con)
 
@@ -373,6 +378,11 @@ main <- function()
         unlink(OUTPUT_FILE)
     if (!file.rename(TEMP_FILE, OUTPUT_FILE))
         stop(paste0('Unable to rename ', TEMP_FILE, ' to ', OUTPUT_FILE))
+
+    # Save the family IDs, primarily for debugging:
+    if (file.exists(FAMILY_OUTPUT))
+      unlink(FAMILY_OUTPUT)
+    write.table(allPed[c('Id', 'FamilyId')], sep = '\t', quote = FALSE, row.names = FALSE, file = FAMILY_OUTPUT)
 }
 
 main()
