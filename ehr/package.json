@@ -17,7 +17,7 @@
   "dependencies": {
     "@labkey/api": "1.51.4",
     "@labkey/components": "7.58.1",
-    "@labkey/ehr": "0.0.11-fb-vantaSep18.0"
+    "@labkey/ehr": "0.0.11"
   },
   "devDependencies": {
     "@labkey/build": "10.1.2",
