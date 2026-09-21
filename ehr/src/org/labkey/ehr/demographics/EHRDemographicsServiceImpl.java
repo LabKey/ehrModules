@@ -78,6 +78,8 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
 {
     private static final Logger _log = LogHelper.getLogger(EHRDemographicsServiceImpl.class, "Demographics caching, refreshing, and consistency checking");
     private static JobDetail _job = null;
+    private static final int MAX_LOGGED_PROPERTIES = 5;
+    private static final int MAX_LOGGED_VALUE_LENGTH = 200;
 
     private final Cache<String, AnimalRecordImpl> _cache;
 
@@ -173,55 +175,78 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
             AnimalRecord existing = _cache.get(key);
             if (existing != null)
             {
-                if (existing.getProps().isEmpty() && !record.getProps().isEmpty())
-                {
-                    _log.error("mismatch for cached record for animal: {}.  cached record has properties, but new record does not", record.getId());
-                }
-                else if (!existing.getProps().isEmpty() && record.getProps().isEmpty())
-                {
-                    _log.error("mismatch for cached record for animal: {}.  cached record has no properties, but new record does", record.getId());
-                }
-                else if (existing.getProps().isEmpty() && record.getProps().isEmpty())
-                {
-                    //ignore
-                }
-                else
-                {
-                    Map<String, Object> props1 = new TreeMap<>();
-                    Map<String, Object> props2 = new TreeMap<>();
-                    for (DemographicsProvider p : EHRService.get().getDemographicsProviders(record.getContainer(),EHRService.get().getEHRUser(record.getContainer())))
-                    {
-                        for (String fk : p.getKeysToTest())
-                        {
-                            props1.put(fk, existing.getProps().get(fk));
-                            props2.put(fk, record.getProps().get(fk));
-                        }
-                    }
-
-                    MapDifference<String, Object> diff = Maps.difference(props1, props2);
-                    if (!diff.areEqual())
-                    {
-                        _log.error("mismatch for cached record for animal: {}", record.getId());
-                        Map<String, MapDifference.ValueDifference<Object>> diffEntries = diff.entriesDiffering();
-                        if (diffEntries.isEmpty())
-                        {
-                            _log.error("No differences found in the maps");
-                        }
-
-                        for (String prop : diffEntries.keySet())
-                        {
-                            _log.error("property: {}", prop);
-                            _log.error("original: ");
-                            _log.error(diffEntries.get(prop).leftValue());
-                            _log.error("new value: ");
-                            _log.error(diffEntries.get(prop).rightValue());
-                        }
-                    }
-                }
+                String mismatch = describeMismatch(existing, record);
+                if (mismatch != null)
+                    _log.error(mismatch);
             }
         }
 
         _cache.put(key, record);
+    }
+
+    /**
+     * Compares a freshly built record against the one already cached for the same animal.
+     * @return a single-line description of the differences, suitable for logging, or null if they agree
+     */
+    private String describeMismatch(AnimalRecord cached, AnimalRecordImpl fresh)
+    {
+        if (cached.getProps().isEmpty() && fresh.getProps().isEmpty())
+            return null;
+
+        String prefix = "Mismatch for cached record for animal " + fresh.getId() + " in " + fresh.getContainer().getPath() + ": ";
+
+        if (fresh.getProps().isEmpty())
+            return prefix + "cached record has properties " + cached.getProps().keySet() + ", but the newly created record does not";
+
+        if (cached.getProps().isEmpty())
+            return prefix + "cached record has no properties, but the newly created record has " + fresh.getProps().keySet();
+
+        Map<String, Object> cachedProps = new TreeMap<>();
+        Map<String, Object> freshProps = new TreeMap<>();
+        Map<String, Set<String>> providerNames = new HashMap<>();
+        for (DemographicsProvider p : EHRService.get().getDemographicsProviders(fresh.getContainer(), EHRService.get().getEHRUser(fresh.getContainer())))
+        {
+            for (String fk : p.getKeysToTest())
+            {
+                cachedProps.put(fk, cached.getProps().get(fk));
+                freshProps.put(fk, fresh.getProps().get(fk));
+                providerNames.computeIfAbsent(fk, _ -> new TreeSet<>()).add(p.getName());
+            }
+        }
+
+        MapDifference<String, Object> diff = Maps.difference(cachedProps, freshProps);
+        if (diff.areEqual())
+            return null;
+
+        Map<String, MapDifference.ValueDifference<Object>> diffEntries = diff.entriesDiffering();
+        StringBuilder sb = new StringBuilder(prefix);
+        sb.append(diffEntries.size()).append(diffEntries.size() == 1 ? " property differs. " : " properties differ. ");
+        String separator = "";
+        int described = 0;
+        for (Map.Entry<String, MapDifference.ValueDifference<Object>> entry : diffEntries.entrySet())
+        {
+            if (described++ == MAX_LOGGED_PROPERTIES)
+            {
+                sb.append(separator).append("and ").append(diffEntries.size() - MAX_LOGGED_PROPERTIES).append(" more");
+                break;
+            }
+
+            sb.append(separator);
+            separator = "; ";
+            Set<String> providers = providerNames.get(entry.getKey());
+            sb.append(entry.getKey())
+                    .append(providers.size() == 1 ? " (provider: " : " (providers: ").append(String.join(", ", providers)).append(")")
+                    .append(" cached: [").append(abbreviate(entry.getValue().leftValue())).append("]")
+                    .append(", new: [").append(abbreviate(entry.getValue().rightValue())).append("]");
+        }
+
+        return sb.toString();
+    }
+
+    // A list-valued provider holds an entire list of maps under one key, so a single value could be very long
+    private static String abbreviate(Object value)
+    {
+        return StringUtils.abbreviate(String.valueOf(value), MAX_LOGGED_VALUE_LENGTH);
     }
 
     public void recacheRecords(Container c, List<String> ids)
@@ -351,24 +376,22 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                     {
                         // Add post commit task to run provider update in another thread once this transaction is complete.
                         transaction.addCommitTask(() ->
-                        {
-                            JobRunner.getDefault().execute(() ->
-                            {
-                                try
+                                JobRunner.getDefault().execute(() ->
                                 {
-                                    // Set up environment so auditing in compliance code works
-                                    QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
-                                    QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
+                                    try
+                                    {
+                                        // Set up environment so auditing in compliance code works
+                                        QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
+                                        QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
 
-                                    // Update provider in another thread
-                                    updateForProvider(defaultSchema, p, ids, true, true);
-                                }
-                                finally
-                                {
-                                    QueryService.get().clearEnvironment();
-                                }
-                            });
-                        }, DbScope.CommitTaskOption.POSTCOMMIT);
+                                        // Update provider in another thread
+                                        updateForProvider(defaultSchema, p, ids, true, true);
+                                    }
+                                    finally
+                                    {
+                                        QueryService.get().clearEnvironment();
+                                    }
+                                }), DbScope.CommitTaskOption.POSTCOMMIT);
 
                         transaction.commit();
                     }
