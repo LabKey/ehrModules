@@ -42,11 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Base class for implementations of @{link DataEntryForm}.
- * User: bimber
- * Date: 4/27/13
  */
 public class AbstractDataEntryForm implements DataEntryForm
 {
@@ -304,29 +303,18 @@ public class AbstractDataEntryForm implements DataEntryForm
             String schemaName= pair.first;
             String queryName = pair.second;
 
-            Map<String, Map<String, String>> schemaPerms = permissionMap.get(schemaName);
-            if (schemaPerms == null)
-                schemaPerms = new HashMap<>();
+            Map<String, Map<String, String>> schemaPerms = permissionMap.computeIfAbsent(schemaName, k -> new HashMap<>());
+            Map<String, String> queryPerms = schemaPerms.computeIfAbsent(queryName, k -> new HashMap<>());
 
-            Map<String, String> queryPerms = schemaPerms.get(queryName);
-            if (queryPerms == null)
-                queryPerms = new HashMap<>();
-
-            Set<Class<? extends Permission>> setOfPermissions;
+            Stream<Class<? extends Permission>> streamOfPermissions;
 
             //test if this is a dataset
             if ("study".equalsIgnoreCase(schemaName) && datasetMap.get(queryName) != null)
-                setOfPermissions = datasetMap.get(queryName).getPermissions(_ctx.getUser());
+                streamOfPermissions = datasetMap.get(queryName).getPermissions(_ctx.getUser()).stream();
             else
-                setOfPermissions = SecurityManager.getPermissions(_ctx.getContainer(), _ctx.getUser(), Set.of());
+                streamOfPermissions = SecurityManager.streamPermissions(_ctx.getContainer(), _ctx.getUser(), Set.of());
 
-            for (Class<? extends Permission> p : setOfPermissions)
-            {
-                queryPerms.put(p.getName(), p.getCanonicalName());
-            }
-
-            schemaPerms.put(queryName, queryPerms);
-            permissionMap.put(schemaName, schemaPerms);
+            streamOfPermissions.forEach(p -> queryPerms.put(p.getName(), p.getCanonicalName()));
         }
 
         return permissionMap;
