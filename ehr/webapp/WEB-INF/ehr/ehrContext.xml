@@ -24,7 +24,7 @@
             <list>
                 <bean class="org.labkey.api.pipeline.file.FileAnalysisTaskPipelineSettings">
                     <constructor-arg value="kinshipPipeline"/>
-                    <property name="description" value="Recalculate kinship data on all animals in the EHR using the R package kinship2."/>
+                    <property name="description" value="Recalculate kinship data on all animals in the EHR."/>
                     <property name="protocolName" value="Kinship" />
                     <property name="protocolFactoryName" value="kinship"/>
                     <property name="defaultDisplayState" value="disabled"/>
