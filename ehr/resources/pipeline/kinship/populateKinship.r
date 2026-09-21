@@ -299,8 +299,10 @@ main <- function()
         unlink(TEMP_FILE)
 
     con <- file(TEMP_FILE, open = 'wt')
-    # A successful run has already renamed the temp file away, so this only removes the partial file left by a failure
-    on.exit({ if (!is.null(con)) close(con); unlink(TEMP_FILE) }, add = TRUE)
+    complete <- FALSE
+    # Discards the partial file left by a failure.  Once every row is written the file is the whole result of the run, so it is
+    # kept even if the rename below fails.
+    on.exit({ if (!is.null(con)) close(con); if (!complete) unlink(TEMP_FILE) }, add = TRUE)
 
     # The header is retained because the importer detects it by testing whether the third field equals "coefficient"
     writeLines(paste('Id', 'Id2', 'coefficient', sep = '\t'), con)
@@ -367,6 +369,7 @@ main <- function()
 
     close(con)
     con <- NULL
+    complete <- TRUE
 
     print(paste0('Total kinship records: ', totalRows))
 
@@ -377,12 +380,16 @@ main <- function()
     if (file.exists(OUTPUT_FILE))
         unlink(OUTPUT_FILE)
     if (!file.rename(TEMP_FILE, OUTPUT_FILE))
-        stop(paste0('Unable to rename ', TEMP_FILE, ' to ', OUTPUT_FILE))
+        stop(paste0('Unable to rename ', TEMP_FILE, ' to ', OUTPUT_FILE, '.  The completed output is in ', TEMP_FILE, '.'))
 
-    # Save the family IDs, primarily for debugging:
-    if (file.exists(FAMILY_OUTPUT))
-      unlink(FAMILY_OUTPUT)
-    write.table(allPed[c('Id', 'FamilyId')], sep = '\t', quote = FALSE, row.names = FALSE, file = FAMILY_OUTPUT)
+    # Save the family IDs, primarily for debugging.  Warned rather than fatal: kinship.txt is already in place, and a non-zero exit
+    # here would fail the pipeline and skip the import of a good file.
+    tryCatch({
+        if (file.exists(FAMILY_OUTPUT))
+            unlink(FAMILY_OUTPUT)
+        write.table(allPed[c('Id', 'FamilyId')], sep = '\t', quote = FALSE, row.names = FALSE, file = FAMILY_OUTPUT)
+    }, error = function(e) warning(paste0('Unable to write ', FAMILY_OUTPUT, ': ', conditionMessage(e)),
+                                   immediate. = TRUE, call. = FALSE))
 }
 
 main()
