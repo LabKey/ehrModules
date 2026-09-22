@@ -310,9 +310,9 @@ public class AbstractDataEntryForm implements DataEntryForm
 
             //test if this is a dataset
             if ("study".equalsIgnoreCase(schemaName) && datasetMap.get(queryName) != null)
-                streamOfPermissions = datasetMap.get(queryName).getPermissions(_ctx.getUser()).stream();
+                streamOfPermissions = datasetMap.get(queryName).getPermissions(_ctx.getUser()).stream(); // Streaming a set, so guaranteed to be unique
             else
-                streamOfPermissions = SecurityManager.getPermissions(_ctx.getContainer(), _ctx.getUser(), Set.of());
+                streamOfPermissions = SecurityManager.getPermissions(_ctx.getContainer(), _ctx.getUser(), Set.of()).distinct(); // Make unique
 
             streamOfPermissions.forEach(p -> queryPerms.put(p.getName(), p.getCanonicalName()));
         }
