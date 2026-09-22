@@ -312,7 +312,7 @@ public class AbstractDataEntryForm implements DataEntryForm
             if ("study".equalsIgnoreCase(schemaName) && datasetMap.get(queryName) != null)
                 streamOfPermissions = datasetMap.get(queryName).getPermissions(_ctx.getUser()).stream();
             else
-                streamOfPermissions = SecurityManager.streamPermissions(_ctx.getContainer(), _ctx.getUser(), Set.of());
+                streamOfPermissions = SecurityManager.getPermissions(_ctx.getContainer(), _ctx.getUser(), Set.of());
 
             streamOfPermissions.forEach(p -> queryPerms.put(p.getName(), p.getCanonicalName()));
         }
