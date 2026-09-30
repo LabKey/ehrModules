@@ -1081,6 +1081,31 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
         waitForValidationToClear(FORM_ERROR_SUMMARY, () -> summary.existsIn(getDriver()), FORM_ERROR_SUMMARY_TIMEOUT);
     }
 
+    /** Waits out any server validation already in flight, so a later edit's result cannot be undone by an earlier response landing after it. */
+    protected void waitForFormValidationToSettle()
+    {
+        waitFor(this::isFormValidationQuiet, "Form validation did not settle", WAIT_FOR_JAVASCRIPT);
+    }
+
+    /**
+     * Waits for the form to report a validation message, re-running server-side validation once if it does not. A
+     * validation response clears the records' server errors before checking whether it is stale, so a message a newer
+     * response raised can show and then vanish when an older one lands after it.
+     */
+    protected void waitForValidationToReport(String message)
+    {
+        BooleanSupplier reported = () -> isTextPresent(message);
+        if (waitForValidationToSettleWith(reported, WAIT_FOR_JAVASCRIPT))
+            return;
+
+        log("Form did not settle reporting '" + message + "', re-validating");
+        if (!revalidateForm())
+            Assert.fail("Form did not report, and offers no Re-Validate to raise it: " + message);
+
+        if (!waitForValidationToSettleWith(reported, WAIT_FOR_JAVASCRIPT))
+            Assert.fail("Form did not report after re-validating: " + message);
+    }
+
     /**
      * Waits for a validation message to clear, re-running server-side validation once if it does not. A value can be
      * accepted at the field while the form's error summary still lists it, which the form itself handles by pointing
@@ -1111,21 +1136,26 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
             Assert.fail("Form kept reporting after re-validating: " + message);
     }
 
-    /**
-     * Waits for the form to go quiet without reporting the given message. DataEntryErrorPanel repaints on a buffered
-     * event rather than when the validation response lands, so the summary trails the form's actual state by up to a
-     * second: a message can read as absent before validation has reported it, and read as present after the value
-     * that raised it was accepted. Neither is worth acting on, so require the form quiet and the message absent, then
-     * re-check after the repaint window to confirm the absence survives it.
-     */
     private boolean waitForValidationToSettleWithout(BooleanSupplier reported, int timeout)
     {
+        return waitForValidationToSettleWith(() -> !reported.getAsBoolean(), timeout);
+    }
+
+    /**
+     * Waits for the form to go quiet with the summary in the given state. DataEntryErrorPanel repaints on a buffered
+     * event rather than when the validation response lands, so the summary trails the form's actual state by up to a
+     * second: a message can read as absent before validation has reported it, and read as present after the value
+     * that raised it was accepted. Neither is worth acting on, so require the form quiet and the state reached, then
+     * re-check after the repaint window to confirm it survives.
+     */
+    private boolean waitForValidationToSettleWith(BooleanSupplier settled, int timeout)
+    {
         return waitFor(() -> {
-            if (!isFormValidationQuiet() || reported.getAsBoolean())
+            if (!isFormValidationQuiet() || !settled.getAsBoolean())
                 return false;
 
             sleep(ERROR_PANEL_REPAINT_BUFFER);
-            return isFormValidationQuiet() && !reported.getAsBoolean();
+            return isFormValidationQuiet() && settled.getAsBoolean();
         }, timeout);
     }
 
