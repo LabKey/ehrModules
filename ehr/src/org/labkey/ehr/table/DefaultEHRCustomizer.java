@@ -1351,7 +1351,9 @@ public class DefaultEHRCustomizer extends AbstractTableCustomizer
         if (table.getColumn(name) == null)
         {
             TableInfo realTable = getRealTableForDataset(table, "Animal Group Members");
-            if (realTable != null)
+            // Some EHR studies define groupId as a non-numeric lookup unrelated to animal_groups.rowid
+            ColumnInfo groupIdCol = realTable == null ? null : realTable.getColumn("groupId");
+            if (groupIdCol != null && groupIdCol.isNumericType())
             {
                 SQLFragment sql = new SQLFragment("(select count(distinct g.participantid) as total from studydataset." + realTable.getName() + " g where g.groupId = " + ExprColumn.STR_TABLE_ALIAS + ".rowid AND (g.date <= {fn now()} AND (g.enddate IS NULL or CAST(g.enddate as date) > {fn curdate()})))");
                 ExprColumn totalCol = new ExprColumn(table, name, sql, JdbcType.INTEGER, table.getColumn("rowid"));
