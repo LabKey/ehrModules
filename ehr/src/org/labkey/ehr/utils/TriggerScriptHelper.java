@@ -807,17 +807,7 @@ public class TriggerScriptHelper
         // inserted a row into study.participant, which means that calculated lookup values like the animal's current
         // age won't resolve until AFTER the call to insertRows() has completed. Thus, refresh the cache for this new
         // animal an extra time. See ticket 44283.
-        try (DbScope.Transaction transaction = StudyService.get().getDatasetSchema().getScope().ensureTransaction())
-        {
-            // Add post commit task to run provider update in another thread once this transaction is complete.
-            transaction.addCommitTask(() ->
-            {
-                // Update provider in another thread
-                EHRDemographicsServiceImpl.get().recacheRecords(getContainer(), Collections.singletonList(id));
-            }, DbScope.CommitTaskOption.POSTCOMMIT);
-
-            transaction.commit();
-        }
+        new EHRDemographicsServiceImpl.RecacheRecordsTask(getContainer()).register(StudyService.get().getDatasetSchema().getScope(), List.of(id), DbScope.CommitTaskOption.POSTCOMMIT);
     }
 
     public void updateDemographicsRecord(List<Map<String, Object>> updatedRows) throws QueryUpdateServiceException, SQLException, BatchValidationException, InvalidKeyException
