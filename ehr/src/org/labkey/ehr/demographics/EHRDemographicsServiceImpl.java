@@ -268,7 +268,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     @Override
     public void recalculateForAllIdsInCache(final Container c, final String schema, final String query, final boolean async)
     {
-        List<String> cachedIds = _cache.getKeys().stream().map(x -> x.replace(getCacheKeyPrefix(c), "")).toList();
+        List<String> cachedIds = _cache.getKeys().map(x -> x.replace(getCacheKeyPrefix(c), "")).toList();
         reportDataChange(c, Collections.singletonList(Pair.of(schema, query)), cachedIds, async);
     }
 
