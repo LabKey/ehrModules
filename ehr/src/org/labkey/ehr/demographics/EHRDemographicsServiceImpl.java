@@ -87,7 +87,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     {
         // NOTE: we expect to recache all living animals each night.  the purpose of a 25HR window is to make sure the
         // existing record is present so we can validate.  any other incidental cached records would expire shortly after
-        _cache = CacheManager.getStringKeyCache(50000, (CacheManager.DAY + CacheManager.HOUR), "EHRDemographicsServiceImpl");
+        _cache = CacheManager.getCache(String.class, 50000, (CacheManager.DAY + CacheManager.HOUR), "EHRDemographicsServiceImpl");
     }
 
     public static EHRDemographicsServiceImpl get()
@@ -268,7 +268,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
     @Override
     public void recalculateForAllIdsInCache(final Container c, final String schema, final String query, final boolean async)
     {
-        List<String> cachedIds = _cache.getKeys().stream().map(x -> x.replace(getCacheKeyPrefix(c), "")).toList();
+        List<String> cachedIds = _cache.getKeys().map(x -> x.replace(getCacheKeyPrefix(c), "")).toList();
         reportDataChange(c, Collections.singletonList(Pair.of(schema, query)), cachedIds, async);
     }
 
