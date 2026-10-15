@@ -15,8 +15,8 @@
  */
 package org.labkey.ehr.dataentry;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.ColumnInfo;
@@ -63,7 +63,7 @@ public class DataEntryManager
 
     private DataEntryManager()
     {
-        _cache = CacheManager.getStringKeyCache(1000, CacheManager.UNLIMITED, "EHRDataEntryManagerCache");
+        _cache = CacheManager.getCache(String.class, 1000, CacheManager.UNLIMITED, "EHRDataEntryManagerCache");
     }
 
     public static DataEntryManager get()
