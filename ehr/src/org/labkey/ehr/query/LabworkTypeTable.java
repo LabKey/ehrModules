@@ -15,7 +15,7 @@
  */
 package org.labkey.ehr.query;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.ColumnInfo;
@@ -161,7 +161,7 @@ public class LabworkTypeTable extends AbstractDataDefinedTable<EHRLookupsUserSch
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);
-                if (StringUtils.equalsIgnoreCase(aliasColName, col.getName()))
+                if (Strings.CI.equals(aliasColName, col.getName()))
                 {
                     aliasInputIdx = idx;
                 }
@@ -175,7 +175,7 @@ public class LabworkTypeTable extends AbstractDataDefinedTable<EHRLookupsUserSch
                 for (int idx = 1; idx <= it.getColumnCount(); idx++)
                 {
                     ColumnInfo col = it.getColumnInfo(idx);
-                    if (StringUtils.equalsIgnoreCase(aliasColName, col.getName()))
+                    if (Strings.CI.equals(aliasColName, col.getName()))
                     {
                         outputIdx = idx;
                     }
