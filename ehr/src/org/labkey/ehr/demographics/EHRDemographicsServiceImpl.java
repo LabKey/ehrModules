@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.cache.Cache;
 import org.labkey.api.cache.CacheManager;
+import org.labkey.api.data.AccumulatingCommitTask;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -372,29 +373,7 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
                 // If not already in an async thread, and the provider is async, defer just this provider update to an async thread
                 if (!async && p.isAsync())
                 {
-                    try (DbScope.Transaction transaction = StudyService.get().getDatasetSchema().getScope().ensureTransaction())
-                    {
-                        // Add post commit task to run provider update in another thread once this transaction is complete.
-                        transaction.addCommitTask(() ->
-                                JobRunner.getDefault().execute(() ->
-                                {
-                                    try
-                                    {
-                                        // Set up environment so auditing in compliance code works
-                                        QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
-                                        QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
-
-                                        // Update provider in another thread
-                                        updateForProvider(defaultSchema, p, ids, true, true);
-                                    }
-                                    finally
-                                    {
-                                        QueryService.get().clearEnvironment();
-                                    }
-                                }), DbScope.CommitTaskOption.POSTCOMMIT);
-
-                        transaction.commit();
-                    }
+                    new AsyncProviderUpdateTask(defaultSchema, p).register(StudyService.get().getDatasetSchema().getScope(), ids, DbScope.CommitTaskOption.POSTCOMMIT);
                 }
                 else {
                     updateForProvider(defaultSchema, p, ids, true, async);
@@ -405,6 +384,57 @@ public class EHRDemographicsServiceImpl extends EHRDemographicsService
         {
             _log.error(e.getMessage(), e);
             recacheRecords(c, ids);
+        }
+    }
+
+    /** Updates one async provider once per transaction, off-thread, over every id reported to it */
+    private static class AsyncProviderUpdateTask extends AccumulatingCommitTask<Pair<Container, String>, String>
+    {
+        private final DefaultSchema _schema;
+        private final DemographicsProvider _provider;
+
+        AsyncProviderUpdateTask(DefaultSchema schema, DemographicsProvider provider)
+        {
+            super(Pair.of(schema.getContainer(), provider.getName()));
+            _schema = schema;
+            _provider = provider;
+        }
+
+        @Override
+        protected void process(@NotNull Pair<Container, String> key, @NotNull Set<String> ids)
+        {
+            Container c = key.first;
+            List<String> idList = new ArrayList<>(ids);
+            JobRunner.getDefault().execute(() ->
+            {
+                try
+                {
+                    // Set up environment so auditing in compliance code works
+                    QueryService.get().setEnvironment(QueryService.Environment.USER, EHRService.get().getEHRUser(c));
+                    QueryService.get().setEnvironment(QueryService.Environment.CONTAINER, c);
+
+                    get().updateForProvider(_schema, _provider, idList, true, true);
+                }
+                finally
+                {
+                    QueryService.get().clearEnvironment();
+                }
+            });
+        }
+    }
+
+    /** Recaches every id registered in a transaction with one {@link #recacheRecords} call per container */
+    public static class RecacheRecordsTask extends AccumulatingCommitTask<Container, String>
+    {
+        public RecacheRecordsTask(Container c)
+        {
+            super(c);
+        }
+
+        @Override
+        protected void process(@NotNull Container c, @NotNull Set<String> ids)
+        {
+            get().recacheRecords(c, new ArrayList<>(ids));
         }
     }
 
