@@ -220,7 +220,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
-        SimpleMetricsService.get().describeClientSideFeatureArea("ehrParticipantHistoryFilter", "Participant history filter use, by filter type: switches to aliveAtCenter, all, urlParams, or idSearch, plus idSearch again for each successful ID lookup");
+        SimpleMetricsService.get().describeClientSideFeatureArea("ehrParticipantHistoryFilter", "Participant history filter use, by filter type: aliveAtCenter or all when a user switches to that filter, idSearch for each completed ID lookup, including ones that match no IDs");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.assignment, "Find Assignments Overlapping A Date Range", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=study&query.queryName=assignmentOverlapsById"), "Quick Links");
