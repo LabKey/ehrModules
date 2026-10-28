@@ -15,12 +15,14 @@
  */
 package org.labkey.test.tests.ehr;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
+import org.labkey.test.WebTestHelper;
 import org.labkey.test.pages.ehr.AnimalHistoryPage;
 import org.labkey.test.util.Crawler;
 import org.labkey.test.util.DataRegionTable;
@@ -28,15 +30,13 @@ import org.labkey.test.util.EscapeUtil;
 import org.labkey.test.util.Ext4Helper;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.PortalHelper;
+import org.labkey.test.util.SimpleHttpResponse;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
-import org.labkey.test.util.selenium.WebDriverUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
-import java.net.MalformedURLException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -309,21 +310,6 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         resetErrors();  //note: inserting records without permission will log errors by design.  the UI should prevent this from happening, so we want to be aware if it does occur
     }
 
-    // Clicks the link and switches to the window if it's a viable link. Otherwise throws an exception.
-    private void verifyLInk(WebElement link)
-    {
-        int winCount = getDriver().getWindowHandles().size();
-        link.sendKeys(Keys.chord(WebDriverUtils.MODIFIER_KEY, Keys.ENTER));
-
-        // Short wait for a new window to open. If not then throw exception
-        boolean winOpen = waitFor(() -> getDriver().getWindowHandles().size() > winCount, 1000);
-        if (!winOpen)
-            throw new IllegalStateException("Link did not open new window in tab.");
-
-        List<String> windows = new ArrayList<>(getDriver().getWindowHandles());
-        getDriver().switchTo().window(windows.get(1));
-    }
-
     protected List<String> skipLinksForValidation()
     {
         return List.of(
@@ -359,82 +345,67 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         );
     }
 
-    private String validLink(WebElement anchor)
+    // Absolute URL of an in-scope link, or null if the link should not be validated
+    private String linkToValidate(WebElement anchor)
     {
         String href = anchor.getDomAttribute("href");
-        if (href != null && !href.startsWith("#") && !href.equalsIgnoreCase("undefined"))
-        {
-            String decodedHref = EscapeUtil.decodeUriPath(href);
-            if (skipLinksForValidation().stream().anyMatch(s -> decodedHref.toLowerCase().contains(s.toLowerCase())))
-            {
-                log(href + " is specified as an exception to link validation. Skipping validation.");
-                return null;
-            }
-
-            // Ensure link is not external
-            try
-            {
-                URL url = new URL(href);
-                if (!url.getHost().equalsIgnoreCase(getURL().getHost()))
-                {
-                    log(href + " is an external link. Skipping validation.");
-                    return null;
-                }
-            }
-            catch (MalformedURLException e)
-            {
-                // not a full URL so not external. Carry on.
-            }
-
-            // scope this to admin, ehr folder and subfolders
-            String controller = new Crawler.ControllerActionId(decodedHref).getController();
-            if (!decodedHref.contains(getContainerPath()) && !controller.equalsIgnoreCase("admin"))
-            {
-                log(href + " is in a different folder than the EHR folder, " + getContainerPath() + ". Skipping validation.");
-                return null;
-            }
-        }
-
-        if (!anchor.isDisplayed())
+        if (href == null || href.startsWith("#") || href.equalsIgnoreCase("undefined") || href.toLowerCase().startsWith("javascript:") || !anchor.isDisplayed())
             return null;
 
-        boolean clickable = true;
-        String validUrl = null;
-
-        try
+        // The href property is absolute and browser-encoded, unlike the attribute
+        String url = StringUtils.substringBefore(anchor.getDomProperty("href"), "#");
+        String decodedUrl = EscapeUtil.decodeUriPath(url);
+        if (skipLinksForValidation().stream().anyMatch(s -> decodedUrl.toLowerCase().contains(s.toLowerCase())))
         {
-            verifyLInk(anchor);
-        }
-        catch (WebDriverException | IllegalStateException e)
-        {
-            clickable = false;
+            log(href + " is specified as an exception to link validation. Skipping validation.");
+            return null;
         }
 
-        if (clickable)
+        URL currentUrl = getURL();
+        if (!url.startsWith(currentUrl.getProtocol() + "://" + currentUrl.getAuthority() + "/"))
         {
-            // Give page time to load
-            boolean loaded = waitFor(() -> (getDriver().getCurrentUrl() != null && !getDriver().getCurrentUrl().equalsIgnoreCase("about:blank")), WAIT_FOR_PAGE);
-            assertTrue("Link " + href + " did not load in " + WAIT_FOR_PAGE + "ms.", loaded);
-
-            // Assert page is not empty and does not have errors
-            URL url = getURL();
-            assertFalse("URL " + url + " is empty.", isPageEmpty());
-            assertNoLabKeyErrors();
-
-            // assertNoLabKeyErrors does not catch all types of errors
-            assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
-
-            // record link as valid and cleanup
-            validUrl = url.toString();
-            getDriver().close();
-            switchToWindow(0);
+            log(href + " is an external link. Skipping validation.");
+            return null;
         }
 
-        return validUrl;
+        // scope this to admin, ehr folder and subfolders
+        String controller = new Crawler.ControllerActionId(decodedUrl).getController();
+        if (!decodedUrl.contains(getContainerPath()) && !controller.equalsIgnoreCase("admin"))
+        {
+            log(href + " is in a different folder than the EHR folder, " + getContainerPath() + ". Skipping validation.");
+            return null;
+        }
+
+        return url;
     }
 
-    private void validatePageLinks(Set<String> crawledLinks)
+    // Links that differ only by these params (e.g. one manageTask link per task) are validated once
+    private static final Set<String> RECORD_ID_PARAMS = Set.of("taskid", "requestid", "objectid", "lsid", "rowid", "returnurl", "srcurl", "_dc");
+
+    private String linkKey(String url)
     {
+        url = StringUtils.substringBefore(url, "#");
+        String query = StringUtils.substringAfter(url, "?");
+        String params = Arrays.stream(query.split("&"))
+                .filter(p -> !p.isEmpty() && !RECORD_ID_PARAMS.contains(EscapeUtil.decodeUriPath(StringUtils.substringBefore(p, "=")).toLowerCase()))
+                .sorted()
+                .collect(Collectors.joining("&"));
+        return (StringUtils.substringBefore(url, "?") + "?" + params).toLowerCase();
+    }
+
+    private void assertCurrentPageValid()
+    {
+        URL url = getURL();
+        assertFalse("URL " + url + " is empty.", isPageEmpty());
+        assertNoLabKeyErrors();
+
+        // assertNoLabKeyErrors does not catch all types of errors
+        assertElementNotPresent("LabKey error found for URL " + url, Locators.labkeyErrorHeading);
+    }
+
+    private void validatePageLinks(Set<String> seenLinks)
+    {
+        assertCurrentPageValid();
         log("Validating links on " + getURL());
 
         // Find all anchors in the body content area, excluding buttons and those in data regions
@@ -442,34 +413,33 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
 
         log(anchors.size() + " possible links found.");
         int validatedCount = 0;
-        Set<String> validLinksOnPage = new HashSet<>();
+        List<String> linksToCrawl = new ArrayList<>();
         for (WebElement anchor : anchors)
         {
-            // Only validate links once
-            String href = anchor.getDomAttribute("href");
-            if (href != null && (validLinksOnPage.contains(href) || crawledLinks.contains(href)))
+            String url = linkToValidate(anchor);
+            if (url == null || !seenLinks.add(linkKey(url)))
                 continue;
 
-            // Validate and record valid links
-            String validUrl = validLink(anchor);
-            if (validUrl != null)
+            String decodedUrl = EscapeUtil.decodeUriPath(url).toLowerCase();
+            if (skipLinksForCrawling().stream().anyMatch(link -> decodedUrl.contains(link.toLowerCase())))
             {
+                SimpleHttpResponse response = WebTestHelper.getHttpResponse(url);
+                assertEquals("Link " + url + " returned an error.", HttpURLConnection.HTTP_OK, response.getResponseCode());
+                assertFalse("URL " + url + " is empty.", response.getResponseBody().isBlank());
                 validatedCount++;
-                validLinksOnPage.add(validUrl);
             }
-
-        }
-        log(validatedCount + " links validated.");
-
-        // Recursively crawl valid links that have not yet been crawled and aren't listed as a skip.
-        for (String s : validLinksOnPage)
-        {
-            if (!crawledLinks.contains(s) && skipLinksForCrawling().stream().noneMatch(link -> s.toLowerCase().contains(link.toLowerCase())))
+            else
             {
-                beginAt(s);
-                crawledLinks.add(s); // mark page as crawled to avoid loops
-                validatePageLinks(crawledLinks);
+                linksToCrawl.add(url);
             }
+        }
+        log(validatedCount + " links validated, " + linksToCrawl.size() + " to crawl.");
+
+        // Crawled pages are validated in the browser when loaded
+        for (String url : linksToCrawl)
+        {
+            beginAt(url);
+            validatePageLinks(seenLinks);
         }
     }
 
@@ -477,8 +447,9 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
     public void testCrawlEhrLinks()
     {
         goToEHRFolder();
-        Set<String> crawledLinks = new HashSet<>();
-        validatePageLinks(crawledLinks);
+        Set<String> seenLinks = new HashSet<>();
+        seenLinks.add(linkKey(getDriver().getCurrentUrl()));
+        validatePageLinks(seenLinks);
     }
 
     @Test
