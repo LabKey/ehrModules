@@ -59,6 +59,16 @@ Ext4.define('EHR.window.FormTemplateWindow', {
         });
     },
 
+    onDestroy: function(){
+        // A typeAhead combo's onTypeAhead fires 250ms after a selection and throws if the store is already destroyed
+        Ext4.Array.forEach(this.query('combo'), function(combo){
+            if (combo.typeAheadTask)
+                combo.typeAheadTask.cancel();
+        });
+
+        this.callParent(arguments);
+    },
+
     getIdSelectionItems: function(){
         if (this.idSelectionMode == 'none' || this.idSelectionMode == 'multi'){
             return {
