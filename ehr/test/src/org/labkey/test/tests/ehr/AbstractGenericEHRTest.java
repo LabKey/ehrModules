@@ -64,21 +64,18 @@ public abstract class AbstractGenericEHRTest extends AbstractEHRTest
         //housing queries
         beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Housing Queries"));
-        waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
 
         //animal queries
         beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Animal Search"));
-        waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         assertNoErrorText();
 
         //project, protocol queries
         beginAt("/" + getContainerPath() + "/project-begin.view");
         waitAndClick(Locator.linkWithText("Protocol and Project Queries"));
-        waitForTextToDisappear("Loading");
         waitForElement(Locator.tagContainingText("div", "View:")); //a proxy for the search panel loading
         waitForElement(Locator.linkContainingText("Find Assignments Overlapping A Date Range"));
         assertNoErrorText();
