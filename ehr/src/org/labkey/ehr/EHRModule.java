@@ -59,7 +59,6 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.SimpleTableDomainKind;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.settings.AppProps;
 import org.labkey.api.settings.OptionalFeatureService;
 import org.labkey.api.usageMetrics.SimpleMetricsService;
 import org.labkey.api.util.ContextListener;
@@ -350,10 +349,10 @@ public class EHRModule extends ExtendedSimpleModule
         Map<String, Object> ret = new HashMap<>(map);
 
         // Expose the experimental React participant reports flag to client-side JavaScript
-        ret.put("isReactAnimalHistoryEnabled", AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS));
+        ret.put("isReactAnimalHistoryEnabled", OptionalFeatureService.get().isFeatureEnabled(EHRManager.EXPERIMENTAL_REACT_PARTICIPANT_REPORTS));
 
         // Expose the experimental 'submit enabled on validation' flag to client-side JavaScript
-        ret.put("isSubmitEnabledOnValidation", AppProps.getInstance().isOptionalFeatureEnabled(EHRManager.EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION));
+        ret.put("isSubmitEnabledOnValidation", OptionalFeatureService.get().isFeatureEnabled(EHRManager.EXPERIMENTAL_SUBMIT_ENABLED_ON_VALIDATION));
 
         if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
