@@ -147,7 +147,7 @@ abstract public class EHRService
         /** end date is not set, or any day in the future */
         activeAfterMidnightTonight(new SQLFragment(" WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE())),
         /** ends anytime today */
-        endsToday(new SQLFragment("WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE())),
+        endsToday(new SQLFragment(" WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE())),
         /** consider records that start/stop on today's date to be active */
         allowSameDay(new SQLFragment(" WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()} AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) = {fn curdate()}) THEN " + CoreSchema.getInstance().getSchema().getSqlDialect().getBooleanTRUE())),
         /** end time must be before right now */
