@@ -42,7 +42,6 @@ import org.labkey.api.util.Formats;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -432,10 +431,9 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
     {
         if (isFieldPopulated(rs, columnName))
         {
-            DecimalFormat decimalFormat = Formats.fv3;
             String  units = rs.getString(new FieldKey(null,unitsColumnName));
 
-            addField(sb, displayLabel, units, decimalFormat.format(rs.getFloat(new FieldKey(null,columnName))));
+            addField(sb, displayLabel, units, Formats.fv3.format(rs.getFloat(new FieldKey(null,columnName))));
         }
     }
 
@@ -443,9 +441,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
     {
         if (isFieldPopulated(rs, columnName))
         {
-            DecimalFormat decimalFormat = Formats.fv3;
-
-            addField(sb, displayLabel, units, decimalFormat.format(rs.getFloat(new FieldKey(null,columnName))));
+            addField(sb, displayLabel, units, Formats.fv3.format(rs.getFloat(new FieldKey(null,columnName))));
         }
     }
 
