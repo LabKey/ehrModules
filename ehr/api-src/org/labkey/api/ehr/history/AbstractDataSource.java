@@ -431,9 +431,9 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
     {
         if (isFieldPopulated(rs, columnName))
         {
-            String  units = rs.getString(new FieldKey(null,unitsColumnName));
+            String units = isFieldPopulated(rs, unitsColumnName) ? rs.getString(new FieldKey(null, unitsColumnName)) : "";
 
-            addField(sb, displayLabel, units, Formats.fv3.format(rs.getFloat(new FieldKey(null,columnName))));
+            addField(sb, displayLabel, units, Formats.fv3.format(rs.getDouble(new FieldKey(null,columnName))));
         }
     }
 
@@ -441,7 +441,7 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
     {
         if (isFieldPopulated(rs, columnName))
         {
-            addField(sb, displayLabel, units, Formats.fv3.format(rs.getFloat(new FieldKey(null,columnName))));
+            addField(sb, displayLabel, units, Formats.fv3.format(rs.getDouble(new FieldKey(null,columnName))));
         }
     }
 
@@ -456,7 +456,8 @@ abstract public class AbstractDataSource extends EHROwnable implements HistoryDa
 
     protected boolean isFieldPopulated(Results rs, String columnName) throws SQLException
     {
-        return rs.hasColumn(FieldKey.fromString(columnName)) && rs.getObject(new FieldKey(null,columnName)) != null;
+        FieldKey key = new FieldKey(null, columnName);
+        return rs.hasColumn(key) && rs.getObject(key) != null;
     }
 
     abstract protected String getHtml(Container c, Results rs, boolean redacted) throws SQLException;
