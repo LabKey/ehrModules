@@ -42,6 +42,7 @@ import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.util.Formats.SafeDecimalFormat;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 import org.labkey.ehr_billing.EHR_BillingManager;
@@ -49,7 +50,6 @@ import org.labkey.ehr_billing.EHR_BillingSchema;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -75,8 +75,8 @@ import java.util.TreeMap;
 public class BillingNotification extends AbstractNotification
 {
     private final BillingNotificationProvider _notificationProvider;
-    protected static final DecimalFormat _dollarFormat = new DecimalFormat("$###,##0.00");
-    protected static final DecimalFormat _numItemsFormat = new DecimalFormat("###,##0.00");
+    protected static final SafeDecimalFormat _dollarFormat = new SafeDecimalFormat("$###,##0.00");
+    protected static final SafeDecimalFormat _numItemsFormat = new SafeDecimalFormat("###,##0.00");
     private static final String _ehrBillingSchemaName = EHR_BillingSchema.NAME;
 
     public BillingNotification(Module module, BillingNotificationProvider provider)
