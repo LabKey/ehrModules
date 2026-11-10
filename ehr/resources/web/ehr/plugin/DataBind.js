@@ -26,6 +26,7 @@ Ext4.define('EHR.plugin.Databind', {
     init: function(panel){
         this.id = this.id || Ext4.id();
         this.panel = panel;
+        this.pendingFieldIds = {};
 
         Ext4.apply(panel, {
             bindRecord: function(rec){
@@ -145,7 +146,7 @@ Ext4.define('EHR.plugin.Databind', {
             for (var fieldName in record.data){
                 field = form.findField(fieldName);
                 if (field && !field.isEqual(record.data[fieldName], field.getValue())){
-                    if (!field.hasFocus){
+                    if (!this.isBeingEdited(field)){
                         this.setFormField(fieldName, record.data[fieldName]);
                     }
                 }
@@ -153,6 +154,16 @@ Ext4.define('EHR.plugin.Databind', {
 
             form.isValid();
         }
+    },
+
+    // Composite fields (e.g. xdatetime) never get hasFocus themselves; only their inner inputs do.
+    // A field with a buffered change hasn't reached the record yet, so the record's value for it is stale.
+    isBeingEdited: function(field){
+        if (field.hasFocus || this.pendingFieldIds[field.id])
+            return true;
+
+        var el = field.getEl();
+        return !!el && el.dom.contains(document.activeElement);
     },
 
     bindRecord: function(record){
@@ -198,6 +209,8 @@ Ext4.define('EHR.plugin.Databind', {
         if (!this.panel || this.panel.isDestroyed || this.isDestroyed){
             return;
         }
+
+        this.pendingFieldIds = {};
 
         var form = this.panel.getForm();
         var record = form.getRecord();
@@ -268,6 +281,7 @@ Ext4.define('EHR.plugin.Databind', {
     //this is separated so that events from multiple fields in a single form are buffered into one event per panel
     onFieldChange: function(field){
         if (this.panel && !this.panel.isDestroyed) {
+            this.pendingFieldIds[field.id] = true;
             this.fireEvent('fieldvaluechange', field);
         }
     },
