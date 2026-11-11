@@ -22,25 +22,12 @@ Ext4.define('EHR.panel.DataEntryErrorPanel', {
         this.mon(this.storeCollection, 'validationcomplete', this.updateErrorMessages, this, {buffer: 50});
         this.mon(this.storeCollection, 'commitcomplete', this.updateErrorMessages, this, {buffer: 200});
         this.mon(this.storeCollection, 'commitexception', this.updateErrorMessages, this, {buffer: 200});
-
-        // TEMP DEBUG: trace error panel refreshes on TeamCity
-        Ext4.each(['validation', 'validationcomplete'], function(ev){
-            this.mon(this.storeCollection, ev, function(){ this.debugLog('event ' + ev); }, this);
-        }, this);
-    },
-
-    debugLog: function(msg){
-        var editing = Ext4.Array.map(this.dataEntryPanel.query('[isDataEntrySection]'), function(s){
-            return (s.title || s.id) + '=' + !!(s.editingPlugin && s.editingPlugin.editing);
-        }).join(',');
-        LDK.Utils.logToServer({level: 'INFO', includeContext: false, message: 'DEBUG DataEntryErrorPanel ' + Date.now() + ' ' + msg + ' | editing: ' + editing});
     },
 
     cachedText: null,
 
     updateErrorMessages: function(){
         if (this.dataEntryPanel.isEditing(this.updateErrorMessages, this)){
-            this.debugLog('update deferred, isEditing');
             return;
         }
 
@@ -73,10 +60,8 @@ Ext4.define('EHR.panel.DataEntryErrorPanel', {
         }
 
         texts = texts.join('<>');
-        this.debugLog('update run, changed=' + (texts !== this.cachedText) + ' texts=' + texts);
         if (texts !== this.cachedText){
             if (this.dataEntryPanel.isEditing(this.updateErrorMessages, this)){
-                this.debugLog('update aborted late, isEditing');
                 console.log('is editing, aborting error message update');
                 return;
             }

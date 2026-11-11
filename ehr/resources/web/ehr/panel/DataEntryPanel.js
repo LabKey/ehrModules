@@ -382,10 +382,6 @@ Ext4.define('EHR.panel.DataEntryPanel', {
             if (sections[i].editingPlugin && sections[i].editingPlugin.editing){
                 if (cb){
                     sections[i].editingPlugin.on('edit', cb, (scope || this), {single: true, delay: 500});
-                    // TEMP DEBUG: trace whether the deferred refresh's edit/canceledit ever fires
-                    var title = sections[i].title || sections[i].id;
-                    sections[i].editingPlugin.on('edit', function(){ LDK.Utils.logToServer({level: 'INFO', includeContext: false, message: 'DEBUG DataEntryPanel ' + Date.now() + ' edit fired for deferred cb: ' + title}); }, this, {single: true});
-                    sections[i].editingPlugin.on('canceledit', function(){ LDK.Utils.logToServer({level: 'INFO', includeContext: false, message: 'DEBUG DataEntryPanel ' + Date.now() + ' canceledit fired while cb deferred: ' + title}); }, this, {single: true});
                 }
 
                 return true;
