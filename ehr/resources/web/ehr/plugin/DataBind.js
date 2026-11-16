@@ -188,6 +188,7 @@ Ext4.define('EHR.plugin.Databind', {
         form.suspendEvents();
         form.loadRecord(record);
         form.resumeEvents();
+        this.pendingFieldIds = {};
         Ext4.defer(form.isValid, 100, form);
 
         this.panel.fireEvent('bindrecord', this.panel, record);
@@ -201,6 +202,7 @@ Ext4.define('EHR.plugin.Databind', {
 
         form._record = null;
         form.reset();
+        this.pendingFieldIds = {};
     },
 
     //this is called after the a field's change event is called
@@ -253,7 +255,7 @@ Ext4.define('EHR.plugin.Databind', {
         }
 
         this.mon(f, 'change', this.onFieldChange, this);
-        this.mon(f, 'blur', this.onFieldChange, this);
+        this.mon(f, 'blur', this.onFieldBlur, this);
 
         var form = f.up('form');
         if (form.getRecord() && this.panel.bindConfig.disableUnlessBound && !this.panel.bindConfig.autoCreateRecordOnChange)
@@ -281,7 +283,17 @@ Ext4.define('EHR.plugin.Databind', {
     //this is separated so that events from multiple fields in a single form are buffered into one event per panel
     onFieldChange: function(field){
         if (this.panel && !this.panel.isDestroyed) {
-            this.pendingFieldIds[field.id] = true;
+            // Composites like xdatetime bubble their inner fields' change events, so flag the bound field instead
+            var boundField = field;
+            while (boundField && !boundField.isFormField)
+                boundField = boundField.ownerCt;
+            this.pendingFieldIds[(boundField || field).id] = true;
+            this.fireEvent('fieldvaluechange', field);
+        }
+    },
+
+    onFieldBlur: function(field){
+        if (this.panel && !this.panel.isDestroyed) {
             this.fireEvent('fieldvaluechange', field);
         }
     },
