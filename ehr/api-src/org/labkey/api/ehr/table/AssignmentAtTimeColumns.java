@@ -18,6 +18,7 @@ package org.labkey.api.ehr.table;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.MultiValuedForeignKey;
@@ -32,6 +33,7 @@ import org.labkey.api.util.logging.LogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Multi-valued lookups to the projects (study.assignment) and protocols (study.protocolAssignment) an animal held on
@@ -42,67 +44,85 @@ public final class AssignmentAtTimeColumns
 {
     private static final Logger LOG = LogHelper.getLogger(AssignmentAtTimeColumns.class, "Project and protocol at time lookup columns");
 
-    public static final String PROJECT_AT_TIME = "projectAtTime";
-    public static final String PROTOCOL_AT_TIME = "protocolAtTime";
+    public enum AtTimeColumn
+    {
+        PROJECT("projectAtTime", "Project At Time", "assignment", "project"),
+        PROTOCOL("protocolAtTime", "Protocol At Time", "protocolAssignment", "protocol");
+
+        private final String _name;
+        private final String _label;
+        private final String _sourceDataset;
+        private final String _valueCol;
+
+        AtTimeColumn(String name, String label, String sourceDataset, String valueCol)
+        {
+            _name = name;
+            _label = label;
+            _sourceDataset = sourceDataset;
+            _valueCol = valueCol;
+        }
+    }
 
     private AssignmentAtTimeColumns()
     {
     }
 
-    public static void addProjectAtTimeCol(@NotNull AbstractTableInfo ds, @NotNull UserSchema ehrStudySchema)
+    public static void addAtTimeCols(@NotNull AbstractTableInfo ds, @NotNull UserSchema ehrStudySchema, @NotNull AtTimeColumn... cols)
     {
-        addAtTimeLookupCol(ds, ehrStudySchema, PROJECT_AT_TIME, "Project At Time", "assignment", "project", "name");
+        if (ds.getColumn("Id") == null || ds.getColumn("date") == null || !"study".equalsIgnoreCase(ds.getPublicSchemaName()))
+            return;
+
+        UserSchema targetSchema = ds.getUserSchema();
+        if ("demographics".equalsIgnoreCase(ds.getName()) || ds.getPkColumns().size() != 1 || targetSchema == null)
+            return;
+
+        Set<String> ehrStudyTables = null;
+        for (AtTimeColumn col : cols)
+        {
+            if (ds.getColumn(col._name, false) != null || col._sourceDataset.equalsIgnoreCase(ds.getName()))
+                continue;
+
+            if (ehrStudyTables == null)
+                ehrStudyTables = new CaseInsensitiveHashSet(ehrStudySchema.getTableNames());
+
+            if (ehrStudyTables.contains(col._sourceDataset))
+                addAtTimeLookupCol(ds, targetSchema, ehrStudySchema, col);
+        }
     }
 
-    public static void addProtocolAtTimeCol(@NotNull AbstractTableInfo ds, @NotNull UserSchema ehrStudySchema)
+    private static void addAtTimeLookupCol(AbstractTableInfo ds, UserSchema targetSchema, UserSchema ehrStudySchema, AtTimeColumn atTimeCol)
     {
-        addAtTimeLookupCol(ds, ehrStudySchema, PROTOCOL_AT_TIME, "Protocol At Time", "protocolAssignment", "protocol", "title");
-    }
-
-    private static void addAtTimeLookupCol(AbstractTableInfo ds, UserSchema ehrStudySchema, String name, String label,
-                                           String sourceDataset, String valueCol, String displayField)
-    {
-        if (ds.getColumn(name, false) != null || ds.getColumn("Id") == null || ds.getColumn("date") == null)
-            return;
-
-        if ("demographics".equalsIgnoreCase(ds.getName()) && "study".equalsIgnoreCase(ds.getPublicSchemaName()))
-            return;
-
-        List<ColumnInfo> pks = ds.getPkColumns();
-        final UserSchema targetSchema = ds.getUserSchema();
-        if (pks.size() != 1 || targetSchema == null)
-            return;
-
-        if (ehrStudySchema.getTableNames().stream().noneMatch(sourceDataset::equalsIgnoreCase))
-            return;
-
-        final ColumnInfo pkCol = pks.getFirst();
+        final ColumnInfo pkCol = ds.getPkColumns().getFirst();
         final String schemaName = ds.getPublicSchemaName();
         final String queryName = ds.getName();
         final String ehrPath = ehrStudySchema.getContainer().getPath();
+        final String name = atTimeCol._name;
+        final String valueCol = atTimeCol._valueCol;
 
         WrappedColumn col = new WrappedColumn(pkCol, name);
-        col.setLabel(label);
+        col.setLabel(atTimeCol._label);
         col.setReadOnly(true);
         col.setUserEditable(false);
-        // The junction's value column keeps the source dataset's lookup, which the multi-valued FK resolves through;
-        // values with no matching target row are dropped.
+        // The junction's value column keeps the source dataset's lookup, which the multi-valued FK resolves through to
+        // the target's title column; values with no matching target row are dropped.
         col.setFk(new MultiValuedForeignKey(new LookupForeignKey(pkCol.getName())
         {
             @Override
             public TableInfo getLookupTableInfo()
             {
                 QueryDefinition qd = QueryService.get().createQueryDef(targetSchema.getUser(), targetSchema.getContainer(), targetSchema, queryName + "_" + name);
-                // Date precision with an inclusive end, matching AssignmentAtTimeForeignKey.
+                // Full timestamps with an exclusive end, like housingAtTime; AssignmentAtTimeForeignKey matches by date instead.
+                // The source is pinned to the EHR container so the dataset's container filter doesn't widen it.
                 qd.setSql("SELECT DISTINCT\n" +
                         "sd." + pkCol.getFieldKey().toSQLString() + ",\n" +
                         "src." + valueCol + "\n" +
                         "FROM \"" + schemaName + "\".\"" + queryName + "\" sd\n" +
-                        "JOIN \"" + ehrPath + "\".study." + sourceDataset + " src\n" +
-                        "  ON (src.id = sd.id AND CAST(src.date AS DATE) <= CAST(sd.date AS DATE)\n" +
-                        "  AND (src.enddate IS NULL OR CAST(sd.date AS DATE) <= CAST(src.enddate AS DATE))\n" +
+                        "JOIN \"" + ehrPath + "\".study." + atTimeCol._sourceDataset + "[ContainerFilter='Current'] src\n" +
+                        "  ON (src.id = sd.id AND src.date <= sd.date\n" +
+                        "  AND (src.enddate IS NULL OR sd.date < src.enddate)\n" +
                         "  AND src.qcstate.publicdata = true)");
                 qd.setIsTemporary(true);
+                qd.setContainerFilter(ds.getContainerFilter());
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
@@ -116,7 +136,7 @@ public final class AssignmentAtTimeColumns
                 ((BaseColumnInfo) ti.getColumn(pkCol.getName())).setKeyField(true);
                 return ti;
             }
-        }, valueCol, displayField));
+        }, valueCol));
 
         ds.addColumn(col);
     }
