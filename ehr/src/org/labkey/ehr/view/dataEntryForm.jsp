@@ -25,7 +25,7 @@
 
     String renderTarget = "ehrDiv-" + def.getName();
 %>
-<div id='<%=unsafe(renderTarget)%>'></div>
+<div id='<%=h(renderTarget)%>'></div>
 
 <script type="text/javascript" nonce="<%=getScriptNonce()%>">
 
