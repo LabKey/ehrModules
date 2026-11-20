@@ -1160,10 +1160,9 @@ abstract public class AbstractEHRTest extends BaseWebDriverTest implements Advan
     }
 
     /**
-     * Whether the form has finished reporting: no server validation outstanding and no open grid editor.
-     * StoreCollection counts validation requests itself, and DataEntryPanel's rendered validating indicator cannot
-     * stand in for that count because it stays hidden through the form's initial load. An open editor counts because
-     * DataEntryErrorPanel skips the repaint entirely while one is up, leaving the summary at its pre-edit contents.
+     * Whether the form has finished reporting: no server validation outstanding (StoreCollection's own request count)
+     * and no open grid editor. An open editor counts because DataEntryErrorPanel skips the repaint entirely while one
+     * is up, leaving the summary at its pre-edit contents.
      *
      * <p>Not quiet when the form's scripting is not on the page. Callers reach this mid-navigation, and a wait that
      * cannot yet tell has to keep polling rather than read the silence as a form that is done.
