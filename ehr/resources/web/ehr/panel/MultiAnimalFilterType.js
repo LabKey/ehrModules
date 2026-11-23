@@ -118,6 +118,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             xtype: 'ehr-projectfield',
                             itemId: 'project',
                             style: 'margin: 5px 5px 0 5px',
+                            width: 450,
                             onlyIncludeProjectsWithAssignments: true
                         });
                     }
@@ -127,6 +128,9 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             xtype: 'ehr-protocolfield',
                             itemId: 'protocol',
                             style: 'margin: 5px',
+                            width: 450,
+                            matchFieldWidth: false,
+                            listConfig: { minWidth: 450 },
                             onlyIncludeProtocolsWithAssignments: true
                         });
                     }
