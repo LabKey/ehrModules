@@ -145,7 +145,7 @@ Ext4.define('EHR.plugin.Databind', {
             for (var fieldName in record.data){
                 field = form.findField(fieldName);
                 if (field && !field.isEqual(record.data[fieldName], field.getValue())){
-                    if (!field.hasFocus){
+                    if (!this.isBeingEdited(field)){
                         this.setFormField(fieldName, record.data[fieldName]);
                     }
                 }
@@ -153,6 +153,15 @@ Ext4.define('EHR.plugin.Databind', {
 
             form.isValid();
         }
+    },
+
+    // Composite fields (e.g. xdatetime) never get hasFocus themselves; only their inner inputs do.
+    isBeingEdited: function(field){
+        if (field.hasFocus)
+            return true;
+
+        var el = field.getEl();
+        return !!el && el.dom.contains(document.activeElement);
     },
 
     bindRecord: function(record){
