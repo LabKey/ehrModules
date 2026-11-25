@@ -116,11 +116,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     onValidationStart: function(){
-        // Suppress the indicator during initial form load/background reconciliation.
-        if (!this.hasStoreCollectionLoaded || !this.storeCollection || !this.storeCollection.hasLoaded){
-            return;
-        }
-
+        // A no-op until the panel is built; onStoreCollectionInitialLoad shows the indicator for a validation already in flight.
         this.validationInProgress = true;
         this.setValidationIndicatorVisible(true);
     },
@@ -337,7 +333,8 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 xtype: 'toolbar',
                 dock: 'bottom',
                 itemId: 'validationIndicator',
-                hidden: true,
+                // The initial load's validation of every record is usually still running here, and the submit buttons wait on it
+                hidden: !(this.storeCollection.validationRequestsInFlight > 0),
                 border: false,
                 plain: true,
                 style: 'background-color: transparent; padding: 12px 0 0 0;',
