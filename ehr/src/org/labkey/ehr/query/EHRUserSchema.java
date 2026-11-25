@@ -81,7 +81,7 @@ public class EHRUserSchema extends SimpleUserSchema
         else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
             return getContainerScopedTable(schemaTable, cf, "project", EHRProjectEditPermission.class);
         else if (EHRSchema.TABLE_CAGE_OBSERVATIONS.equalsIgnoreCase(name))
-            return new EHRExtensibleTable<>(this, schemaTable, cf).init();
+            return getDataEntryTable(schemaTable, cf);
 
         return super.createWrappedTable(name, schemaTable, cf);
     }
