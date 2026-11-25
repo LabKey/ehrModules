@@ -50,6 +50,7 @@ public class EHRSchema
     public static final String TABLE_FLAG_VALUES = "flag_values";
     public static final String TABLE_REPORTS = "reports";
     public static final String TABLE_INVESTIGATORS = "investigators";
+    public static final String TABLE_CAGE_OBSERVATIONS = "cage_observations";
 
     public static EHRSchema getInstance()
     {

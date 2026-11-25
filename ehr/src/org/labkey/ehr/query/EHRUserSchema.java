@@ -80,6 +80,8 @@ public class EHRUserSchema extends SimpleUserSchema
             return getContainerScopedTable(schemaTable, cf, "protocol", EHRProtocolEditPermission.class);
         else if (EHRSchema.TABLE_PROJECT.equalsIgnoreCase(name))
             return getContainerScopedTable(schemaTable, cf, "project", EHRProjectEditPermission.class);
+        else if (EHRSchema.TABLE_CAGE_OBSERVATIONS.equalsIgnoreCase(name))
+            return getDataEntryTable(schemaTable, cf);
 
         return super.createWrappedTable(name, schemaTable, cf);
     }
